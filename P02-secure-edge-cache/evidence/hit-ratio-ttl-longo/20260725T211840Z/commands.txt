@@ -1,1 +1,0 @@
-/tmp/go-build2484261585/b001/exe/loadgen -scenario hit-ratio-ttl-longo -rate 500 -duration 20s -objects 200 -popular 10 -warmup 0 -origin-max-age 60s

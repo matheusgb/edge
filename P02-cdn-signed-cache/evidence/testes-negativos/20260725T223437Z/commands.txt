@@ -1,0 +1,1 @@
+/home/ubuntu/.cache/go-build/e6/e6e6b6b6719466904f957bc3bb63483687c76dc25a618867bd1fc44ef2fd8555-d/negative

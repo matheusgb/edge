@@ -1,0 +1,1 @@
+/home/ubuntu/.cache/go-build/ac/ac242332edceca801947111b895db21a936bdfd4fe8b7be134eda1aea7de8b0c-d/loadgen -scenario hit-ratio-ttl-curto -objects 200 -popular 10 -rate 500 -duration 20s -warmup 0 -origin-max-age 3s

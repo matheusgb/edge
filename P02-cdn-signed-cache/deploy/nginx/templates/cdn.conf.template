@@ -1,0 +1,295 @@
+# CDN: proxy reverso, cache e controles de segurança.
+#
+# Este arquivo é um template. O entrypoint da imagem oficial do Nginx roda
+# envsubst nele e escreve /etc/nginx/conf.d/cdn.conf. Só as variáveis com
+# prefixo CDN_ são substituídas (NGINX_ENVSUBST_FILTER no compose), então as
+# variáveis do próprio Nginx, que são minúsculas como $uri e $host, passam
+# intactas.
+#
+# O segredo compartilhado com a origem entra por aqui, vindo do ambiente. Ele
+# nunca é escrito no repositório.
+
+# ---------------------------------------------------------------------------
+# Log
+# ---------------------------------------------------------------------------
+# O que este formato NÃO tem é o mais importante: não há $request_uri nem $args.
+# O token viaja na query string, e gravar a query seria escrever credencial
+# válida em disco, com retenção, backup e cópia para quem lê log. O que fica é
+# $uri, o caminho já normalizado pelo Nginx.
+log_format cdn escape=json
+    '{'
+        '"time":"$time_iso8601",'
+        '"host":"$host",'
+        '"method":"$request_method",'
+        '"uri":"$uri",'
+        '"status":$status,'
+        '"cache":"$upstream_cache_status",'
+        '"upstream_time":"$upstream_response_time",'
+        '"request_time":$request_time,'
+        '"bytes":$body_bytes_sent'
+    '}';
+
+# ---------------------------------------------------------------------------
+# Cache
+# ---------------------------------------------------------------------------
+# Duas zonas. A primeira é a CDN de verdade. A segunda existe só para o
+# experimento de stampede poder comparar, no mesmo processo e ao mesmo tempo, o
+# comportamento com e sem proxy_cache_lock. Zonas separadas garantem que um
+# experimento não aqueça o cache do outro.
+proxy_cache_path /var/cache/nginx/cdn    levels=1:2 keys_zone=cdn:16m   max_size=512m inactive=30m use_temp_path=off;
+proxy_cache_path /var/cache/nginx/nolock levels=1:2 keys_zone=nolock:16m max_size=512m inactive=30m use_temp_path=off;
+
+# ---------------------------------------------------------------------------
+# Limites por cliente
+# ---------------------------------------------------------------------------
+# Rate limit é controle de abuso, não um WAF. Ele conta requisições por IP numa
+# zona compartilhada entre os workers. A taxa padrão é alta porque, no lab, ela
+# não pode virar o gargalo das medições; para VER o 429, suba a CDN com
+# CDN_RATE_LIMIT baixo.
+limit_req_zone $binary_remote_addr zone=perip:10m rate=${CDN_RATE_LIMIT};
+limit_req_status 429;
+limit_conn_zone $binary_remote_addr zone=connperip:10m;
+limit_conn_status 429;
+
+upstream origin_upstream {
+    server origin:8080;
+    # keepalive evita um handshake TCP por requisição entre CDN e origem. Sem
+    # isso, o custo de conexão apareceria na medição como se fosse da origem.
+    keepalive 64;
+}
+
+upstream token_upstream {
+    server tokend:8082;
+    keepalive 32;
+}
+
+# ---------------------------------------------------------------------------
+# Servidor padrão: qualquer Host desconhecido morre aqui
+# ---------------------------------------------------------------------------
+# 444 é um código interno do Nginx: fecha a conexão sem responder nada. Sem este
+# bloco, uma requisição com "Host: atacante.example" cairia no primeiro servidor
+# definido e poderia criar uma entrada de cache sob um host que não é nosso.
+server {
+    listen 8080 default_server;
+    return 444;
+}
+
+server {
+    listen 8080;
+    server_name cdn localhost 127.0.0.1;
+
+    access_log /var/log/nginx/access.json cdn;
+
+    # -----------------------------------------------------------------------
+    # Limites de entrada
+    # -----------------------------------------------------------------------
+    # Esta CDN serve leitura. Um corpo de requisição grande não tem para onde
+    # ir, e aceitar um significaria gastar memória e disco por nada.
+    client_max_body_size 4k;
+    client_body_timeout 5s;
+    client_header_timeout 5s;
+    keepalive_timeout 30s;
+    send_timeout 15s;
+
+    limit_req zone=perip burst=${CDN_RATE_BURST} nodelay;
+    limit_conn connperip 512;
+
+    # -----------------------------------------------------------------------
+    # O que a CDN envia para a origem
+    # -----------------------------------------------------------------------
+    # Esta lista é uma decisão de segurança em duas direções.
+    #
+    # Do cliente para a origem: tudo que o cliente pode forjar e a origem poderia
+    # confiar é apagado aqui. Cookie e Authorization somem porque esta CDN
+    # serve conteúdo compartilhado, e um cabeçalho de identidade viajando junto
+    # com uma resposta cacheável é a receita de entregar a resposta de um usuário
+    # para outro. X-Forwarded-Host some porque origem nenhuma deveria montar URL
+    # a partir de um header que o cliente escolhe.
+    #
+    # Da CDN para a origem: o Host é fixo e o segredo compartilhado é
+    # adicionado. Assim a origem sabe que a requisição passou pela CDN.
+    #
+    # Atenção a uma regra do Nginx: proxy_set_header não se acumula entre níveis.
+    # Uma location que declarar o próprio proxy_set_header descarta TODA esta
+    # lista. É por isso que a location /_auth repete o que precisa.
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_set_header Host origin;
+    proxy_set_header X-Cdn-Auth "${CDN_ORIGIN_SECRET}";
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host "";
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Cookie "";
+    proxy_set_header Authorization "";
+    # Range vazio: esta CDN não faz entrega parcial. Cachear 206 corretamente
+    # exige o módulo slice e uma chave que inclua o intervalo, e isso é assunto
+    # do P01, não deste projeto. Melhor recusar do que cachear errado.
+    proxy_set_header Range "";
+    # Sem Accept-Encoding, a origem responde sempre na mesma representação. Como
+    # não usamos Vary, duas representações diferentes sob a mesma chave seriam
+    # entregues à toa para o cliente errado.
+    proxy_set_header Accept-Encoding "";
+
+    # -----------------------------------------------------------------------
+    # Timeouts e política de tentativa
+    # -----------------------------------------------------------------------
+    # proxy_next_upstream off é o que impede a CDN de transformar uma origem
+    # doente numa tempestade de tentativas. Com uma origem só, tentar de novo não
+    # tem para onde ir: só multiplica a carga em cima de quem já está caindo.
+    proxy_next_upstream off;
+    proxy_connect_timeout 2s;
+    proxy_send_timeout 10s;
+    proxy_read_timeout 15s;
+
+    # -----------------------------------------------------------------------
+    # Política de cache
+    # -----------------------------------------------------------------------
+    proxy_cache_valid 200 ${CDN_CACHE_TTL};
+    proxy_cache_valid 404 5s;
+    # proxy_cache_revalidate liga a revalidação condicional: no vencimento, a
+    # CDN pergunta "mudou?" com If-None-Match, e uma resposta 304 renova a
+    # entrada sem transferir o corpo de novo.
+    proxy_cache_revalidate on;
+    # Servir a cópia vencida enquanto a origem está fora do ar, e atualizar em
+    # segundo plano em vez de fazer o cliente esperar pela revalidação.
+    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+    proxy_cache_background_update on;
+    # NÃO ignoramos Set-Cookie de propósito. Uma resposta com Set-Cookie é de um
+    # usuário só, e o comportamento padrão do Nginx, que é recusar-se a cachear,
+    # é exatamente o certo. proxy_ignore_headers Set-Cookie aqui seria trocar
+    # segurança por hit ratio.
+    add_header X-Cache-Status $upstream_cache_status always;
+
+    location = /healthz {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    # -----------------------------------------------------------------------
+    # Autorização por subrequisição
+    # -----------------------------------------------------------------------
+    # "internal" significa que ninguém alcança esta location de fora: ela só
+    # existe para o auth_request.
+    #
+    # Ponto central do projeto: o auth_request roda no acesso, ANTES do conteúdo.
+    # Uma resposta que sai do cache passa por aqui do mesmo jeito. É isso que
+    # permite compartilhar o objeto entre usuários sem compartilhar o direito de
+    # baixá-lo.
+    location = /_auth {
+        internal;
+
+        proxy_pass http://token_upstream/auth;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+        proxy_set_header Host token;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+        # A subrequisição do auth_request é sempre um GET, e as variáveis dela
+        # descrevem a subrequisição, não o pedido do cliente. Por isso o método,
+        # a URI e o caminho normalizado são capturados por `set` na location
+        # original e repassados aqui.
+        proxy_set_header X-Original-Method $auth_method;
+        proxy_set_header X-Original-URI $auth_uri;
+        proxy_set_header X-Cdn-Path $auth_path;
+
+        proxy_connect_timeout 1s;
+        proxy_send_timeout 2s;
+        proxy_read_timeout 2s;
+    }
+
+    # -----------------------------------------------------------------------
+    # Conteúdo público: cache sem autorização
+    # -----------------------------------------------------------------------
+    location /public/ {
+        limit_except GET HEAD { deny all; }
+
+        proxy_cache cdn;
+        proxy_cache_key "public|$scheme|$request_method|$host|$uri";
+        proxy_cache_lock on;
+        proxy_pass http://origin_upstream$uri;
+    }
+
+    # -----------------------------------------------------------------------
+    # Conteúdo protegido: autorização por requisição, cache compartilhado
+    # -----------------------------------------------------------------------
+    location /objects/ {
+        limit_except GET HEAD { deny all; }
+
+        set $auth_method $request_method;
+        set $auth_uri $request_uri;
+        set $auth_path $uri;
+        auth_request /_auth;
+
+        proxy_cache cdn;
+        # A chave é a decisão mais importante deste arquivo.
+        #
+        # $uri é o caminho normalizado, SEM a query string. É por isso que o
+        # token não entra na chave: mil usuários com mil tokens diferentes
+        # compartilham a mesma entrada, e o cache tem serventia.
+        #
+        # $host está na chave porque o mesmo caminho em hosts diferentes é
+        # conteúdo diferente. Só é seguro porque o servidor padrão recusa Host
+        # desconhecido: sem aquele bloco, o cliente escolheria a chave.
+        #
+        # O prefixo literal separa este espaço do /nolock/, que aponta para os
+        # mesmos objetos com outra política.
+        proxy_cache_key "protected|$scheme|$request_method|$host|$uri";
+        # proxy_cache_lock: quando N clientes pedem o mesmo objeto ausente, um
+        # vai à origem e os outros esperam a resposta dele. É a proteção contra
+        # cache stampede, e o experimento mede o efeito dela.
+        proxy_cache_lock on;
+        proxy_cache_lock_timeout 10s;
+        proxy_cache_lock_age 5s;
+
+        # A query string não é repassada: a origem nunca vê o token. O que ela
+        # não recebe, ela não pode registrar em log nem vazar por engano.
+        proxy_pass http://origin_upstream$uri;
+    }
+
+    # -----------------------------------------------------------------------
+    # Mesmo conteúdo, sem lock: existe só para o experimento comparar
+    # -----------------------------------------------------------------------
+    location ~ ^/nolock/(?<object_path>.+)$ {
+        limit_except GET HEAD { deny all; }
+
+        set $auth_method $request_method;
+        set $auth_uri $request_uri;
+        set $auth_path $uri;
+        auth_request /_auth;
+
+        proxy_cache nolock;
+        proxy_cache_key "nolock|$scheme|$request_method|$host|$uri";
+        proxy_cache_lock off;
+
+        proxy_pass http://origin_upstream/objects/$object_path;
+    }
+
+    # -----------------------------------------------------------------------
+    # Espelho do diagnóstico da origem, para os testes negativos
+    # -----------------------------------------------------------------------
+    # Devolve os headers que a origem recebeu. É o que permite provar que um
+    # header forjado pelo cliente não atravessou a CDN, em vez de afirmar isso
+    # lendo a configuração. Nunca é cacheado: a resposta descreve UMA requisição.
+    location = /_echo {
+        limit_except GET HEAD { deny all; }
+
+        set $auth_method $request_method;
+        set $auth_uri $request_uri;
+        set $auth_path $uri;
+        auth_request /_auth;
+
+        proxy_cache off;
+        # Repare no $echo_path em vez do caminho escrito direto.
+        #
+        # No Nginx, um proxy_pass com URI LITERAL repassa a query string original
+        # junto. Com variável, não repassa. A primeira forma foi escrita aqui e o
+        # teste negativo pegou: o token estava chegando à origem, que passaria a
+        # tê-lo em log e em qualquer diagnóstico. É a mesma razão de /objects/ e
+        # /nolock/ usarem variável no proxy_pass.
+        set $echo_path /debug/echo;
+        proxy_pass http://origin_upstream$echo_path;
+    }
+}

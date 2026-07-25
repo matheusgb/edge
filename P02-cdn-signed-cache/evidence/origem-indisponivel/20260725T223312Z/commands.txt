@@ -1,0 +1,1 @@
+/tmp/go-build2598586323/b001/exe/outage
