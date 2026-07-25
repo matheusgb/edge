@@ -183,7 +183,7 @@ um número que qualquer um escreveu. Responde `204` ou `403`.
 **sem a query string**, e é por isso que o token não entra na chave: mil usuários
 com mil tokens diferentes compartilham a mesma entrada.
 
-**6. A ida à origem.** `proxy_pass http://origin_upstream$uri` — repare que é uma
+**6. A ida à origem.** `proxy_pass http://origin_upstream$uri`, e repare que é uma
 **variável**. No Nginx, `proxy_pass` com URI literal repassa a query original
 junto; com variável, não repassa. É assim que o token não chega à origem.
 
