@@ -1,14 +1,14 @@
 # Ambiente
 
 - Cenário: matriz-buffered-vs-streamed
-- Início (UTC): 2026-07-25T20:16:37Z
-- Commit: 5a071ec
+- Início (UTC): 2026-07-25T21:41:22Z
+- Commit: 69ff536
 - Máquina: windows-note
 - Sistema: linux/amd64
 - CPUs visíveis ao processo: 32
-- Go: go1.24.2
+- Go: go1.26.5
 - Kernel: Linux 5.15.167.4-microsoft-standard-WSL2
-- Memória: Mem:            15Gi       6.6Gi       7.5Gi       5.6Mi       1.6Gi       8.8Gi
+- Memória: Mem:            15Gi       7.2Gi       4.9Gi       5.6Mi       3.7Gi       8.2Gi
 
 ## Limites do processo
 
@@ -19,4 +19,4 @@ processos e threads (ulimit -u):   (não suportado por este shell)
 
 ## Observações
 
-Gerador e servidor na mesma máquina (WSL2); a interferência entre eles está discutida no README.
+Gerador (Vegeta) e servidor na mesma máquina (WSL2); a interferência está discutida no README.

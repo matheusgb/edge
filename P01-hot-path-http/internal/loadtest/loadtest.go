@@ -1,16 +1,30 @@
 // Package loadtest gera carga HTTP reproduzível e registra a evidência.
 //
-// Duas ideias governam este pacote.
+// A carga é gerada pelo Vegeta. Escrever um gerador próprio seria escrever
+// ferramenta, e a pergunta deste lab é sobre o SERVIDOR, não sobre o cliente.
+// Além disso, um gerador caseiro erra em detalhes que custam caro:
 //
-// A primeira é separar carga OFERECIDA de carga CONCLUÍDA. Um gerador ingênuo
-// conta só o que deu certo, e aí um servidor que rejeita metade das requisições
-// parece rápido, porque as lentas viraram erro e sumiram da conta. Aqui as duas
-// grandezas são contadas separadamente e aparecem lado a lado no relatório.
+//   - o corpo precisa ser lido até o fim, senão a medição para no primeiro byte
+//     e o lab inteiro, que compara estratégias de entrega do corpo, mede nada;
+//   - a latência precisa ser cravada depois da última leitura, não depois do
+//     header;
+//   - o pool de conexões precisa comportar a concorrência pedida, senão o que se
+//     mede é handshake de TCP.
 //
-// A segunda é que o corpo da resposta precisa ser lido até o fim. Se você só olha
-// o header e descarta o corpo, mediu o tempo até o primeiro byte, não o tempo de
-// entregar o objeto, e o lab inteiro compara justamente estratégias de entrega
-// do corpo.
+// Duas escolhas de configuração merecem explicação.
+//
+// A primeira é `Rate` zero, que no Vegeta significa "taxa máxima, limitada pelo
+// número de workers". É o modelo fechado: N clientes em laço, cada um esperando
+// a resposta antes de pedir de novo. É deliberado, porque a pergunta do P01 é o
+// que acontece com N downloads SIMULTÂNEOS, e não a que taxa o servidor satura.
+// Quando a pergunta for a segunda, basta informar uma taxa e o Vegeta passa a
+// disparar na hora marcada, tratando coordinated omission.
+//
+// A segunda é `MaxBody(0)`, que faz o Vegeta drenar o corpo sem guardá-lo. Sem
+// isso, o cliente aloca uma cópia de cada objeto de 16 MiB que recebe, e o
+// gerador vira o maior alocador da máquina: exatamente o efeito que este lab
+// quer observar no servidor. Os bytes entregues passam a vir do contador do
+// próprio servidor, que é a fonte correta para essa informação.
 package loadtest
 
 import (
@@ -18,25 +32,26 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"sort"
 	"strings"
-	"sync"
-	"sync/atomic"
 	"time"
+
+	vegeta "github.com/tsenart/vegeta/v12/lib"
+
+	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/promscrape"
 )
 
 // Config descreve um cenário de carga.
 type Config struct {
 	BaseURL     string        // ex.: http://127.0.0.1:8080
+	AdminURL    string        // ex.: http://127.0.0.1:8081, de onde vêm as métricas do servidor
 	Object      string        // nome do objeto no catálogo
 	Mode        string        // buffered ou streamed
-	Concurrency int           // quantos clientes simultâneos
+	Concurrency int           // clientes simultâneos (workers do Vegeta)
+	Rate        int           // requisições por segundo; 0 = modelo fechado, limitado pela concorrência
 	Duration    time.Duration // por quanto tempo medir
 	Warmup      time.Duration // tempo de aquecimento, descartado da medição
 	Timeout     time.Duration // timeout por requisição
@@ -55,63 +70,66 @@ func (c Config) Validate() error {
 		return fmt.Errorf("Duration deve ser maior que zero, recebi %s", c.Duration)
 	case c.Timeout <= 0:
 		return fmt.Errorf("Timeout deve ser maior que zero, recebi %s", c.Timeout)
+	case c.Rate < 0:
+		return fmt.Errorf("Rate não pode ser negativo, recebi %d", c.Rate)
 	}
 	return nil
 }
 
 // Result é o resumo agregado de um cenário.
+//
+// Ele tem dois grupos de números, e a separação é proposital: o primeiro é o que
+// o CLIENTE observou, o segundo é o que o SERVIDOR relatou de si mesmo. Quando os
+// dois discordam, a discordância é informação.
 type Result struct {
 	Scenario string `json:"scenario"`
 	Object   string `json:"object"`
 	Mode     string `json:"mode"`
 
 	Concurrency int     `json:"concurrency"`
+	TargetRate  int     `json:"target_rate"`
 	DurationSec float64 `json:"duration_sec"`
 
-	// Offered é toda requisição que o gerador tentou fazer.
-	Offered int64 `json:"offered"`
-	// Completed é a fatia que terminou com resposta 2xx e corpo lido inteiro.
-	Completed int64 `json:"completed"`
-	Errors    int64 `json:"errors"`
-	// Timeouts e Cancelled são erros, contados à parte por diagnosticarem coisas
-	// diferentes: o primeiro é o servidor demorando, o segundo é o teste acabando.
-	Timeouts  int64 `json:"timeouts"`
-	Cancelled int64 `json:"cancelled"`
+	// --- o que o cliente observou ---
 
-	Bytes int64 `json:"bytes"`
+	// Offered é toda requisição que o gerador tentou fazer.
+	Offered uint64 `json:"offered"`
+	// Completed é a fatia que terminou com resposta de sucesso e corpo drenado.
+	Completed uint64 `json:"completed"`
+	Errors    uint64 `json:"errors"`
 
 	P50Ms float64 `json:"p50_ms"`
 	P95Ms float64 `json:"p95_ms"`
 	P99Ms float64 `json:"p99_ms"`
 	MaxMs float64 `json:"max_ms"`
 
-	CompletedPerSec float64 `json:"completed_per_sec"`
-	OfferedPerSec   float64 `json:"offered_per_sec"`
-	BytesPerSec     float64 `json:"bytes_per_sec"`
-	ErrorRate       float64 `json:"error_rate"`
-}
+	CompletedPerSec float64        `json:"completed_per_sec"`
+	OfferedPerSec   float64        `json:"offered_per_sec"`
+	ErrorRate       float64        `json:"error_rate"`
+	StatusCodes     map[string]int `json:"status_codes"`
+	ErrorMessages   []string       `json:"error_messages,omitempty"`
 
-// counters acumula os números durante a execução.
-//
-// São int64 manipulados por atomic porque dezenas de goroutines escrevem neles ao
-// mesmo tempo. As latências ficam num slice por worker, protegido por mutex só na
-// hora de juntar, assim o hot path do gerador não disputa um lock.
-type counters struct {
-	offered   atomic.Int64
-	completed atomic.Int64
-	errors    atomic.Int64
-	timeouts  atomic.Int64
-	cancelled atomic.Int64
-	bytes     atomic.Int64
+	// --- o que o servidor relatou ---
 
-	mu        sync.Mutex
-	latencies []time.Duration
-}
-
-func (c *counters) latency(d time.Duration) {
-	c.mu.Lock()
-	c.latencies = append(c.latencies, d)
-	c.mu.Unlock()
+	// ServerBytes são os bytes de corpo que o servidor diz ter escrito. Vem do
+	// contador dele porque o gerador drena o corpo sem contar, para não virar o
+	// maior alocador da máquina.
+	ServerBytes       float64 `json:"server_bytes"`
+	ServerBytesPerSec float64 `json:"server_bytes_per_sec"`
+	// ServerAllocBytes é quanta memória o servidor alocou durante a janela. É a
+	// medida central do lab: dois modos entregam o mesmo conteúdo, e este número
+	// mostra o preço que cada um cobrou por isso.
+	ServerAllocBytes float64 `json:"server_alloc_bytes"`
+	// ServerHeapInUse é o heap vivo no fim da janela.
+	ServerHeapInUse float64 `json:"server_heap_in_use_bytes"`
+	// ServerGCCycles são as coletas de lixo durante a janela. Sozinho, este
+	// número engana: veja o README.
+	ServerGCCycles float64 `json:"server_gc_cycles"`
+	// ServerGoroutines é a foto no fim da janela: uma por requisição em curso,
+	// mais as fixas do processo.
+	ServerGoroutines float64 `json:"server_goroutines"`
+	// ServerCancellations conta clientes que desistiram no meio.
+	ServerCancellations float64 `json:"server_cancellations"`
 }
 
 // Run executa um cenário e devolve o resumo.
@@ -120,192 +138,123 @@ func Run(ctx context.Context, cfg Config) (Result, error) {
 		return Result{}, fmt.Errorf("configuração inválida: %w", err)
 	}
 
-	client := &http.Client{
-		Timeout: cfg.Timeout,
-		Transport: &http.Transport{
-			// O pool precisa comportar toda a concorrência. Com o padrão de 2
-			// conexões ociosas por host, o gerador ficaria reabrindo conexão a cada
-			// requisição e mediria handshake de TCP, não entrega de objeto.
-			MaxIdleConns:        cfg.Concurrency * 2,
-			MaxIdleConnsPerHost: cfg.Concurrency * 2,
-			MaxConnsPerHost:     cfg.Concurrency * 2,
-			IdleConnTimeout:     90 * time.Second,
-			DisableCompression:  true, // comprimir mudaria os bytes na rede e sujaria a medição
-		},
-	}
-	defer client.CloseIdleConnections()
-
 	url := fmt.Sprintf("%s/objects/%s?mode=%s",
 		strings.TrimSuffix(cfg.BaseURL, "/"), cfg.Object, cfg.Mode)
+	targeter := vegeta.NewStaticTargeter(vegeta.Target{Method: "GET", URL: url})
+	rate := vegeta.Rate{Freq: cfg.Rate, Per: time.Second}
 
 	// Aquecimento: as primeiras requisições pagam abertura de conexão, carga do
-	// arquivo no cache de página e o JIT do runtime aquecendo caminhos. Medir isso
-	// junto contamina a média com custos que não se repetem.
+	// arquivo no cache de página do sistema operacional e caminhos do runtime
+	// esquentando. Medir isso junto contamina o resultado com custos que não se
+	// repetem.
 	if cfg.Warmup > 0 {
-		warmCtx, cancel := context.WithTimeout(ctx, cfg.Warmup)
-		execute(warmCtx, client, url, cfg.Concurrency, &counters{})
-		cancel()
+		warm := newAttacker(cfg)
+		for range warm.Attack(targeter, rate, cfg.Warmup, "warmup") {
+		}
+		warm.Stop()
 	}
 
-	runCtx, cancel := context.WithTimeout(ctx, cfg.Duration)
-	defer cancel()
+	// A leitura "antes" vai depois do aquecimento e imediatamente antes do
+	// ataque: tudo que acontecer entre ela e a leitura final entra na conta.
+	before, beforeErr := snapshot(ctx, cfg)
 
-	c := &counters{}
+	attacker := newAttacker(cfg)
+	var metrics vegeta.Metrics
 	started := time.Now()
-	execute(runCtx, client, url, cfg.Concurrency, c)
+	for res := range attacker.Attack(targeter, rate, cfg.Duration, cfg.Mode) {
+		metrics.Add(res)
+	}
+	metrics.Close()
+	attacker.Stop()
 	elapsed := time.Since(started)
 
-	if err := ctx.Err(); err != nil && !errors.Is(err, context.DeadlineExceeded) {
-		return Result{}, fmt.Errorf("execução interrompida: %w", err)
+	after, afterErr := snapshot(ctx, cfg)
+
+	result := resultFrom(cfg, &metrics, elapsed)
+	if beforeErr == nil && afterErr == nil {
+		fillServerSide(&result, before, after, cfg.Mode, elapsed)
 	}
-	return resultFrom(cfg, c, elapsed), nil
+	return result, nil
 }
 
-// execute dispara os workers e espera todos terminarem.
-func execute(ctx context.Context, client *http.Client, url string, concurrency int, c *counters) {
-	var wg sync.WaitGroup
-	wg.Add(concurrency)
-	for range concurrency {
-		go func() {
-			defer wg.Done()
-			// Buffer reaproveitado por worker: o gerador não pode ser o que aloca
-			// mais que o servidor medido, senão o coletor de lixo DELE vira o gargalo.
-			buf := make([]byte, 32<<10)
-			for {
-				if ctx.Err() != nil {
-					return
-				}
-				doRequest(ctx, client, url, c, buf)
-			}
-		}()
-	}
-	wg.Wait()
-}
-
-// doRequest faz uma requisição e contabiliza o desfecho.
-func doRequest(ctx context.Context, client *http.Client, url string, c *counters, buf []byte) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		c.offered.Add(1)
-		c.errors.Add(1)
-		return
-	}
-
-	c.offered.Add(1)
-	started := time.Now()
-
-	resp, err := client.Do(req)
-	if err != nil {
-		classify(ctx, err, c)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Ler o corpo até o fim é o ponto todo da medição: é aqui que a diferença
-	// entre servir de um []byte e servir de um arquivo aparece.
-	n, err := io.CopyBuffer(io.Discard, resp.Body, buf)
-	c.bytes.Add(n)
-	if err != nil {
-		classify(ctx, err, c)
-		return
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		c.errors.Add(1)
-		return
-	}
-
-	c.latency(time.Since(started))
-	c.completed.Add(1)
-}
-
-// classify separa "o teste acabou" de "o servidor falhou".
+// newAttacker monta o atacante do Vegeta.
 //
-// Quando a janela de medição fecha, os workers que estavam no meio de uma
-// requisição recebem um erro de contexto cancelado. Contar isso como falha do
-// servidor inflaria a taxa de erro artificialmente, e quanto maior o objeto,
-// maior a inflação, o que enviesaria exatamente a comparação do lab.
-func classify(ctx context.Context, err error, c *counters) {
-	switch {
-	case errors.Is(err, context.Canceled), errors.Is(ctx.Err(), context.Canceled):
-		c.cancelled.Add(1)
-	case errors.Is(err, context.DeadlineExceeded):
-		if ctx.Err() != nil {
-			c.cancelled.Add(1) // a janela do cenário fechou
-		} else {
-			c.timeouts.Add(1) // a requisição estourou o próprio timeout
-			c.errors.Add(1)
-		}
-	case os.IsTimeout(err):
-		c.timeouts.Add(1)
-		c.errors.Add(1)
-	default:
-		c.errors.Add(1)
-	}
+// Um por fase, nunca reaproveitado: o atacante guarda estado de uma campanha, e
+// reusar a mesma instância entre o aquecimento e a medição faz a segunda
+// terminar quase imediatamente, com um punhado de amostras.
+func newAttacker(cfg Config) *vegeta.Attacker {
+	return vegeta.NewAttacker(
+		vegeta.Timeout(cfg.Timeout),
+		vegeta.KeepAlive(true),
+		// Workers e MaxWorkers iguais fixam a concorrência: nem menos clientes
+		// que o pedido, nem o Vegeta subindo workers extras para perseguir uma
+		// taxa. Com Rate zero, é exatamente o modelo fechado de N clientes.
+		vegeta.Workers(uint64(cfg.Concurrency)),
+		vegeta.MaxWorkers(uint64(cfg.Concurrency)),
+		vegeta.Connections(cfg.Concurrency),
+		vegeta.MaxConnections(cfg.Concurrency),
+		// O corpo é drenado e descartado. Guardar 16 MiB por resposta faria o
+		// gerador alocar mais que o servidor medido.
+		vegeta.MaxBody(0),
+	)
 }
 
-// resultFrom transforma contadores brutos no resumo agregado.
-func resultFrom(cfg Config, c *counters, elapsed time.Duration) Result {
-	c.mu.Lock()
-	lat := make([]time.Duration, len(c.latencies))
-	copy(lat, c.latencies)
-	c.mu.Unlock()
-	sort.Slice(lat, func(i, j int) bool { return lat[i] < lat[j] })
+func snapshot(ctx context.Context, cfg Config) (promscrape.Snapshot, error) {
+	if cfg.AdminURL == "" {
+		return promscrape.Snapshot{}, errors.New("sem endereço administrativo")
+	}
+	return promscrape.Fetch(ctx, strings.TrimSuffix(cfg.AdminURL, "/")+"/metrics")
+}
 
+func resultFrom(cfg Config, m *vegeta.Metrics, elapsed time.Duration) Result {
 	secs := elapsed.Seconds()
 	if secs <= 0 {
 		secs = 1
 	}
-	offered := c.offered.Load()
-	completed := c.completed.Load()
+	completed := uint64(float64(m.Requests) * m.Success)
 
-	r := Result{
+	return Result{
 		Scenario:    fmt.Sprintf("%s-%s-c%d", cfg.Mode, cfg.Object, cfg.Concurrency),
 		Object:      cfg.Object,
 		Mode:        cfg.Mode,
 		Concurrency: cfg.Concurrency,
+		TargetRate:  cfg.Rate,
 		DurationSec: secs,
-		Offered:     offered,
-		Completed:   completed,
-		Errors:      c.errors.Load(),
-		Timeouts:    c.timeouts.Load(),
-		Cancelled:   c.cancelled.Load(),
-		Bytes:       c.bytes.Load(),
 
-		P50Ms: millis(percentile(lat, 0.50)),
-		P95Ms: millis(percentile(lat, 0.95)),
-		P99Ms: millis(percentile(lat, 0.99)),
-		MaxMs: millis(percentile(lat, 1.0)),
+		Offered:   m.Requests,
+		Completed: completed,
+		Errors:    m.Requests - completed,
+
+		P50Ms: millis(m.Latencies.P50),
+		P95Ms: millis(m.Latencies.P95),
+		P99Ms: millis(m.Latencies.P99),
+		MaxMs: millis(m.Latencies.Max),
 
 		CompletedPerSec: float64(completed) / secs,
-		OfferedPerSec:   float64(offered) / secs,
-		BytesPerSec:     float64(c.bytes.Load()) / secs,
+		OfferedPerSec:   float64(m.Requests) / secs,
+		ErrorRate:       1 - m.Success,
+		StatusCodes:     m.StatusCodes,
+		ErrorMessages:   m.Errors,
 	}
-	if offered > 0 {
-		r.ErrorRate = float64(r.Errors) / float64(offered)
-	}
-	return r
 }
 
-// percentile usa o método do posto mais próximo sobre amostras JÁ ORDENADAS.
-//
-// Não interpolamos entre amostras: um p99 interpolado inventa um valor que
-// ninguém observou. Preferimos devolver uma latência que realmente aconteceu.
-func percentile(sorted []time.Duration, q float64) time.Duration {
-	if len(sorted) == 0 {
-		return 0
+// fillServerSide completa o resultado com o que o servidor relatou de si mesmo.
+func fillServerSide(r *Result, before, after promscrape.Snapshot, mode string, elapsed time.Duration) {
+	byMode := map[string]string{"mode": mode}
+
+	r.ServerBytes = promscrape.Delta(before, after, "origin_http_response_bytes_total", byMode)
+	r.ServerAllocBytes = promscrape.Delta(before, after, "go_memstats_alloc_bytes_total", nil)
+	r.ServerGCCycles = promscrape.Delta(before, after, "go_gc_cycles_total_gc_cycles_total", nil)
+	r.ServerCancellations = promscrape.Delta(before, after, "origin_http_client_cancellations_total", byMode)
+
+	// Heap em uso e goroutines são gauges: o que interessa é o valor no fim da
+	// janela, não a diferença.
+	r.ServerHeapInUse = after.Sum("go_memstats_heap_inuse_bytes", nil)
+	r.ServerGoroutines = after.Sum("go_goroutines", nil)
+
+	if secs := elapsed.Seconds(); secs > 0 {
+		r.ServerBytesPerSec = r.ServerBytes / secs
 	}
-	if q <= 0 {
-		return sorted[0]
-	}
-	if q >= 1 {
-		return sorted[len(sorted)-1]
-	}
-	idx := int(q * float64(len(sorted)))
-	if idx >= len(sorted) {
-		idx = len(sorted) - 1
-	}
-	return sorted[idx]
 }
 
 func millis(d time.Duration) float64 {
@@ -421,14 +370,25 @@ func renderSummary(ev Evidence) string {
 	fmt.Fprintf(&b, "# Resumo: %s\n\n", ev.Scenario)
 	fmt.Fprintf(&b, "Medição local em %s/%s com %d CPUs. Isto NÃO é capacidade de produção:\n", ev.OS, ev.Arch, ev.NumCPU)
 	fmt.Fprintf(&b, "gerador e servidor dividem a mesma máquina e disputam CPU entre si.\n\n")
-	fmt.Fprintf(&b, "| Cenário | Modo | Objeto | Conc. | Oferecida/s | Concluída/s | p50 ms | p95 ms | p99 ms | MB/s | Erro |\n")
-	fmt.Fprintf(&b, "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|\n")
+
+	fmt.Fprintf(&b, "## O que o cliente observou\n\n")
+	fmt.Fprintf(&b, "| Cenário | Modo | Objeto | Conc. | Oferecida/s | Concluída/s | p50 ms | p95 ms | p99 ms | Erro |\n")
+	fmt.Fprintf(&b, "|---|---|---|---:|---:|---:|---:|---:|---:|---:|\n")
 	for _, r := range ev.Results {
-		fmt.Fprintf(&b, "| %s | %s | %s | %d | %.1f | %.1f | %.2f | %.2f | %.2f | %.1f | %.2f%% |\n",
+		fmt.Fprintf(&b, "| %s | %s | %s | %d | %.1f | %.1f | %.2f | %.2f | %.2f | %.2f%% |\n",
 			r.Scenario, r.Mode, r.Object, r.Concurrency,
 			r.OfferedPerSec, r.CompletedPerSec,
-			r.P50Ms, r.P95Ms, r.P99Ms,
-			r.BytesPerSec/(1<<20), r.ErrorRate*100)
+			r.P50Ms, r.P95Ms, r.P99Ms, r.ErrorRate*100)
+	}
+
+	fmt.Fprintf(&b, "\n## O que o servidor relatou de si mesmo\n\n")
+	fmt.Fprintf(&b, "| Cenário | MB/s entregues | Alocado na janela | Heap no fim | Coletas | Goroutines no fim |\n")
+	fmt.Fprintf(&b, "|---|---:|---:|---:|---:|---:|\n")
+	for _, r := range ev.Results {
+		fmt.Fprintf(&b, "| %s | %.1f | %.2f GB | %.1f MB | %.0f | %.0f |\n",
+			r.Scenario, r.ServerBytesPerSec/(1<<20),
+			r.ServerAllocBytes/1e9, r.ServerHeapInUse/1e6,
+			r.ServerGCCycles, r.ServerGoroutines)
 	}
 	return b.String()
 }

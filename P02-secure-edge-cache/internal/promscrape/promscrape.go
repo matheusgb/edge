@@ -19,6 +19,7 @@ import (
 
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
+	"github.com/prometheus/common/model"
 )
 
 // Snapshot é uma leitura de /metrics em um instante.
@@ -42,7 +43,11 @@ func Fetch(ctx context.Context, url string) (Snapshot, error) {
 		return Snapshot{}, fmt.Errorf("%s devolveu %s", url, resp.Status)
 	}
 
-	var parser expfmt.TextParser
+	// O parser precisa receber o esquema de validação de nomes explicitamente.
+	// O zero value de TextParser deixa o esquema "unset", e a biblioteca entra
+	// em pânico na primeira métrica lida. UTF8Validation é o padrão moderno do
+	// Prometheus, que aceita nomes fora do conjunto legado.
+	parser := expfmt.NewTextParser(model.UTF8Validation)
 	families, err := parser.TextToMetricFamilies(resp.Body)
 	if err != nil {
 		return Snapshot{}, fmt.Errorf("interpretando %s: %w", url, err)

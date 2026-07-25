@@ -1,6 +1,0 @@
-go_gc_duration_seconds_count 128
-go_goroutines 10
-go_memstats_alloc_bytes_total 1.1384542964e+11
-go_memstats_heap_inuse_bytes 8.48994304e+08
-go_memstats_mallocs_total 335124
-process_open_fds 9

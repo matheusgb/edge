@@ -9,6 +9,9 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func TestValidateRejeitaConfiguracaoIncompleta(t *testing.T) {
@@ -29,6 +32,7 @@ func TestValidateRejeitaConfiguracaoIncompleta(t *testing.T) {
 		"duração zero":          func(c *Config) { c.Duration = 0 },
 		"timeout zero":          func(c *Config) { c.Timeout = 0 },
 		"concorrência negativa": func(c *Config) { c.Concurrency = -1 },
+		"taxa negativa":         func(c *Config) { c.Rate = -1 },
 	}
 	for nome, quebrar := range casos {
 		t.Run(nome, func(t *testing.T) {
@@ -41,99 +45,17 @@ func TestValidateRejeitaConfiguracaoIncompleta(t *testing.T) {
 	}
 }
 
-func TestPercentileUsaAmostrasOrdenadas(t *testing.T) {
+// Taxa zero não é configuração faltando: é o modelo fechado, em que a
+// concorrência é quem limita o ritmo. Precisa continuar válido.
+func TestTaxaZeroEhValida(t *testing.T) {
 	t.Parallel()
 
-	amostras := make([]time.Duration, 100)
-	for i := range amostras {
-		amostras[i] = time.Duration(i+1) * time.Millisecond
+	cfg := Config{
+		BaseURL: "http://127.0.0.1:8080", Object: "obj.bin", Mode: "streamed",
+		Concurrency: 4, Rate: 0, Duration: time.Second, Timeout: time.Second,
 	}
-
-	casos := []struct {
-		q    float64
-		want time.Duration
-	}{
-		{0.50, 51 * time.Millisecond},
-		{0.95, 96 * time.Millisecond},
-		{0.99, 100 * time.Millisecond},
-		{1.0, 100 * time.Millisecond},
-		{0.0, 1 * time.Millisecond},
-	}
-	for _, c := range casos {
-		if got := percentile(amostras, c.q); got != c.want {
-			t.Errorf("percentile(q=%.2f) = %s, esperava %s", c.q, got, c.want)
-		}
-	}
-
-	// O percentil de uma amostra vazia é zero, não pânico: um cenário em que
-	// nada concluiu ainda precisa produzir relatório.
-	if got := percentile(nil, 0.99); got != 0 {
-		t.Errorf("percentile de fatia vazia = %s, esperava 0", got)
-	}
-}
-
-func TestPercentileSempreDevolveAmostraReal(t *testing.T) {
-	t.Parallel()
-
-	// Não interpolamos: o valor devolvido precisa ser um dos observados.
-	amostras := []time.Duration{10 * time.Millisecond, 500 * time.Millisecond}
-	got := percentile(amostras, 0.99)
-	if got != 10*time.Millisecond && got != 500*time.Millisecond {
-		t.Errorf("percentile inventou o valor %s, que não está nas amostras", got)
-	}
-}
-
-func TestResultFromSeparaCargaOferecidaEConcluida(t *testing.T) {
-	t.Parallel()
-
-	c := &counters{}
-	c.offered.Add(100)
-	c.completed.Add(80)
-	c.errors.Add(15)
-	c.timeouts.Add(5)
-	c.cancelled.Add(5)
-	c.bytes.Add(80 * 1024)
-	for i := range 80 {
-		c.latency(time.Duration(i+1) * time.Millisecond)
-	}
-
-	cfg := Config{Object: "obj-1KiB.bin", Mode: "buffered", Concurrency: 8}
-	r := resultFrom(cfg, c, 10*time.Second)
-
-	if r.Offered != 100 {
-		t.Errorf("Offered = %d, esperava 100", r.Offered)
-	}
-	if r.Completed != 80 {
-		t.Errorf("Completed = %d, esperava 80", r.Completed)
-	}
-	// Este é o ponto do teste: as duas grandezas não podem colapsar numa só, senão
-	// um servidor que rejeita metade da carga passaria por rápido.
-	if r.Offered == r.Completed {
-		t.Error("carga oferecida e concluída não podem ser o mesmo número aqui")
-	}
-	if r.OfferedPerSec != 10 {
-		t.Errorf("OfferedPerSec = %.2f, esperava 10", r.OfferedPerSec)
-	}
-	if r.CompletedPerSec != 8 {
-		t.Errorf("CompletedPerSec = %.2f, esperava 8", r.CompletedPerSec)
-	}
-	if r.ErrorRate != 0.15 {
-		t.Errorf("ErrorRate = %.4f, esperava 0.15", r.ErrorRate)
-	}
-	if r.Cancelled != 5 {
-		t.Errorf("Cancelled = %d, esperava 5", r.Cancelled)
-	}
-	if r.Scenario != "buffered-obj-1KiB.bin-c8" {
-		t.Errorf("Scenario = %q, formato inesperado", r.Scenario)
-	}
-}
-
-func TestResultFromNaoDivideporZero(t *testing.T) {
-	t.Parallel()
-
-	r := resultFrom(Config{Object: "x", Mode: "streamed"}, &counters{}, 0)
-	if r.ErrorRate != 0 || r.CompletedPerSec != 0 {
-		t.Errorf("resultado vazio deveria ser zerado, veio %+v", r)
+	if err := cfg.Validate(); err != nil {
+		t.Fatalf("taxa zero foi rejeitada: %v", err)
 	}
 }
 
@@ -142,20 +64,18 @@ func TestRunMedeContraServidorReal(t *testing.T) {
 
 	corpo := make([]byte, 4096)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Write(corpo)
+		_, _ = w.Write(corpo)
 	}))
 	defer srv.Close()
 
-	cfg := Config{
+	r, err := Run(context.Background(), Config{
 		BaseURL:     srv.URL,
 		Object:      "qualquer.bin",
 		Mode:        "streamed",
 		Concurrency: 4,
 		Duration:    300 * time.Millisecond,
 		Timeout:     5 * time.Second,
-	}
-
-	r, err := Run(context.Background(), cfg)
+	})
 	if err != nil {
 		t.Fatalf("executando: %v", err)
 	}
@@ -163,19 +83,92 @@ func TestRunMedeContraServidorReal(t *testing.T) {
 	if r.Completed == 0 {
 		t.Fatal("nenhuma requisição concluída contra um servidor saudável")
 	}
+	// A carga oferecida nunca pode ser menor que a concluída: seria concluir o
+	// que não foi pedido.
 	if r.Offered < r.Completed {
-		t.Errorf("carga oferecida (%d) menor que a concluída (%d): impossível",
-			r.Offered, r.Completed)
-	}
-	if r.Bytes < r.Completed*int64(len(corpo)) {
-		t.Errorf("bytes contados (%d) abaixo do mínimo esperado para %d respostas",
-			r.Bytes, r.Completed)
+		t.Errorf("carga oferecida (%d) menor que a concluída (%d): impossível", r.Offered, r.Completed)
 	}
 	if r.P50Ms <= 0 {
 		t.Error("p50 deveria ser positivo com requisições concluídas")
 	}
 	if r.P99Ms < r.P50Ms {
 		t.Errorf("p99 (%.2f) menor que p50 (%.2f)", r.P99Ms, r.P50Ms)
+	}
+	if r.Scenario != "streamed-qualquer.bin-c4" {
+		t.Errorf("Scenario = %q, formato inesperado", r.Scenario)
+	}
+}
+
+// O gerador drena o corpo mas não o guarda, então quem informa os bytes é o
+// servidor. Este teste sobe um servidor com /metrics de verdade e confere que os
+// números do lado do servidor chegam ao resultado.
+func TestRunLeOsNumerosDoServidor(t *testing.T) {
+	t.Parallel()
+
+	registry := prometheus.NewRegistry()
+	bytesTotal := prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "origin_http_response_bytes_total",
+		Help: "bytes escritos, por modo",
+	}, []string{"mode"})
+	registry.MustRegister(bytesTotal)
+	registry.MustRegister(prometheus.NewGoCollector())
+
+	corpo := make([]byte, 2048)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/objects/", func(w http.ResponseWriter, r *http.Request) {
+		n, _ := w.Write(corpo)
+		bytesTotal.WithLabelValues(r.URL.Query().Get("mode")).Add(float64(n))
+	})
+	mux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+
+	srv := httptest.NewServer(mux)
+	defer srv.Close()
+
+	r, err := Run(context.Background(), Config{
+		BaseURL: srv.URL, AdminURL: srv.URL, Object: "x.bin", Mode: "buffered",
+		Concurrency: 2, Duration: 300 * time.Millisecond, Timeout: 5 * time.Second,
+	})
+	if err != nil {
+		t.Fatalf("executando: %v", err)
+	}
+
+	if r.ServerBytes < float64(r.Completed)*float64(len(corpo)) {
+		t.Errorf("bytes do servidor (%.0f) abaixo do mínimo para %d respostas", r.ServerBytes, r.Completed)
+	}
+	if r.ServerBytesPerSec <= 0 {
+		t.Error("vazão do servidor deveria ser positiva")
+	}
+	// O contador de alocação é do runtime e sempre anda quando há trabalho.
+	if r.ServerAllocBytes <= 0 {
+		t.Error("o servidor deveria ter alocado memória durante a janela")
+	}
+	if r.ServerGoroutines <= 0 {
+		t.Error("o servidor deveria relatar goroutines vivas")
+	}
+}
+
+// Sem endereço administrativo, a medição do lado do cliente continua válida e os
+// campos do servidor ficam zerados. Um lab sem /metrics ainda mede latência.
+func TestRunSemEnderecoAdministrativoNaoFalha(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte("ok"))
+	}))
+	defer srv.Close()
+
+	r, err := Run(context.Background(), Config{
+		BaseURL: srv.URL, Object: "x.bin", Mode: "streamed",
+		Concurrency: 2, Duration: 200 * time.Millisecond, Timeout: 5 * time.Second,
+	})
+	if err != nil {
+		t.Fatalf("executando: %v", err)
+	}
+	if r.Completed == 0 {
+		t.Fatal("nenhuma requisição concluída")
+	}
+	if r.ServerBytes != 0 {
+		t.Errorf("sem /metrics, os campos do servidor deveriam ficar zerados, veio %.0f", r.ServerBytes)
 	}
 }
 
@@ -204,6 +197,9 @@ func TestRunContabilizaErrosDoServidor(t *testing.T) {
 	if r.ErrorRate <= 0.9 {
 		t.Errorf("taxa de erro = %.2f, esperava perto de 1", r.ErrorRate)
 	}
+	if r.StatusCodes["500"] == 0 {
+		t.Errorf("os códigos HTTP deveriam aparecer no resultado: %v", r.StatusCodes)
+	}
 }
 
 func TestRunRejeitaConfiguracaoInvalida(t *testing.T) {
@@ -225,7 +221,8 @@ func TestSaveEvidenceContrato(t *testing.T) {
 	ev.Results = []Result{{
 		Scenario: "streamed-obj-1MiB.bin-c8", Object: "obj-1MiB.bin", Mode: "streamed",
 		Concurrency: 8, DurationSec: 10, Offered: 100, Completed: 98,
-		P50Ms: 1.5, P95Ms: 4, P99Ms: 9, BytesPerSec: 1 << 20, ErrorRate: 0.02,
+		P50Ms: 1.5, P95Ms: 4, P99Ms: 9, ErrorRate: 0.02,
+		ServerBytes: 1 << 20, ServerBytesPerSec: 1 << 20, ServerAllocBytes: 5e9,
 	}}
 
 	dir, err := SaveEvidence(root, ev)
@@ -265,6 +262,9 @@ func TestSaveEvidenceContrato(t *testing.T) {
 	}
 	if len(lido.Results) != 1 || lido.Results[0].Completed != 98 {
 		t.Errorf("metrics.json não preservou os resultados: %+v", lido.Results)
+	}
+	if lido.Results[0].ServerAllocBytes != 5e9 {
+		t.Error("metrics.json precisa preservar também os números do lado do servidor")
 	}
 	if lido.NumCPU <= 0 {
 		t.Error("a evidência precisa registrar quantas CPUs a máquina tinha")

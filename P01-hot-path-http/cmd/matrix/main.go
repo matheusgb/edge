@@ -27,9 +27,11 @@ import (
 
 func main() {
 	url := flag.String("url", "http://127.0.0.1:8080", "endereço do servidor de origem")
+	adminURL := flag.String("admin-url", "http://127.0.0.1:8081", "endereço administrativo, de onde vêm as métricas do servidor")
 	modes := flag.String("modes", "buffered,streamed", "modos a comparar")
 	objects := flag.String("objects", "obj-64KiB.bin,obj-1MiB.bin,obj-16MiB.bin", "objetos a comparar")
 	concurrencies := flag.String("concurrency", "8,64,256", "níveis de concorrência")
+	rate := flag.Int("rate", 0, "requisições por segundo; 0 = modelo fechado, limitado pela concorrência")
 	repeats := flag.Int("repeats", 3, "repetições por cenário")
 	duration := flag.Duration("duration", 10*time.Second, "janela de medição por rodada")
 	warmup := flag.Duration("warmup", 2*time.Second, "aquecimento por rodada")
@@ -78,9 +80,11 @@ func main() {
 
 					cfg := loadtest.Config{
 						BaseURL:     *url,
+						AdminURL:    *adminURL,
 						Object:      object,
 						Mode:        mode,
 						Concurrency: conc,
+						Rate:        *rate,
 						Duration:    *duration,
 						Warmup:      *warmup,
 						Timeout:     *timeout,
@@ -98,9 +102,10 @@ func main() {
 					ev.Results = append(ev.Results, result)
 					ev.Commands = append(ev.Commands, commandFor(*url, cfg))
 
-					log.Printf("  concluída=%.1f/s p99=%.2fms %.1fMB/s erro=%.2f%%",
+					log.Printf("  concluída=%.1f/s p99=%.2fms %.1fMB/s alocado=%.1fGB erro=%.2f%%",
 						result.CompletedPerSec, result.P99Ms,
-						result.BytesPerSec/(1<<20), result.ErrorRate*100)
+						result.ServerBytesPerSec/(1<<20), result.ServerAllocBytes/1e9,
+						result.ErrorRate*100)
 
 					// A pausa deixa o coletor de lixo terminar, as conexões em
 					// TIME_WAIT drenarem e o cache de página assentar. Sem ela, a
@@ -135,8 +140,8 @@ func finish(_ context.Context, ev loadtest.Evidence, evidenceDir string, started
 // reproduzir um cenário isolado sem reler o código da matriz.
 func commandFor(url string, cfg loadtest.Config) string {
 	return fmt.Sprintf(
-		"go run ./cmd/loadgen -url %s -object %s -mode %s -concurrency %d -duration %s -warmup %s -timeout %s",
-		url, cfg.Object, cfg.Mode, cfg.Concurrency, cfg.Duration, cfg.Warmup, cfg.Timeout)
+		"go run ./cmd/loadgen -url %s -admin-url %s -object %s -mode %s -concurrency %d -rate %d -duration %s -warmup %s -timeout %s",
+		url, cfg.AdminURL, cfg.Object, cfg.Mode, cfg.Concurrency, cfg.Rate, cfg.Duration, cfg.Warmup, cfg.Timeout)
 }
 
 func splitList(raw string) []string {

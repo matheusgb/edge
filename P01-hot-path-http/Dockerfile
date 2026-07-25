@@ -5,7 +5,7 @@
 # superfície para alguém explorar caso consiga executar comandos no container.
 
 # ---------- estágio 1: build ----------
-FROM golang:1.24.2-alpine AS build
+FROM golang:1.26.5-alpine AS build
 
 WORKDIR /src
 

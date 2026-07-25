@@ -1,0 +1,30 @@
+=== modo buffered (64 clientes, obj-16MiB.bin, 8s) ===
+cenário         buffered-obj-16MiB.bin-c64
+janela          8.1s
+carga oferecida 5306 (657.9/s)
+carga concluída 5306 (657.9/s)
+erros           0 (taxa 0.00%) map[200:5306]
+latência        p50 90.75ms  p95 161.56ms  p99 196.26ms  max 284.55ms
+-- o servidor relatou --
+vazão           10525.7 MB/s
+alocado         89.26 GB na janela
+heap no fim     950.7 MB
+coletas         100 (número isolado engana, veja o README)
+goroutines      138 no fim
+cancelamentos   0 (cliente desistiu no meio)
+
+=== modo streamed (64 clientes, obj-16MiB.bin, 8s) ===
+cenário         streamed-obj-16MiB.bin-c64
+janela          8.0s
+carga oferecida 11434 (1425.1/s)
+carga concluída 11434 (1425.1/s)
+erros           0 (taxa 0.00%) map[200:11434]
+latência        p50 42.06ms  p95 85.21ms  p99 106.85ms  max 177.18ms
+-- o servidor relatou --
+vazão           22801.3 MB/s
+alocado         0.42 GB na janela
+heap no fim     9.9 MB
+coletas         148 (número isolado engana, veja o README)
+goroutines      138 no fim
+cancelamentos   0 (cliente desistiu no meio)
+
