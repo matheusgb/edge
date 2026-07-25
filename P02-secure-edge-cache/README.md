@@ -243,7 +243,7 @@ em [evidence/](evidence/), com ambiente, comandos e JSON de cada execução.
 | Memória disponível ao Linux                | 15 GiB                              |
 | Sistema                                    | Ubuntu sobre WSL2                   |
 | Kernel                                     | 5.15.167.4-microsoft-standard-WSL2  |
-| Go                                         | 1.24.2                              |
+| Go                                         | 1.26.5                              |
 | Docker                                     | 28.1.1                              |
 | Nginx                                      | 1.27.5 (imagem alpine)              |
 
@@ -404,7 +404,7 @@ bater para se justificar.
 
 ## Como rodar
 
-Você precisa de Docker com Compose e de Go 1.24 ou mais novo.
+Você precisa de Docker com Compose e de Go 1.26 ou mais novo.
 
 ### 1. Gerar os segredos
 
@@ -490,8 +490,9 @@ go test -tags=integration ./test/... -v    # sobe o Compose e exercita o caminho
 go test ./internal/signer -bench=. -benchmem -run '^$'
 ```
 
-O teste de integração sobe o ambiente, roda e derruba tudo, inclusive os volumes.
-Para iterar com o ambiente já de pé, use `EDGE_LAB_SKIP_COMPOSE=1`.
+O teste de integração sobe o ambiente pelo testcontainers, roda e derruba tudo,
+inclusive os volumes. Para iterar com o ambiente já de pé, use
+`EDGE_LAB_SKIP_COMPOSE=1`.
 
 ### 6. Ver as métricas
 
@@ -600,7 +601,7 @@ autorização de borda, então:
 | `prometheus/common/expfmt`       | ler o formato de exposição tem detalhes que já estão testados |
 | `prometheus/client_golang`       | métricas, registro e coletores de runtime                  |
 | `golang.org/x/sync/errgroup`     | a largada simultânea dos cem clientes                      |
-| `docker compose` (via `os/exec`) | orquestrar o teste de integração sem trazer o SDK do Docker |
+| `testcontainers-go` (módulo compose) | sobe, espera e derruba o ambiente do teste de integração |
 
 O que **é** escrito à mão: a assinatura, a validação, a normalização, a chave de
 cache e a leitura do log. Tudo isso é a pergunta do projeto.

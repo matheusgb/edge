@@ -7,9 +7,11 @@
 // projeto moram entre as peças: a chave de cache é do Nginx, a decisão de
 // autorização é do serviço Go, e o valor está em elas concordarem.
 //
-// A orquestração é o próprio docker compose, chamado por os/exec. Ele já é a
-// ferramenta que define o ambiente do projeto; embrulhar isso num SDK traria o
-// cliente Docker inteiro para dentro do go.mod só para executar dois comandos.
+// A orquestração é do testcontainers, que sobe o docker-compose do projeto,
+// espera, e derruba tudo no fim. Ele traz o cliente Docker inteiro junto, e tudo
+// bem: o que importa aqui é o conceito sendo testado, não o tamanho do go.mod.
+// Escrever isso à mão significaria reimplementar espera de saúde, limpeza em caso
+// de pânico e remoção de volume.
 //
 //	go test -tags=integration ./test/... -v
 //
@@ -23,11 +25,13 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/testcontainers/testcontainers-go/modules/compose"
 )
 
 const (
@@ -38,15 +42,22 @@ const (
 
 // TestMain sobe o ambiente uma vez para todos os testes do pacote.
 func TestMain(m *testing.M) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
+
+	var stack compose.ComposeStack
 	if os.Getenv("EDGE_LAB_SKIP_COMPOSE") == "" {
-		if err := compose("up", "-d", "--build", "--wait"); err != nil {
+		criada, err := compose.NewDockerCompose(filepath.Join("..", "docker-compose.yml"))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "não consegui preparar o compose:", err)
+			os.Exit(1)
+		}
+		stack = criada
+		if err := stack.Up(ctx, compose.Wait(true)); err != nil {
 			fmt.Fprintln(os.Stderr, "não consegui subir o ambiente:", err)
 			os.Exit(1)
 		}
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
-	defer cancel()
 
 	code := 1
 	func() {
@@ -54,8 +65,10 @@ func TestMain(m *testing.M) {
 		// de uma execução, e deixá-los para trás faria a próxima rodada começar
 		// com um cache quente que ninguém pediu.
 		defer func() {
-			if os.Getenv("EDGE_LAB_SKIP_COMPOSE") == "" {
-				_ = compose("down", "--volumes", "--remove-orphans")
+			if stack != nil {
+				if err := stack.Down(context.Background(), compose.RemoveOrphans(true), compose.RemoveVolumes(true)); err != nil {
+					fmt.Fprintln(os.Stderr, "aviso ao derrubar o ambiente:", err)
+				}
 			}
 		}()
 		if err := esperarSaude(ctx); err != nil {
@@ -65,13 +78,6 @@ func TestMain(m *testing.M) {
 		code = m.Run()
 	}()
 	os.Exit(code)
-}
-
-func compose(args ...string) error {
-	cmd := exec.Command("docker", append([]string{"compose"}, args...)...)
-	cmd.Dir = ".."
-	cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
-	return cmd.Run()
 }
 
 func esperarSaude(ctx context.Context) error {
