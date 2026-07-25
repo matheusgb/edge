@@ -16,6 +16,11 @@ outra, e aprender a provar isso com número em vez de opinião.
 Se você programa mas nunca mexeu com desempenho de servidor, este README foi
 escrito para você. Cada conceito aparece no momento em que faz falta.
 
+> **Quer só rodar e ver funcionando?** O [PASSO-A-PASSO.md](PASSO-A-PASSO.md)
+> executa o projeto do início ao fim, um comando de cada vez, dizendo o que
+> esperar de cada saída e o que está acontecendo no código naquele momento. Este
+> README é o "por quê"; aquele é o "como".
+
 ---
 
 ## As duas estratégias
@@ -275,6 +280,9 @@ bonita pode conter duas colunas medidas com rigores diferentes.
 Você precisa de Go 1.26 ou mais novo. Docker é necessário para o teste de
 integração da falha controlada.
 
+Esta seção é a referência dos comandos. Para a execução guiada, com o que esperar
+de cada saída, veja o [PASSO-A-PASSO.md](PASSO-A-PASSO.md).
+
 ### 1. Gerar os arquivos de teste
 
 ```bash
@@ -504,6 +512,7 @@ o lab não se contenta com uma medição só.
 ## Estrutura do projeto
 
 ```
+PASSO-A-PASSO.md  a execução guiada, comando a comando
 cmd/
   origin/       servidor de origem (o que está sendo estudado)
   cataloggen/   gera os arquivos sintéticos

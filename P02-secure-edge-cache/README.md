@@ -21,6 +21,11 @@ requisição.** Todo o resto do README é a consequência dessa frase.
 Se você programa mas nunca configurou um cache HTTP, este texto foi escrito para
 você. Cada conceito aparece no momento em que faz falta.
 
+> **Quer só rodar e ver funcionando?** O [PASSO-A-PASSO.md](PASSO-A-PASSO.md)
+> executa o projeto do início ao fim, um comando de cada vez, acompanhando uma
+> requisição enquanto ela atravessa a borda. Este README é o "por quê"; aquele é
+> o "como".
+
 ---
 
 ## O dilema, com números
@@ -406,6 +411,9 @@ bater para se justificar.
 
 Você precisa de Docker com Compose e de Go 1.26 ou mais novo.
 
+Esta seção é a referência dos comandos. Para a execução guiada, com o que esperar
+de cada saída, veja o [PASSO-A-PASSO.md](PASSO-A-PASSO.md).
+
 ### 1. Gerar os segredos
 
 ```bash
@@ -566,6 +574,7 @@ borda aguenta X requisições por segundo".
 ## Estrutura do projeto
 
 ```text
+PASSO-A-PASSO.md  a execução guiada, comando a comando
 cmd/
   origin/       a origem, o recurso caro que a borda protege
   tokend/       emite e valida URLs assinadas (consultado a cada requisição)
