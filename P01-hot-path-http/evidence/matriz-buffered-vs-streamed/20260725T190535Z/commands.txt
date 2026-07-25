@@ -1,0 +1,16 @@
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-64KiB.bin -mode buffered -concurrency 8 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-64KiB.bin -mode buffered -concurrency 8 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-64KiB.bin -mode streamed -concurrency 8 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-64KiB.bin -mode streamed -concurrency 8 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-64KiB.bin -mode buffered -concurrency 128 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-64KiB.bin -mode buffered -concurrency 128 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-64KiB.bin -mode streamed -concurrency 128 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-64KiB.bin -mode streamed -concurrency 128 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-16MiB.bin -mode buffered -concurrency 8 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-16MiB.bin -mode buffered -concurrency 8 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-16MiB.bin -mode streamed -concurrency 8 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-16MiB.bin -mode streamed -concurrency 8 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-16MiB.bin -mode buffered -concurrency 128 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-16MiB.bin -mode buffered -concurrency 128 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-16MiB.bin -mode streamed -concurrency 128 -duration 3s -warmup 1s -timeout 30s
+go run ./cmd/loadgen -url http://127.0.0.1:8080 -object obj-16MiB.bin -mode streamed -concurrency 128 -duration 3s -warmup 1s -timeout 30s

@@ -1,0 +1,6 @@
+testdata/objects/
+evidence/
+*.pprof
+*.prof
+.git/
+README.md

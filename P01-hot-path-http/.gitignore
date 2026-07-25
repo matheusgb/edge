@@ -1,0 +1,14 @@
+# Os objetos sintéticos são grandes e determinísticos: regerar é mais barato que
+# versionar. Rode `go run ./cmd/cataloggen` para reproduzir os mesmos bytes.
+testdata/objects/
+
+# Perfis do pprof soltos pela árvore são descartáveis: viraram lixo de uma sessão
+# de investigação que já acabou.
+*.pprof
+*.prof
+
+# Já os perfis guardados junto da evidência são versionados de propósito. Eles são
+# pequenos e são a prova que sustenta a conclusão do relatório, então precisam
+# viajar com o repositório.
+!evidence/**/*.pprof
+!evidence/**/*.prof

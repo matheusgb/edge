@@ -1,0 +1,16 @@
+cenário         buffered-obj-16MiB.bin-c64
+janela          8.0s
+carga oferecida 4825 (602.9/s)
+carga concluída 4761 (594.9/s)
+erros           0 (timeouts 0, taxa 0.00%)
+cancelados      64 (fim da janela, não é falha do servidor)
+vazão           9547.3 MB/s
+latência        p50 96.40ms  p95 201.48ms  p99 253.88ms  max 358.46ms
+cenário         streamed-obj-16MiB.bin-c64
+janela          8.0s
+carga oferecida 11142 (1392.4/s)
+carga concluída 11078 (1384.4/s)
+erros           0 (timeouts 0, taxa 0.00%)
+cancelados      64 (fim da janela, não é falha do servidor)
+vazão           22170.4 MB/s
+latência        p50 35.79ms  p95 105.46ms  p99 137.89ms  max 237.33ms
