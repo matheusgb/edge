@@ -1,0 +1,102 @@
+# Topologia do lab: cliente -> borda -> (validador de token, origem).
+#
+# Repare no que NÃO está publicado: a porta pública da origem. Ela só existe
+# dentro da rede do Compose, alcançável pela borda. Se ela estivesse publicada,
+# qualquer experimento poderia acidentalmente medir a origem direto e concluir
+# coisas erradas sobre o cache.
+#
+# As portas administrativas ficam presas a 127.0.0.1. Elas expõem métricas e os
+# controles de degradação da origem, que são o equivalente a um botão de
+# "derrube a produção".
+
+name: p02-borda-segura
+
+services:
+  origin:
+    build: .
+    image: p02-edge-lab:local
+    entrypoint: ["/usr/local/bin/origin"]
+    command:
+      - "-addr=:8080"
+      - "-admin-addr=:8090"
+      - "-max-age=${EDGE_CACHE_TTL:?defina EDGE_CACHE_TTL no .env}"
+    environment:
+      EDGE_ORIGIN_SECRET: ${EDGE_ORIGIN_SECRET:?defina EDGE_ORIGIN_SECRET no .env}
+    ports:
+      - "127.0.0.1:8090:8090" # administrativa: métricas e controles do experimento
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+  tokend:
+    image: p02-edge-lab:local
+    entrypoint: ["/usr/local/bin/tokend"]
+    command:
+      - "-addr=:8082"
+      - "-admin-addr=:8092"
+      - "-default-ttl=60s"
+      - "-max-ttl=10m"
+    environment:
+      EDGE_SIGNING_KEYS: ${EDGE_SIGNING_KEYS:?defina EDGE_SIGNING_KEYS no .env}
+      EDGE_ACTIVE_KEY: ${EDGE_ACTIVE_KEY:?defina EDGE_ACTIVE_KEY no .env}
+    ports:
+      # Publicada porque as ferramentas de experimento pedem tokens por aqui,
+      # como uma aplicação faria. Num sistema real, /sign fica atrás de login.
+      - "127.0.0.1:8082:8082"
+      - "127.0.0.1:8092:8092"
+    depends_on: [origin]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+  edge:
+    image: nginx:1.27.5-alpine
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/nginx/templates:/etc/nginx/templates:ro
+      - edge-logs:/var/log/nginx
+    environment:
+      # O entrypoint da imagem oficial roda envsubst nos templates. O filtro
+      # limita a substituição às variáveis EDGE_*, protegendo as variáveis do
+      # próprio Nginx, que são minúsculas.
+      NGINX_ENVSUBST_FILTER: "^EDGE_"
+      EDGE_ORIGIN_SECRET: ${EDGE_ORIGIN_SECRET:?defina EDGE_ORIGIN_SECRET no .env}
+      EDGE_CACHE_TTL: ${EDGE_CACHE_TTL:?defina EDGE_CACHE_TTL no .env}
+      EDGE_RATE_LIMIT: ${EDGE_RATE_LIMIT:-20000r/s}
+      EDGE_RATE_BURST: ${EDGE_RATE_BURST:-10000}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on: [origin, tokend]
+    read_only: true
+    tmpfs:
+      # O cache em tmpfs mantém o experimento longe do disco da máquina: o que se
+      # quer medir é a lógica da borda, não a velocidade do SSD do notebook.
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+      # conf.d precisa ser gravável porque é onde o envsubst escreve o resultado
+      # do template.
+      - /etc/nginx/conf.d
+    cap_drop: [ALL]
+    # chown do entrypoint e bind na porta: o Nginx da imagem oficial começa como
+    # root e derruba privilégio nos workers.
+    cap_add: [CHOWN, SETUID, SETGID, DAC_OVERRIDE]
+    security_opt: ["no-new-privileges:true"]
+
+  logexporter:
+    image: p02-edge-lab:local
+    entrypoint: ["/usr/local/bin/logexporter"]
+    command:
+      - "-log=/var/log/nginx/access.json"
+      - "-addr=:8093"
+    volumes:
+      - edge-logs:/var/log/nginx:ro
+    ports:
+      - "127.0.0.1:8093:8093"
+    depends_on: [edge]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+volumes:
+  edge-logs:

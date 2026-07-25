@@ -1,0 +1,10 @@
+# Segredos. O repositório guarda .env.example, nunca .env.
+.env
+
+# Perfis soltos pela árvore são lixo de uma sessão de investigação que acabou.
+*.pprof
+*.prof
+
+# Já os perfis guardados junto da evidência viajam com o repositório: são
+# pequenos e sustentam a conclusão do relatório.
+!evidence/**/*.pprof

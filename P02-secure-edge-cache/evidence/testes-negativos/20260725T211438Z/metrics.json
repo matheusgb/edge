@@ -1,0 +1,123 @@
+{
+  "scenario": "testes-negativos",
+  "started_at": "2026-07-25T18:14:38.231646547-03:00",
+  "commit": "94e69af",
+  "host": "windows-note",
+  "os": "linux",
+  "arch": "amd64",
+  "num_cpu": 32,
+  "go_version": "go1.24.2",
+  "commands": [
+    "/tmp/go-build4272452226/b001/exe/negative"
+  ],
+  "notes": "Cada vetor declara a expectativa antes de rodar. Falha aqui é falha de segurança do lab, não ruído de medição.",
+  "data": {
+    "falhas": 0,
+    "vetores": [
+      {
+        "nome": "sem-token",
+        "categoria": "token",
+        "descricao": "requisição a objeto protegido sem nenhum token",
+        "esperado": "403",
+        "obtido": "403",
+        "passou": true
+      },
+      {
+        "nome": "assinatura-alterada",
+        "categoria": "token",
+        "descricao": "um caractere trocado na assinatura HMAC",
+        "esperado": "403",
+        "obtido": "403",
+        "passou": true
+      },
+      {
+        "nome": "chave-desconhecida",
+        "categoria": "token",
+        "descricao": "token apontando para um identificador de chave inexistente",
+        "esperado": "403",
+        "obtido": "403",
+        "passou": true
+      },
+      {
+        "nome": "token-de-outro-objeto",
+        "categoria": "token",
+        "descricao": "token válido de um objeto, colado na URL de outro",
+        "esperado": "403",
+        "obtido": "403",
+        "passou": true
+      },
+      {
+        "nome": "token-expirado",
+        "categoria": "token",
+        "descricao": "token de 1s usado 2s depois de emitido",
+        "esperado": "403",
+        "obtido": "403",
+        "passou": true
+      },
+      {
+        "nome": "metodo-nao-permitido",
+        "categoria": "borda",
+        "descricao": "POST em rota de leitura, mesmo com token válido de GET",
+        "esperado": "403 ou 405",
+        "obtido": "403",
+        "passou": true
+      },
+      {
+        "nome": "corpo-grande",
+        "categoria": "borda",
+        "descricao": "requisição com 1 MiB de corpo contra o limite de client_max_body_size",
+        "esperado": "413 ou conexão recusada",
+        "obtido": "413",
+        "passou": true
+      },
+      {
+        "nome": "host-desconhecido",
+        "categoria": "poisoning",
+        "descricao": "Host inventado, tentando criar uma entrada de cache paralela",
+        "esperado": "conexão encerrada ou 4xx",
+        "obtido": "erro de transporte: Get \"http://127.0.0.1:8080/objects/neg-1KiB-1785014076-host.bin?(token omitido)\": EOF",
+        "passou": true
+      },
+      {
+        "nome": "query-nao-entra-na-chave",
+        "categoria": "poisoning",
+        "descricao": "parâmetro extra na query não deve criar uma segunda entrada de cache",
+        "esperado": "200 com X-Cache-Status: HIT",
+        "obtido": "200 (cache: HIT)",
+        "passou": true
+      },
+      {
+        "nome": "caminho-codificado",
+        "categoria": "poisoning",
+        "descricao": "travessia codificada que resolve para o mesmo objeto",
+        "esperado": "403, ou 200 na MESMA entrada de cache (HIT)",
+        "obtido": "200 (cache: HIT)",
+        "passou": true
+      },
+      {
+        "nome": "header-forjado",
+        "categoria": "poisoning",
+        "descricao": "headers não confiáveis do cliente não podem chegar à origem",
+        "esperado": "origem sem X-Forwarded-Host, Cookie e Authorization do cliente",
+        "obtido": "200",
+        "passou": true
+      },
+      {
+        "nome": "token-nao-chega-na-origem",
+        "categoria": "token",
+        "descricao": "a borda encaminha o caminho sem a query onde o token viaja",
+        "esperado": "URI na origem sem sig= nem kid=",
+        "obtido": "200",
+        "passou": true
+      },
+      {
+        "nome": "replay-dentro-da-validade",
+        "categoria": "limite conhecido",
+        "descricao": "o MESMO link funciona de novo enquanto não expira: quem recebe o link, repassa o link",
+        "esperado": "200 nas duas (limite aceito e documentado)",
+        "obtido": "200 (cache: HIT)",
+        "passou": true
+      }
+    ]
+  }
+}

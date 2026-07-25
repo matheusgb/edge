@@ -1,0 +1,1 @@
+/tmp/go-build3184314720/b001/exe/negative

@@ -1,0 +1,146 @@
+{
+  "scenario": "origem-indisponivel",
+  "started_at": "2026-07-25T18:16:38.56189798-03:00",
+  "commit": "94e69af",
+  "host": "windows-note",
+  "os": "linux",
+  "arch": "amd64",
+  "num_cpu": 32,
+  "go_version": "go1.24.2",
+  "commands": [
+    "/tmp/go-build2318360838/b001/exe/outage"
+  ],
+  "notes": "A origem foi derrubada pelo modo de falha da porta administrativa, não por parada de container. O caminho de erro exercitado é http_503; uma parada real também exercita timeout e recusa de conexão.",
+  "data": {
+    "objeto": "stale-64KiB-1785014187.bin",
+    "ttl_curto": "3s",
+    "status_da_falha": 503,
+    "requisicoes_durante_a_queda": 10,
+    "chamadas_na_origem_durante_a_queda": 10,
+    "tentativas_por_pedido": 1,
+    "respostas_servidas_do_cache_vencido": 10,
+    "recuperou_apos_n_requisicoes": 2,
+    "revalidacoes_304_na_volta": 1,
+    "corpos_baixados_de_novo_na_volta": 0,
+    "erros_propagados_ao_cliente": 0,
+    "passos": [
+      {
+        "nome": "1-popula-o-cache",
+        "momento": "2026-07-25T21:16:27Z",
+        "status": 200,
+        "cache_status": "MISS",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": false,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-01",
+        "momento": "2026-07-25T21:16:31Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-02",
+        "momento": "2026-07-25T21:16:32Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-03",
+        "momento": "2026-07-25T21:16:32Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-04",
+        "momento": "2026-07-25T21:16:33Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-05",
+        "momento": "2026-07-25T21:16:33Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-06",
+        "momento": "2026-07-25T21:16:34Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-07",
+        "momento": "2026-07-25T21:16:34Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-08",
+        "momento": "2026-07-25T21:16:35Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-09",
+        "momento": "2026-07-25T21:16:35Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "2-durante-a-queda-10",
+        "momento": "2026-07-25T21:16:36Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "3-origem-de-volta-01",
+        "momento": "2026-07-25T21:16:37Z",
+        "status": 200,
+        "cache_status": "STALE",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      },
+      {
+        "nome": "3-origem-de-volta-02",
+        "momento": "2026-07-25T21:16:38Z",
+        "status": 200,
+        "cache_status": "HIT",
+        "origem_gerou_em": "2026-07-25T21:16:27.534399041Z",
+        "conteudo_antigo": true,
+        "bytes": 65536
+      }
+    ]
+  }
+}

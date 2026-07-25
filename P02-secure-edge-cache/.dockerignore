@@ -1,0 +1,6 @@
+.env
+evidence/
+*.pprof
+*.prof
+.git/
+README.md
