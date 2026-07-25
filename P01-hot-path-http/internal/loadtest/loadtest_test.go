@@ -233,7 +233,7 @@ func TestSaveEvidenceContrato(t *testing.T) {
 		t.Fatalf("gravando evidência: %v", err)
 	}
 
-	// O contrato comum do edge-lab exige exatamente estes quatro arquivos.
+	// A evidência precisa ter exatamente estes quatro arquivos, sempre.
 	for _, nome := range []string{"environment.md", "commands.txt", "summary.md", "metrics.json"} {
 		caminho := filepath.Join(dir, nome)
 		info, err := os.Stat(caminho)

@@ -88,7 +88,7 @@ mundo. Por isso medimos os dois, e por isso olhamos **percentis** em vez de méd
 
 Se 99 requisições levam 1 ms e uma leva 10 segundos, a média dá 100 ms, um número
 que não descreve ninguém. O **p99** ("99º percentil") responde outra pergunta:
-*qual o tempo que 99% das requisições conseguiram bater?* Ele mostra a experiência
+_qual o tempo que 99% das requisições conseguiram bater?_ Ele mostra a experiência
 do usuário azarado, que é justamente quem reclama.
 
 Nos relatórios deste lab aparecem p50 (a mediana), p95 e p99.
@@ -136,17 +136,55 @@ conexões simultâneas precisa de mais de 10.000 fds, ou começa a falhar com
 Tudo abaixo foi medido nesta máquina, não copiado de blog. A evidência bruta está
 em [evidence/](evidence/).
 
+### A máquina onde isto rodou
+
+| Item                                       | Valor                               |
+| ------------------------------------------ | ----------------------------------- |
+| CPU                                        | Intel Core i9-13980HX (13ª geração) |
+| Processadores lógicos visíveis ao processo | 32                                  |
+| Memória disponível ao Linux                | 15 GiB                              |
+| Sistema                                    | Ubuntu sobre WSL2                   |
+| Kernel                                     | 5.15.167.4-microsoft-standard-WSL2  |
+| Arquitetura                                | linux/amd64                         |
+| Go                                         | 1.24.2                              |
+| Limite de descritores por processo         | 1.048.576                           |
+
+Quatro coisas dessa tabela mudam a leitura dos números, e vale entender cada uma
+antes de olhar qualquer resultado.
+
+**É um notebook, não um servidor.** Um processador móvel reduz a frequência
+conforme esquenta, então uma rodada longa pode ficar mais lenta que uma curta sem
+que nada no código tenha mudado. É um dos motivos para repetir cada cenário em vez
+de confiar numa medição só.
+
+**É WSL2, não Linux direto no hardware.** O kernel é uma máquina virtual leve
+rodando sobre o Windows, e o sistema de arquivos e a rede passam por camadas que
+não existem num servidor de verdade. Os números servem para comparar as duas
+estratégias entre si, não para estimar o que a mesma máquina faria sem essa camada.
+
+**Os 32 processadores são divididos entre o servidor e quem gera a carga.** Os dois
+rodam aqui dentro e brigam pela mesma CPU. É a interferência discutida mais adiante,
+e é por isso que os valores absolutos valem menos que a diferença entre os modos.
+
+**Os 15 GiB são o que o WSL2 entrega ao Linux**, não a memória total do notebook.
+Por padrão o WSL2 reserva cerca de metade da RAM do host. Esse é o teto que o modo
+`buffered` está consumindo quando aloca centenas de megabytes por rajada.
+
+Repare também no limite de descritores: mais de um milhão. É folgado demais para
+esgotar por acidente, e é exatamente por isso que o experimento de falha controlada
+precisa de um container com o limite reduzido de propósito para o problema aparecer.
+
 ### Alocação de memória (benchmark do Go)
 
 ```
-BenchmarkServeObject/obj-4MiB.bin/buffered-32    1465460 ns/op   4262847 B/op   109 allocs/op
-BenchmarkServeObject/obj-4MiB.bin/streamed-32     919314 ns/op     42456 B/op    95 allocs/op
+BenchmarkServeObject/obj-4MiB.bin/buffered-32    1450501 ns/op   4262961 B/op   110 allocs/op
+BenchmarkServeObject/obj-4MiB.bin/streamed-32     776514 ns/op     42897 B/op    95 allocs/op
 ```
 
-Leia a coluna `B/op` (bytes alocados por operação): **4.262.847 contra 42.456**.
+Leia a coluna `B/op` (bytes alocados por operação): **4.262.961 contra 42.897**.
 Cem vezes mais memória para entregar exatamente o mesmo arquivo.
 
-E repare em `allocs/op`: 109 contra 95, praticamente igual. **Não é o número de
+E repare em `allocs/op`: 110 contra 95, praticamente igual. **Não é o número de
 alocações que difere, é o tamanho delas.** Uma alocação de 4 MiB é muito mais cara
 para o coletor de lixo do que quarenta alocações de 32 KiB.
 
@@ -154,32 +192,32 @@ para o coletor de lixo do que quarenta alocações de 32 KiB.
 
 Servidor reiniciado limpo para cada modo, 8 segundos de medição:
 
-| | `buffered` | `streamed` | diferença |
-|---|---:|---:|---:|
-| Requisições concluídas | 4.761 | 11.078 | **2,3× mais** |
-| Concluídas por segundo | 594,9 | 1.384,4 | **2,3× mais** |
-| Latência p50 | 96,40 ms | 35,79 ms | **2,7× melhor** |
-| Latência p99 | 253,88 ms | 137,89 ms | **1,8× melhor** |
-| Total alocado | 99,7 GB | 0,51 GB | **195× menos** |
-| Heap em uso | 495,6 MB | 10,2 MB | **48× menos** |
-| Ciclos de coleta de lixo | 116 | 268 | *veja abaixo* |
+|                          | `buffered` | `streamed` |       diferença |
+| ------------------------ | ---------: | ---------: | --------------: |
+| Requisições concluídas   |      5.349 |     14.697 |   **2,7× mais** |
+| Concluídas por segundo   |      667,4 |    1.836,3 |   **2,7× mais** |
+| Latência p50             |   86,41 ms |   28,17 ms | **3,1× melhor** |
+| Latência p99             |  222,25 ms |  102,83 ms | **2,2× melhor** |
+| Total alocado            |   113,8 GB |    0,70 GB |  **163× menos** |
+| Heap em uso              |   849,0 MB |    11,9 MB |   **72× menos** |
+| Ciclos de coleta de lixo |        128 |        357 |   _veja abaixo_ |
 
 O `streamed` ganhou em tudo que interessa. Mas olhe a última linha com atenção,
 porque ela ensina mais que as outras.
 
 ### A linha que parece contradizer o resto
 
-O `streamed` teve **mais que o dobro de ciclos de coleta de lixo** (268 contra
-116). Se coleta de lixo é ruim, como ele ganhou?
+O `streamed` teve **mais que o dobro de ciclos de coleta de lixo** (357 contra
+128). Se coleta de lixo é ruim, como ele ganhou?
 
 Porque **contar ciclos de GC é a métrica errada**. O coletor do Go dispara quando o
 heap cresce uma certa proporção em relação ao tamanho anterior. Como o heap do
-`streamed` é pequeno (10 MB), ele atinge esse gatilho com frequência, mas cada
+`streamed` é pequeno (12 MB), ele atinge esse gatilho com frequência, mas cada
 coleta é trivial, porque há pouquíssima coisa para examinar.
 
 O `buffered` coletou menos vezes, e cada coleta teve que lidar com centenas de
-megabytes. O que dói não é a frequência, é o **volume**: 99,7 GB alocados contra
-0,51 GB.
+megabytes. O que dói não é a frequência, é o **volume**: 113,8 GB alocados contra
+0,70 GB.
 
 Essa é uma lição que vale além deste lab: **um número isolado engana**. Se alguém
 tivesse olhado só "ciclos de GC", teria concluído exatamente o contrário da
@@ -190,11 +228,11 @@ verdade.
 Da matriz completa, comparando o mesmo objeto de 16 MiB em duas concorrências:
 
 | Concorrência | `buffered` p99 | `streamed` p99 |
-|---:|---:|---:|
-| 8 clientes | 21,58 ms | 10,51 ms |
-| 128 clientes | 710,63 ms | 284,29 ms |
+| -----------: | -------------: | -------------: |
+|   8 clientes |       18,23 ms |        7,30 ms |
+| 128 clientes |      798,68 ms |      193,40 ms |
 
-Com 8 clientes, o `buffered` é ruim. Com 128, ele é **33 vezes pior que ele
+Com 8 clientes, o `buffered` é ruim. Com 128, ele é **44 vezes pior que ele
 mesmo**. A degradação não é proporcional à carga, ela acelera. É assim que
 saturação se parece num gráfico: a curva não sobe, ela vira.
 
@@ -287,7 +325,7 @@ somente leitura e o volume dos objetos montado `:ro`.
 
 ## Diagnóstico: como investigar por conta própria
 
-Medir diz *o quê*. Diagnosticar diz *por quê*. Com o servidor sob carga:
+Medir diz _o quê_. Diagnosticar diz _por quê_. Com o servidor sob carga:
 
 ```bash
 # Onde a CPU está sendo gasta (30 segundos de amostragem)
@@ -355,22 +393,24 @@ acabando só adia o problema, e às vezes esconde um vazamento de conexões.
 Esta parte é a mais importante do README, e a mais fácil de pular.
 
 **Os números de MB/s aqui são fisicamente impossíveis numa rede real.** O relatório
-mostra até 23.000 MB/s, ou seja 23 GB/s. Nenhuma placa de rede comum faz isso. O
+mostra quase 29.400 MB/s, ou seja mais de 29 GB/s. Nenhuma placa de rede comum faz isso. O
 que aconteceu: cliente e servidor estão na mesma máquina, falando por `localhost`,
 e os arquivos já estavam no cache de página do sistema operacional. Não houve rede
 nem disco de verdade no caminho. Esses números medem **o custo de CPU e memória do
 código**, e é só para isso que servem.
 
 **O gerador de carga disputa CPU com o servidor medido.** Os dois rodam na mesma
-máquina, e o protocolo de medição do edge-lab pede explicitamente para não fazer
-isso. Fizemos assim por simplicidade de laboratório, o que significa que os números
+máquina, e medir direito pede o contrário: quem gera a carga fica numa máquina
+separada, para não roubar CPU de quem está sendo medido. Um gerador ocupado atrasa
+as próprias requisições e registra isso como se fosse lentidão do servidor.
+Fizemos assim por simplicidade de laboratório, o que significa que os números
 absolutos estão contaminados pela interferência. A **comparação relativa** entre os
 modos continua válida, porque os dois sofreram a mesma interferência.
 
 **Medição local não é capacidade de produção.** Esta é a distinção que separa quem
 aprendeu de quem decorou. Um resultado local não autoriza a dizer "nosso servidor
-aguenta 1.384 requisições por segundo". Ele autoriza a dizer "nesta máquina, nestas
-condições, com este objeto, o modo streamed atendeu 2,3 vezes mais requisições que
+aguenta 1.836 requisições por segundo". Ele autoriza a dizer "nesta máquina, nestas
+condições, com este objeto, o modo streamed atendeu 2,7 vezes mais requisições que
 o buffered". A primeira frase é marketing, a segunda é engenharia.
 
 **O resultado não foi decidido antes da medição.** Era plausível que o `buffered`
@@ -403,22 +443,6 @@ estudo.
 
 ---
 
-## Gate de conclusão
-
-O `edge-lab.md` define o que precisa estar provado para o projeto contar como
-terminado:
-
-| Critério | Situação | Onde verificar |
-|---|---|---|
-| Os modos retornam o mesmo conteúdo | ✅ | `TestModosDevolvemConteudoIdentico`, e SHA-256 idêntico nos dois modos |
-| Os modos respeitam `Range` | ✅ | `TestRangeFuncionaNosDoisModos`, resposta 206 com o trecho correto |
-| O detector de corrida passa | ✅ | `go test -race ./...` sem falhas |
-| Os perfis explicam o gargalo | ✅ | Heap de 495 MB contra 10 MB, com perfis guardados na evidência |
-| Carga oferecida e concluída separadas | ✅ | Colunas distintas em todo `summary.md` |
-| README distingue medição de capacidade | ✅ | Seção "Como interpretar isto sem exagerar a conclusão" |
-
----
-
 ## Resumo da ópera
 
 Servir um arquivo de duas formas diferentes parece detalhe de implementação. Não é.
@@ -427,8 +451,8 @@ Carregar o arquivo inteiro na memória é o código mais óbvio de escrever, e f
 perfeitamente enquanto você testa sozinho na sua máquina. O problema só aparece
 quando muita gente pede ao mesmo tempo: cada requisição passa a exigir um pedaço de
 memória do tamanho do arquivo, o coletor de lixo começa a trabalhar sem parar, e a
-CPU que deveria atender clientes vai para a faxina. Medimos 99,7 GB alocados contra
-0,51 GB para entregar o mesmo conteúdo, e o p99 pagou a conta.
+CPU que deveria atender clientes vai para a faxina. Medimos 113,8 GB alocados contra
+0,70 GB para entregar o mesmo conteúdo, e o p99 pagou a conta.
 
 Transmitir em fluxo troca esse custo por outro: mais idas ao kernel, mais syscalls.
 É um trade-off real, não uma bala de prata. Neste lab o fluxo ganhou em todos os

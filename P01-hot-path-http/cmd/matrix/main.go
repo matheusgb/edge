@@ -1,9 +1,10 @@
 // Comando matrix executa a matriz de carga do lab e grava a evidência.
 //
-// A matriz é o produto (modos × objetos × concorrências), repetido N vezes. O
-// protocolo de medição do edge-lab pede ao menos três repetições por cenário e
-// que se mude uma variável relevante por comparação. Por isso a ordem de
-// execução mantém tudo fixo e varia um eixo de cada vez.
+// A matriz é o produto (modos × objetos × concorrências), repetido N vezes.
+// Medição confiável pede ao menos três repetições por cenário e que se mude uma
+// variável relevante por comparação. Mudar duas ao mesmo tempo torna impossível
+// atribuir a diferença a qualquer uma delas. Por isso a ordem de execução mantém
+// tudo fixo e varia um eixo de cada vez.
 //
 // A repetição não existe para "pegar o melhor". Existe para mostrar dispersão: se
 // as três rodadas de um cenário discordam muito entre si, a conclusão é frágil e
