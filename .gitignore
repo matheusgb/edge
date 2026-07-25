@@ -1,0 +1,12 @@
+# Grafo de conhecimento gerado pelo graphify.
+#
+# É artefato derivado: `graphify update .` reconstrói a partir do código, sem
+# custo de API. Versionar traria um graph.json de megabytes mudando a cada
+# commit, com diff ilegível e conflito garantido em merge.
+graphify-out/
+
+# Instruções para agentes de IA. Ficam locais: são preferência de quem
+# desenvolve, não parte do projeto.
+CLAUDE.md
+AGENTS.md
+.claude/
