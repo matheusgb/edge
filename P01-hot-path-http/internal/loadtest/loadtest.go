@@ -360,9 +360,9 @@ func commandOutput(name string, args ...string) string {
 
 // SaveEvidence grava a evidência em evidence/<scenario>/<timestamp>/.
 //
-// O contrato do edge-lab pede quatro arquivos: environment.md, commands.txt,
-// summary.md e metrics.json. Os três primeiros são para humano ler; o quarto é
-// para outra ferramenta consumir sem reparsear texto.
+// São sempre quatro arquivos: environment.md, commands.txt, summary.md e
+// metrics.json. Os três primeiros são para humano ler; o quarto é para outra
+// ferramenta consumir sem reparsear texto.
 func SaveEvidence(root string, ev Evidence) (string, error) {
 	stamp := ev.StartedAt.UTC().Format("20060102T150405Z")
 	dir := filepath.Join(root, ev.Scenario, stamp)
@@ -403,8 +403,13 @@ func renderEnvironment(ev Evidence) string {
 	fmt.Fprintf(&b, "- Go: %s\n", ev.GoVersion)
 	fmt.Fprintf(&b, "- Kernel: %s\n", commandOutput("uname", "-sr"))
 	fmt.Fprintf(&b, "- Memória: %s\n", firstLineMatching(commandOutput("free", "-h"), "Mem:"))
-	fmt.Fprintf(&b, "\n## Limites do processo\n\n```text\n%s\n```\n",
-		commandOutput("sh", "-c", "ulimit -n; ulimit -u"))
+	// Cada limite é consultado numa chamada própria. Numa única chamada, um shell
+	// que não conheça uma das opções derruba o comando inteiro e leva junto os
+	// limites que ele sabia responder. O `dash`, que costuma ser o /bin/sh em
+	// Debian e Ubuntu, não aceita `ulimit -u` e causava exatamente isso.
+	fmt.Fprintf(&b, "\n## Limites do processo\n\n```text\ndescritores de arquivo (ulimit -n): %s\nprocessos e threads (ulimit -u):   %s\n```\n",
+		commandOutput("sh", "-c", "ulimit -n"),
+		commandOutput("sh", "-c", "ulimit -u 2>/dev/null || echo '(não suportado por este shell)'"))
 	if ev.Notes != "" {
 		fmt.Fprintf(&b, "\n## Observações\n\n%s\n", ev.Notes)
 	}
