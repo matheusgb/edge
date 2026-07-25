@@ -48,7 +48,7 @@ func main() {
 	public := &http.Server{
 		Addr:    *addr,
 		Handler: server.Handler(),
-		// Timeouts curtos: este serviço está no caminho quente da CDN. Uma
+		// Timeouts curtos: este serviço está no hot path da CDN. Uma
 		// requisição de autorização que demora mais que isso já virou problema.
 		ReadHeaderTimeout: 2 * time.Second,
 		WriteTimeout:      5 * time.Second,

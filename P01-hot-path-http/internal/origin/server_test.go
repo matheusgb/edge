@@ -55,7 +55,7 @@ func setupTestServer(t *testing.T, mode Mode) (*httptest.Server, *metrics.Metric
 	return srv, m, want
 }
 
-// TestModosDevolvemConteudoIdentico é o gate central do P01: se os dois modos não
+// TestModosDevolvemConteudoIdentico é a verificação central do P01: se os dois modos não
 // entregam exatamente os mesmos bytes, a comparação de desempenho não significa nada.
 func TestModosDevolvemConteudoIdentico(t *testing.T) {
 	t.Parallel()

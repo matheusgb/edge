@@ -211,7 +211,7 @@ func TestSegredoNaoApareceNoToken(t *testing.T) {
 
 // BenchmarkVerify responde uma pergunta concreta do projeto: quanto custa validar
 // um token por requisição? É esse número que a extensão opcional em Lua precisa
-// bater para se justificar, e é ele que diz se a validação cabe no caminho quente
+// bater para se justificar, e é ele que diz se a validação cabe no hot path
 // ou precisa de cache de decisão.
 func BenchmarkVerify(b *testing.B) {
 	ks, err := NewKeyset("k2", map[string]string{"k1": secretA, "k2": secretB})

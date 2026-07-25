@@ -151,7 +151,7 @@ func TestSignRecusaTTLAcimaDoTeto(t *testing.T) {
 	}
 }
 
-// Gate de conclusão do projeto: nenhum token aparece em log. O teste olha a saída
+// Critério de conclusão do projeto: nenhum token aparece em log. O teste olha a saída
 // real do logger em vez de confiar na leitura do código.
 func TestLogsNaoVazamToken(t *testing.T) {
 	var logs bytes.Buffer

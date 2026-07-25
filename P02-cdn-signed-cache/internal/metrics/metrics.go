@@ -89,7 +89,7 @@ type Token struct {
 
 	// AuthDuration mede o custo da decisão. A CDN faz uma subrequisição por
 	// requisição do cliente, inclusive quando o objeto vem do cache, então este
-	// tempo entra no caminho quente de TODAS as respostas.
+	// tempo entra no hot path de TODAS as respostas.
 	AuthDuration prometheus.Histogram
 
 	// Signed conta emissões de token, por chave usada. Durante uma rotação, é

@@ -347,8 +347,8 @@ uma queda em uma tempestade que impede a origem de se levantar. Aqui,
 
 Isso também expõe um limite honesto: a CDN não amplifica, mas também **não para
 de tentar**. Cada requisição do cliente vira uma tentativa na origem, para sempre.
-Um disjuntor (circuit breaker), que para de tentar por um tempo depois de N
-falhas, é o passo seguinte, e ele é assunto do P03.
+Um circuit breaker, que para de tentar por um tempo depois de N falhas, é o passo
+seguinte, e ele é assunto do P03.
 
 Um detalhe do experimento que quase virou conclusão errada: depois da origem
 voltar, o conteúdo continuou "antigo". Não é falha. O objeto é determinístico, o
