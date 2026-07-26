@@ -604,7 +604,7 @@ evidence/       resultados medidos, um diretório por execução
 
 ### O que este projeto não escreveu à mão
 
-O contrato do EdgeLab pede que um mecanismo próprio só exista quando o
+O contrato do Edge pede que um mecanismo próprio só exista quando o
 comportamento dele for a pergunta do projeto. A pergunta aqui é cache e
 autorização da CDN, então:
 
@@ -630,7 +630,7 @@ ele naturalmente pede menos, e a lentidão some da medição. Esse viés tem nom
 
 ## A extensão opcional em Lua
 
-O plano do EdgeLab prevê validar o mesmo token em Lua, dentro do próprio proxy
+O plano do Edge prevê validar o mesmo token em Lua, dentro do próprio proxy
 (OpenResty), eliminando a subrequisição de rede.
 
 Ela ainda não foi feita, e o motivo é o número acima: a validação custa 611 ns de

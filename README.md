@@ -1,4 +1,4 @@
-![Banner do EdgeLab](assets/edge-banner.svg)
+![Banner do Edge](assets/edge-banner.svg)
 
 <p align="center">
   <img src="https://img.shields.io/badge/Go-1.26-00ADD8?logo=go&logoColor=white" alt="Go 1.26">
@@ -10,7 +10,7 @@
 **Quatro microprojetos independentes sobre o caminho de uma requisição de conteúdo,
 da origem até a borda.**
 
-O EdgeLab reproduz, em ambiente controlado, problemas que aparecem em plataformas de
+O Edge reproduz, em ambiente controlado, problemas que aparecem em plataformas de
 distribuição de conteúdo: memória sob concorrência, cache que precisa respeitar
 autorização, um destino que continua respondendo `200` enquanto degrada, e uma
 plataforma que só é operável se cada mecanismo de segurança e recuperação for
@@ -213,7 +213,7 @@ projeto não precisa dos demais para funcionar.
 
 ## Limites da coleção
 
-O EdgeLab comprova mecanismos em cenários pequenos e controlados, numa máquina e
+O Edge comprova mecanismos em cenários pequenos e controlados, numa máquina e
 numa região só. Ele não mede volume de produção, multi-região, custo de nuvem real
 ou operação de um CDN comercial em escala.
 
@@ -222,7 +222,7 @@ aberto para correções e manutenção do que já foi construído.
 
 ## Fim
 
-O EdgeLab reúne quatro perguntas sobre entrega de conteúdo e transforma cada uma em
+O Edge reúne quatro perguntas sobre entrega de conteúdo e transforma cada uma em
 código pequeno, falha controlada e evidência reproduzível. Escolha um problema no
 catálogo, entre na pasta e execute os comandos. O resultado mais útil não é decorar
 uma ferramenta. É enxergar onde uma decisão de borda funciona, como ela degrada e até

@@ -1,6 +1,6 @@
 // Package evidence grava o pacote de evidência de um experimento.
 //
-// O contrato do EdgeLab é o mesmo em todos os projetos: cada execução deixa
+// O contrato do Edge é o mesmo em todos os projetos: cada execução deixa
 // evidence/<cenário>/<timestamp UTC>/ com quatro arquivos.
 //
 //	environment.md  máquina, kernel, CPUs, commit
