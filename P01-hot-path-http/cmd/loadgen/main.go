@@ -13,7 +13,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/loadtest"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/loadtest"
 )
 
 func main() {

@@ -17,8 +17,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/metrics"
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/objects"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/metrics"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/objects"
 )
 
 // Counters é o resumo lido pelos experimentos.

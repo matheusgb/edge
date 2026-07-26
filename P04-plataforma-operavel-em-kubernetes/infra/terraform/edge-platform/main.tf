@@ -2,7 +2,7 @@ resource "kubernetes_namespace" "edge" {
   metadata {
     name = var.edge_namespace
     labels = {
-      "app.kubernetes.io/part-of" = "edge-lab-p04"
+      "app.kubernetes.io/part-of" = "edge-p04"
     }
   }
 }

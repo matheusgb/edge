@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/metrics"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/metrics"
 )
 
 // destinoFalso é um edge de mentira, controlado pelo teste.

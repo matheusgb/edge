@@ -25,8 +25,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/catalog"
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/metrics"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/catalog"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/metrics"
 )
 
 // Mode é a estratégia de leitura do objeto.

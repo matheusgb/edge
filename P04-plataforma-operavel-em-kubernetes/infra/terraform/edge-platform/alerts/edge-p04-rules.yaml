@@ -1,13 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: edge-lab-p04-rules
+  name: edge-p04-rules
   namespace: edge
   labels:
     release: kube-prometheus-stack
 spec:
   groups:
-    - name: edge-lab-p04.sli
+    - name: edge-p04.sli
       rules:
         - alert: OrigemTaxaDeErroAlta
           expr: |

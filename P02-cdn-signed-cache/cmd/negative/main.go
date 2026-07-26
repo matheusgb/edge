@@ -23,9 +23,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/cdnclient"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/evidence"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/signer"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/cdnclient"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/evidence"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/signer"
 )
 
 // Vetor é um caso de teste negativo com a expectativa declarada.

@@ -36,7 +36,7 @@ x-seguranca: &seguranca
 services:
   origin:
     build: .
-    image: p03-edge-lab:local
+    image: p03-edge:local
     entrypoint: ["/usr/local/bin/origin"]
     command:
       - "-addr=:8080"
@@ -48,7 +48,7 @@ services:
     <<: [*limites, *seguranca]
 
   edge-a: &edge
-    image: p03-edge-lab:local
+    image: p03-edge:local
     entrypoint: ["/usr/local/bin/edge"]
     command:
       - "-name=edge-a"
@@ -110,7 +110,7 @@ services:
     security_opt: ["no-new-privileges:true"]
 
   router:
-    image: p03-edge-lab:local
+    image: p03-edge:local
     entrypoint: ["/usr/local/bin/router"]
     command:
       # Os destinos são as portas do Toxiproxy, nunca os edges diretamente.

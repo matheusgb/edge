@@ -2,7 +2,7 @@
 # Bootstrap do cluster kind do P04. Deliberadamente separado do
 # Terraform: o cluster local é uma ferramenta de teste, não
 # infraestrutura de cloud, e o Terraform só deve assumir que um cluster
-# Kubernetes com contexto kind-edge-lab já existe.
+# Kubernetes com contexto kind-edge já existe.
 #
 # Uso:
 #   infra/kind/bootstrap.sh up       cria o cluster, instala Calico, carrega as imagens
@@ -12,10 +12,10 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$HERE/../.." && pwd)"
-CLUSTER_NAME="edge-lab"
+CLUSTER_NAME="edge"
 CALICO_VERSION="v3.28.2"
 CALICO_MANIFEST="https://raw.githubusercontent.com/projectcalico/calico/${CALICO_VERSION}/manifests/calico.yaml"
-IMAGE="p04-edge-lab:local"
+IMAGE="p04-edge:local"
 
 log() { echo "[bootstrap] $*" >&2; }
 
@@ -35,11 +35,11 @@ FROM $IMAGE
 ENV ORIGIN_FAIL_READY=true
 ENV EDGE_FAIL_READY=true
 EOF
-  docker build -t p04-edge-lab:fail-ready -f /tmp/p04-fail-ready.Dockerfile "$PROJECT_ROOT"
+  docker build -t p04-edge:fail-ready -f /tmp/p04-fail-ready.Dockerfile "$PROJECT_ROOT"
 
   log "carregando as imagens no cluster kind..."
   kind load docker-image "$IMAGE" --name "$CLUSTER_NAME"
-  kind load docker-image p04-edge-lab:fail-ready --name "$CLUSTER_NAME"
+  kind load docker-image p04-edge:fail-ready --name "$CLUSTER_NAME"
 
   log "digest carregado (origin):"
   docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE" 2>/dev/null || docker inspect --format='{{.Id}}' "$IMAGE"

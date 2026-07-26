@@ -19,7 +19,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"go.opentelemetry.io/otel/trace/noop"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/metrics"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/metrics"
 )
 
 // Headers que o roteador propaga para o resto do caminho.

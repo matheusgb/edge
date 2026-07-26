@@ -1,4 +1,4 @@
-module github.com/matheusgb/edge-lab/p02-cdn-signed-cache
+module github.com/matheusgb/edge/p02-cdn-signed-cache
 
 go 1.26.5
 

@@ -24,7 +24,7 @@ import (
 	"github.com/nxadm/tail"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/logexport"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/logexport"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-// Package evidence grava o contrato comum de evidência do edge-lab:
+// Package evidence grava o contrato comum de evidência do edge:
 // evidence/<scenario>/<timestamp>/{environment.md,commands.txt,summary.md,metrics.json}.
 package evidence
 

@@ -12,7 +12,7 @@
 
 ```
 NAME                     STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION                       CONTAINER-RUNTIME
-edge-lab-control-plane   Ready    control-plane   29m   v1.31.0   172.19.0.3    <none>        Debian GNU/Linux 12 (bookworm)   5.15.167.4-microsoft-standard-WSL2   containerd://1.7.18
-edge-lab-worker          Ready    <none>          28m   v1.31.0   172.19.0.4    <none>        Debian GNU/Linux 12 (bookworm)   5.15.167.4-microsoft-standard-WSL2   containerd://1.7.18
-edge-lab-worker2         Ready    <none>          28m   v1.31.0   172.19.0.2    <none>        Debian GNU/Linux 12 (bookworm)   5.15.167.4-microsoft-standard-WSL2   containerd://1.7.18
+edge-control-plane   Ready    control-plane   29m   v1.31.0   172.19.0.3    <none>        Debian GNU/Linux 12 (bookworm)   5.15.167.4-microsoft-standard-WSL2   containerd://1.7.18
+edge-worker          Ready    <none>          28m   v1.31.0   172.19.0.4    <none>        Debian GNU/Linux 12 (bookworm)   5.15.167.4-microsoft-standard-WSL2   containerd://1.7.18
+edge-worker2         Ready    <none>          28m   v1.31.0   172.19.0.2    <none>        Debian GNU/Linux 12 (bookworm)   5.15.167.4-microsoft-standard-WSL2   containerd://1.7.18
 ```

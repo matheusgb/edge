@@ -19,8 +19,8 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/metrics"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/originsrv"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/metrics"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/originsrv"
 )
 
 func main() {

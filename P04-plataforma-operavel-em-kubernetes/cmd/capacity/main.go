@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/matheusgb/edge-lab/p04-plataforma-operavel-em-kubernetes/internal/capacity"
+	"github.com/matheusgb/edge/p04-plataforma-operavel-em-kubernetes/internal/capacity"
 )
 
 func main() {

@@ -24,8 +24,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/metrics"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/signer"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/metrics"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/signer"
 )
 
 // Headers que a CDN envia na subrequisição de autenticação.

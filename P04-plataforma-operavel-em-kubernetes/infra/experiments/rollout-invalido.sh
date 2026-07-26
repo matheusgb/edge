@@ -11,8 +11,8 @@ PROJECT_ROOT="$(cd "$HERE/../.." && pwd)"
 NAMESPACE="edge"
 SCENARIO="rollout-invalido"
 EVIDENCE_DIR="$PROJECT_ROOT/evidence"
-BAD_IMAGE="p04-edge-lab:fail-ready"
-GOOD_IMAGE="p04-edge-lab:local"
+BAD_IMAGE="p04-edge:fail-ready"
+GOOD_IMAGE="p04-edge:local"
 STEPS="antes1:30:15s:16,antes2:30:15s:16,ruim1:30:15s:16,ruim2:30:15s:16,ruim3:30:15s:16,rollback1:30:15s:16,rollback2:30:15s:16,rollback3:30:15s:16"
 
 ts_utc() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
@@ -27,7 +27,7 @@ run_once() {
 
   local pod_name="loadgen-rollout-$RANDOM"
   kubectl run -n "$NAMESPACE" "$pod_name" --rm -i --restart=Never \
-    --image=p04-edge-lab:local --image-pull-policy=Never \
+    --image=p04-edge:local --image-pull-policy=Never \
     --overrides="{\"spec\":{\"serviceAccountName\":\"experiments\"},\"metadata\":{\"labels\":{\"role\":\"experiments\"}}}" \
     --command -- /app/loadgen \
     -url="http://edge.${NAMESPACE}.svc.cluster.local:8080/object/rollout-test.bin" \

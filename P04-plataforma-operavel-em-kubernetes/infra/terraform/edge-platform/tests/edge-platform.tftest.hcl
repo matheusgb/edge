@@ -2,7 +2,7 @@
 # o cluster real (isso é escopo dos scripts de experimento).
 provider "kubernetes" {
   config_path    = "~/.kube/config"
-  config_context = "kind-edge-lab"
+  config_context = "kind-edge"
 }
 
 run "plano_cria_workloads_com_seguranca_padrao" {

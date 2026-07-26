@@ -15,8 +15,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/catalog"
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/metrics"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/catalog"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/metrics"
 )
 
 const testObject = "obj-64KiB.bin"

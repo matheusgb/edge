@@ -17,7 +17,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p04-plataforma-operavel-em-kubernetes/internal/metrics"
+	"github.com/matheusgb/edge/p04-plataforma-operavel-em-kubernetes/internal/metrics"
 )
 
 // Config controla o comportamento do servidor de origem.

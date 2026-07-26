@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/catalog"
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/metrics"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/catalog"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/metrics"
 )
 
 // benchSizes cobre a faixa em que a diferença entre os modos deveria aparecer.

@@ -1,4 +1,4 @@
-module github.com/matheusgb/edge-lab/p04-plataforma-operavel-em-kubernetes
+module github.com/matheusgb/edge/p04-plataforma-operavel-em-kubernetes
 
 go 1.26.5
 

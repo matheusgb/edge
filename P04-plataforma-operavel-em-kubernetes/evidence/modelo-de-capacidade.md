@@ -1,7 +1,7 @@
 # Modelo de capacidade
 
 Este documento aplica `cmd/capacity` à premissa de 3 milhões de requisições por
-minuto (50 mil rps) definida em `edge-lab.md`, separando o que foi **medido**
+minuto (50 mil rps) definida em `edge.md`, separando o que foi **medido**
 neste laboratório do que é **projetado** a partir dessa premissa.
 
 ## Entrada medida
@@ -65,7 +65,7 @@ limitante deste cenário.
 
 - **0% de cache hit é a suposição mais conservadora.** Na prática, o cache da
   borda (TTL de 5s) reduziria a carga na origem proporcionalmente à
-  concentração de acesso a poucos objetos populares. O `edge-lab.md` descreve
+  concentração de acesso a poucos objetos populares. O `edge.md` descreve
   esse padrão de tráfego desigual como premissa do laboratório, mas ele não foi
   medido aqui isoladamente.
 - **"3 zonas" é uma analogia com os 3 nós do cluster kind local** (1

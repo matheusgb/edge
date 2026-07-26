@@ -4,7 +4,7 @@
 - início (UTC): 20260726T033524Z
 - commit: d7f8355900e7af101d4d9e67a0d6a964ad1bec05
 - máquina: windows-note
-- imagem inválida aplicada: p04-edge-lab:fail-ready
+- imagem inválida aplicada: p04-edge:fail-ready
 - rc do 'kubectl rollout status' durante a imagem inválida (esperado != 0, ou seja, travou/expirou): 1
 - pods com a imagem inválida e nunca prontos, no momento da checagem: 1
 - IP de algum pod com a imagem inválida presente nos endpoints do Service (esperado "nao"): nao

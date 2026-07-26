@@ -26,7 +26,7 @@ run_once() {
 
   local pod_name="loadgen-pod-enc-$RANDOM"
   kubectl run -n "$NAMESPACE" "$pod_name" --rm -i --restart=Never \
-    --image=p04-edge-lab:local --image-pull-policy=Never \
+    --image=p04-edge:local --image-pull-policy=Never \
     --overrides="{\"spec\":{\"serviceAccountName\":\"experiments\"},\"metadata\":{\"labels\":{\"role\":\"experiments\"}}}" \
     --command -- /app/loadgen \
     -url="http://edge.${NAMESPACE}.svc.cluster.local:8080/work?n=20000" \
@@ -102,7 +102,7 @@ EOF
 
   {
     echo "kubectl -n $NAMESPACE delete pod $victim --wait=false"
-    echo "kubectl run -n $NAMESPACE $pod_name --rm -i --restart=Never --image=p04-edge-lab:local --image-pull-policy=Never --command -- /app/loadgen -url=http://edge.$NAMESPACE.svc.cluster.local:8080/work?n=20000 -scenario=$SCENARIO -steps=$STEPS -evidence-dir=/tmp/ev -timeout=5s"
+    echo "kubectl run -n $NAMESPACE $pod_name --rm -i --restart=Never --image=p04-edge:local --image-pull-policy=Never --command -- /app/loadgen -url=http://edge.$NAMESPACE.svc.cluster.local:8080/work?n=20000 -scenario=$SCENARIO -steps=$STEPS -evidence-dir=/tmp/ev -timeout=5s"
   } >"$run_dir/commands.txt"
 
   cp "$pod_events" "$run_dir/pod-events.txt"

@@ -14,7 +14,7 @@ name: p02-cdn
 services:
   origin:
     build: .
-    image: p02-edge-lab:local
+    image: p02-edge:local
     entrypoint: ["/usr/local/bin/origin"]
     command:
       - "-addr=:8080"
@@ -29,7 +29,7 @@ services:
     security_opt: ["no-new-privileges:true"]
 
   tokend:
-    image: p02-edge-lab:local
+    image: p02-edge:local
     entrypoint: ["/usr/local/bin/tokend"]
     command:
       - "-addr=:8082"
@@ -84,7 +84,7 @@ services:
     security_opt: ["no-new-privileges:true"]
 
   logexporter:
-    image: p02-edge-lab:local
+    image: p02-edge:local
     entrypoint: ["/usr/local/bin/logexporter"]
     command:
       - "-log=/var/log/nginx/access.json"

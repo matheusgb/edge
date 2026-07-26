@@ -19,8 +19,8 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/metrics"
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/originsrv"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/metrics"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/originsrv"
 )
 
 func main() {

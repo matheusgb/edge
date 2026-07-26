@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p04-plataforma-operavel-em-kubernetes/internal/metrics"
+	"github.com/matheusgb/edge/p04-plataforma-operavel-em-kubernetes/internal/metrics"
 )
 
 func newTestServer(t testing.TB, cfg Config) (*Server, *atomic.Bool) {

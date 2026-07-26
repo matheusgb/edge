@@ -16,8 +16,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/originsrv"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/tokensrv"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/originsrv"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/tokensrv"
 )
 
 // Client fala com o serviço de token e com a CDN.

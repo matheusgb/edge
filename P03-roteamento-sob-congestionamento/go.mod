@@ -1,4 +1,4 @@
-module github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento
+module github.com/matheusgb/edge/p03-roteamento-sob-congestionamento
 
 go 1.26.5
 

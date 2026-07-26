@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p04-plataforma-operavel-em-kubernetes/internal/evidence"
-	"github.com/matheusgb/edge-lab/p04-plataforma-operavel-em-kubernetes/internal/loadtest"
+	"github.com/matheusgb/edge/p04-plataforma-operavel-em-kubernetes/internal/evidence"
+	"github.com/matheusgb/edge/p04-plataforma-operavel-em-kubernetes/internal/loadtest"
 )
 
 func main() {

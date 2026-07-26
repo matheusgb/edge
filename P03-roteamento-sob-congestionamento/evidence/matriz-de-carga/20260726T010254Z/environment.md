@@ -21,15 +21,15 @@ processos e threads (ulimit -u):   (não suportado por este shell)
 ## Containers
 
 ```text
-edge-a	p03-edge-lab:local	Up 10 minutes
-edge-b	p03-edge-lab:local	Up 10 minutes
-edge-c	p03-edge-lab:local	Up 10 minutes
+edge-a	p03-edge:local	Up 10 minutes
+edge-b	p03-edge:local	Up 10 minutes
+edge-c	p03-edge:local	Up 10 minutes
 grafana	grafana/grafana:12.3.0	Up 2 hours
 loki	grafana/loki:3.5.7	Up 2 hours
-origin	p03-edge-lab:local	Up 10 minutes
+origin	p03-edge:local	Up 10 minutes
 prometheus	prom/prometheus:v3.6.0	Up 2 hours
 promtail	grafana/promtail:3.5.7	Up 2 hours
-router	p03-edge-lab:local	Up 10 minutes
+router	p03-edge:local	Up 10 minutes
 tempo	grafana/tempo:2.9.1	Up 2 hours
 toxiproxy	ghcr.io/shopify/toxiproxy:2.12.0	Up 4 minutes
 ```

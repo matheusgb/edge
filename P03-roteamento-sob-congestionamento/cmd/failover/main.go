@@ -22,10 +22,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/evidence"
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/labctl"
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/loadtest"
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/toxi"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/evidence"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/labctl"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/loadtest"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/toxi"
 )
 
 // doente é o edge que recebe a degradação. Os outros dois são o controle.

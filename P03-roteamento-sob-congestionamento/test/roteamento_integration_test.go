@@ -32,8 +32,8 @@ import (
 
 	"github.com/testcontainers/testcontainers-go/modules/compose"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/labctl"
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/toxi"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/labctl"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/toxi"
 )
 
 const (

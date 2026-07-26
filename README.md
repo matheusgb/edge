@@ -1,4 +1,4 @@
-![Banner do EdgeLab](assets/edge-lab-banner.svg)
+![Banner do EdgeLab](assets/edge-banner.svg)
 
 <p align="center">
   <img src="https://img.shields.io/badge/Go-1.26-00ADD8?logo=go&logoColor=white" alt="Go 1.26">
@@ -161,8 +161,8 @@ popular. A política continua visível no experimento e nos testes.
 Clone o repositório:
 
 ```bash
-git clone https://github.com/matheusgb/edge-lab.git
-cd edge-lab
+git clone https://github.com/matheusgb/edge.git
+cd edge
 ```
 
 Entre no projeto desejado. Cada pasta possui seu próprio `go.mod`:

@@ -9,17 +9,17 @@
 # README.
 resource "null_resource" "prometheus_rules" {
   triggers = {
-    rules_sha256 = filesha256("${path.module}/alerts/edge-lab-p04-rules.yaml")
+    rules_sha256 = filesha256("${path.module}/alerts/edge-p04-rules.yaml")
     kube_context = var.kube_context
   }
 
   provisioner "local-exec" {
-    command = "kubectl --context=${var.kube_context} apply -f ${path.module}/alerts/edge-lab-p04-rules.yaml"
+    command = "kubectl --context=${var.kube_context} apply -f ${path.module}/alerts/edge-p04-rules.yaml"
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "kubectl --context=${self.triggers.kube_context} delete -f ${path.module}/alerts/edge-lab-p04-rules.yaml --ignore-not-found=true"
+    command = "kubectl --context=${self.triggers.kube_context} delete -f ${path.module}/alerts/edge-p04-rules.yaml --ignore-not-found=true"
   }
 
   depends_on = [kubernetes_namespace.edge]

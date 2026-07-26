@@ -3,14 +3,14 @@
 ## Sintoma
 
 O alerta `OrigemP99Alto` dispara (p99 da origem acima de 500ms por 5 minutos
-seguidos, ver `infra/terraform/edge-platform/alerts/edge-lab-p04-rules.yaml`)
-ou o dashboard `edge-lab P04 - plataforma` no Grafana mostra o painel "p99 de
+seguidos, ver `infra/terraform/edge-platform/alerts/edge-p04-rules.yaml`)
+ou o dashboard `edge P04 - plataforma` no Grafana mostra o painel "p99 de
 latência (origin)" subindo de forma sustentada.
 
 ## Diagnóstico
 
 1. Confirmar o sintoma no Grafana (Prometheus namespace `observability`,
-   dashboard carregado via ConfigMap rotulado `edge_lab_dashboard=1`) ou
+   dashboard carregado via ConfigMap rotulado `edge_dashboard=1`) ou
    diretamente:
    ```bash
    kubectl -n observability port-forward svc/kube-prometheus-stack-prometheus 9090:9090

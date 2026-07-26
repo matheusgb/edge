@@ -25,9 +25,9 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/catalog"
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/metrics"
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/origin"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/catalog"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/metrics"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/origin"
 )
 
 func main() {

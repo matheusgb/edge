@@ -28,7 +28,7 @@ import (
 
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/promscrape"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/promscrape"
 )
 
 // Config descreve um cenário de carga.

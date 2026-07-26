@@ -16,7 +16,7 @@ Alguns cenários também gravam arquivos extras específicos (por exemplo,
 `networkpolicy-describe.txt` em `restricao-de-rede/`).
 
 Cada cenário rodou pelo menos três vezes, conforme o protocolo de medição do
-repositório (`edge-lab.md`). `modelo-de-capacidade.md`, nesta mesma pasta,
+repositório (`edge.md`). `modelo-de-capacidade.md`, nesta mesma pasta,
 documenta a estimativa de réplicas derivada da premissa de 50 mil rps, com a
 separação explícita entre o que foi medido e o que foi projetado.
 

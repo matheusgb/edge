@@ -21,9 +21,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/edgesrv"
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/metrics"
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/obs"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/edgesrv"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/metrics"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/obs"
 )
 
 func main() {

@@ -7,7 +7,7 @@
 # Terraform).
 variable "kube_context" {
   type    = string
-  default = "kind-edge-lab"
+  default = "kind-edge"
 }
 
 variable "edge_namespace" {
@@ -31,13 +31,13 @@ variable "origin_image" {
     determinística e documenta a diferença no README.
   EOT
   type        = string
-  default     = "p04-edge-lab:local"
+  default     = "p04-edge:local"
 }
 
 variable "edge_image" {
   description = "Referência da imagem da borda. Mesma observação de origin_image."
   type        = string
-  default     = "p04-edge-lab:local"
+  default     = "p04-edge:local"
 }
 
 variable "origin_replicas_min" {

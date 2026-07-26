@@ -1,4 +1,4 @@
-kubectl -n edge set image deployment/origin origin=p04-edge-lab:fail-ready
+kubectl -n edge set image deployment/origin origin=p04-edge:fail-ready
 kubectl -n edge rollout status deployment/origin --timeout=40s
 kubectl -n edge get endpoints origin
 kubectl -n edge rollout undo deployment/origin

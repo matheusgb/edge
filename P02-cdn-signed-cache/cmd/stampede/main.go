@@ -28,8 +28,8 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/cdnclient"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/evidence"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/cdnclient"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/evidence"
 )
 
 // Variante é um disparo contra um caminho da CDN.

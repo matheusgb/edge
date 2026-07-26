@@ -1,4 +1,4 @@
-module github.com/matheusgb/edge-lab/p01-hot-path-http
+module github.com/matheusgb/edge/p01-hot-path-http
 
 go 1.26.5
 

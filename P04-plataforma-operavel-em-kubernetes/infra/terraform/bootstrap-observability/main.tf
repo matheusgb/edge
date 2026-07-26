@@ -2,7 +2,7 @@ resource "kubernetes_namespace" "observability" {
   metadata {
     name = var.observability_namespace
     labels = {
-      "app.kubernetes.io/part-of" = "edge-lab-p04"
+      "app.kubernetes.io/part-of" = "edge-p04"
     }
   }
 }
@@ -56,7 +56,7 @@ resource "helm_release" "kube_prometheus_stack" {
       sidecar = {
         dashboards = {
           enabled         = true
-          label           = "edge_lab_dashboard"
+          label           = "edge_dashboard"
           searchNamespace = "ALL"
         }
       }

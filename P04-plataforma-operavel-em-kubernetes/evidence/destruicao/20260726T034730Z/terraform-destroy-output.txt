@@ -7,7 +7,7 @@
 [0m[1mmodule.edge_platform.kubernetes_service_account.experiments: Refreshing state... [id=edge/experiments][0m
 [0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_edge_egress_to_origin: Refreshing state... [id=edge/allow-edge-egress-to-origin][0m
 [0m[1mmodule.edge_platform.kubernetes_pod_disruption_budget_v1.origin: Refreshing state... [id=edge/origin][0m
-[0m[1mmodule.edge_platform.kubernetes_config_map.dashboard: Refreshing state... [id=edge/edge-lab-p04-dashboard][0m
+[0m[1mmodule.edge_platform.kubernetes_config_map.dashboard: Refreshing state... [id=edge/edge-p04-dashboard][0m
 [0m[1mmodule.edge_platform.kubernetes_service_v1.edge: Refreshing state... [id=edge/edge][0m
 [0m[1mmodule.edge_platform.kubernetes_config_map.platform: Refreshing state... [id=edge/platform-config][0m
 [0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_experiments_egress: Refreshing state... [id=edge/allow-experiments-egress][0m
@@ -252,7 +252,7 @@ Terraform will perform the following actions:
                           [31m-[0m[0m sidecar     = {
                               [31m-[0m[0m dashboards = {
                                   [31m-[0m[0m enabled         = true
-                                  [31m-[0m[0m label           = "edge_lab_dashboard"
+                                  [31m-[0m[0m label           = "edge_dashboard"
                                   [31m-[0m[0m searchNamespace = "ALL"
                                 }
                             }
@@ -327,7 +327,7 @@ Terraform will perform the following actions:
                   "sidecar":
                     "dashboards":
                       "enabled": true
-                      "label": "edge_lab_dashboard"
+                      "label": "edge_dashboard"
                       "searchNamespace": "ALL"
                 "kubeApiServer":
                   "enabled": false
@@ -447,7 +447,7 @@ Terraform will perform the following actions:
           [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
           [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
           [31m-[0m[0m labels           = {
-              [31m-[0m[0m "app.kubernetes.io/part-of" = "edge-lab-p04"
+              [31m-[0m[0m "app.kubernetes.io/part-of" = "edge-p04"
             } [90m-> null[0m[0m
           [31m-[0m[0m name             = "observability" [90m-> null[0m[0m
           [31m-[0m[0m resource_version = "10087" [90m-> null[0m[0m
@@ -460,7 +460,7 @@ Terraform will perform the following actions:
 [0m  [31m-[0m[0m resource "kubernetes_config_map" "dashboard" {
       [31m-[0m[0m binary_data = {} [90m-> null[0m[0m
       [31m-[0m[0m data        = {
-          [31m-[0m[0m "edge-lab-p04.json" = jsonencode(
+          [31m-[0m[0m "edge-p04.json" = jsonencode(
                 {
                   [31m-[0m[0m panels        = [
                       [31m-[0m[0m {
@@ -581,21 +581,21 @@ Terraform will perform the following actions:
                       [31m-[0m[0m to   = "now"
                     }
                   [31m-[0m[0m timezone      = "utc"
-                  [31m-[0m[0m title         = "edge-lab P04 - plataforma"
-                  [31m-[0m[0m uid           = "edge-lab-p04"
+                  [31m-[0m[0m title         = "edge P04 - plataforma"
+                  [31m-[0m[0m uid           = "edge-p04"
                 }
             )
         } [90m-> null[0m[0m
-      [31m-[0m[0m id          = "edge/edge-lab-p04-dashboard" [90m-> null[0m[0m
+      [31m-[0m[0m id          = "edge/edge-p04-dashboard" [90m-> null[0m[0m
       [31m-[0m[0m immutable   = false [90m-> null[0m[0m
 
       [31m-[0m[0m metadata {
           [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
           [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
           [31m-[0m[0m labels           = {
-              [31m-[0m[0m "edge_lab_dashboard" = "1"
+              [31m-[0m[0m "edge_dashboard" = "1"
             } [90m-> null[0m[0m
-          [31m-[0m[0m name             = "edge-lab-p04-dashboard" [90m-> null[0m[0m
+          [31m-[0m[0m name             = "edge-p04-dashboard" [90m-> null[0m[0m
           [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
           [31m-[0m[0m resource_version = "10640" [90m-> null[0m[0m
           [31m-[0m[0m uid              = "7a739238-6d65-4b91-ad7d-ee174495e07b" [90m-> null[0m[0m
@@ -701,7 +701,7 @@ Terraform will perform the following actions:
                       [31m-[0m[0m command                    = [
                           [31m-[0m[0m "/app/edge",
                         ] [90m-> null[0m[0m
-                      [31m-[0m[0m image                      = "p04-edge-lab:local" [90m-> null[0m[0m
+                      [31m-[0m[0m image                      = "p04-edge:local" [90m-> null[0m[0m
                       [31m-[0m[0m image_pull_policy          = "Never" [90m-> null[0m[0m
                       [31m-[0m[0m name                       = "edge" [90m-> null[0m[0m
                       [31m-[0m[0m stdin                      = false [90m-> null[0m[0m
@@ -914,7 +914,7 @@ Terraform will perform the following actions:
                       [31m-[0m[0m command                    = [
                           [31m-[0m[0m "/app/origin",
                         ] [90m-> null[0m[0m
-                      [31m-[0m[0m image                      = "p04-edge-lab:local" [90m-> null[0m[0m
+                      [31m-[0m[0m image                      = "p04-edge:local" [90m-> null[0m[0m
                       [31m-[0m[0m image_pull_policy          = "Never" [90m-> null[0m[0m
                       [31m-[0m[0m name                       = "origin" [90m-> null[0m[0m
                       [31m-[0m[0m stdin                      = false [90m-> null[0m[0m
@@ -1186,7 +1186,7 @@ Terraform will perform the following actions:
           [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
           [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
           [31m-[0m[0m labels           = {
-              [31m-[0m[0m "app.kubernetes.io/part-of" = "edge-lab-p04"
+              [31m-[0m[0m "app.kubernetes.io/part-of" = "edge-p04"
             } [90m-> null[0m[0m
           [31m-[0m[0m name             = "edge" [90m-> null[0m[0m
           [31m-[0m[0m resource_version = "10636" [90m-> null[0m[0m
@@ -1847,7 +1847,7 @@ Terraform will perform the following actions:
 [0m  [31m-[0m[0m resource "null_resource" "prometheus_rules" {
       [31m-[0m[0m id       = "3403149022343069638" [90m-> null[0m[0m
       [31m-[0m[0m triggers = {
-          [31m-[0m[0m "kube_context" = "kind-edge-lab"
+          [31m-[0m[0m "kube_context" = "kind-edge"
           [31m-[0m[0m "rules_sha256" = "cf9efaa55b17f5ed63f286966d6c3dfa9f60f290c0c5fe9259d6bc19b78ee568"
         } [90m-> null[0m[0m
     }
@@ -1861,9 +1861,9 @@ Changes to Outputs:
   [31m-[0m[0m origin_service          = "origin.edge.svc.cluster.local" [90m-> null[0m[0m
 [0m[1mmodule.edge_platform.null_resource.prometheus_rules: Destroying... [id=3403149022343069638][0m[0m
 [0m[1mmodule.edge_platform.null_resource.prometheus_rules: Provisioning with 'local-exec'...[0m[0m
-[0m[1mmodule.edge_platform.null_resource.prometheus_rules (local-exec):[0m [0mExecuting: ["/bin/sh" "-c" "kubectl --context=kind-edge-lab delete -f ../../edge-platform/alerts/edge-lab-p04-rules.yaml --ignore-not-found=true"]
+[0m[1mmodule.edge_platform.null_resource.prometheus_rules (local-exec):[0m [0mExecuting: ["/bin/sh" "-c" "kubectl --context=kind-edge delete -f ../../edge-platform/alerts/edge-p04-rules.yaml --ignore-not-found=true"]
 [0m[1mmodule.edge_platform.kubernetes_pod_disruption_budget_v1.edge: Destroying... [id=edge/edge][0m[0m
-[0m[1mmodule.edge_platform.kubernetes_config_map.dashboard: Destroying... [id=edge/edge-lab-p04-dashboard][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_config_map.dashboard: Destroying... [id=edge/edge-p04-dashboard][0m[0m
 [0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_prometheus_scrape: Destroying... [id=edge/allow-prometheus-scrape][0m[0m
 [0m[1mmodule.edge_platform.kubernetes_role_binding.experiments_read_only: Destroying... [id=edge/experiments-read-only][0m[0m
 [0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_ingress_nginx_to_edge: Destroying... [id=edge/allow-ingress-nginx-to-edge][0m[0m
@@ -1908,7 +1908,7 @@ Changes to Outputs:
 [0m[1mmodule.edge_platform.kubernetes_service_account.origin: Destruction complete after 0s[0m
 [0m[1mmodule.edge_platform.kubernetes_service_account.edge: Destruction complete after 0s[0m
 [0m[1mmodule.edge_platform.kubernetes_config_map.platform: Destruction complete after 0s[0m
-[0m[1mmodule.edge_platform.null_resource.prometheus_rules (local-exec):[0m [0mprometheusrule.monitoring.coreos.com "edge-lab-p04-rules" deleted
+[0m[1mmodule.edge_platform.null_resource.prometheus_rules (local-exec):[0m [0mprometheusrule.monitoring.coreos.com "edge-p04-rules" deleted
 [0m[1mmodule.edge_platform.null_resource.prometheus_rules: Destruction complete after 0s[0m
 [0m[1mmodule.edge_platform.kubernetes_namespace.edge: Destroying... [id=edge][0m[0m
 [0m[1mmodule.edge_platform.kubernetes_namespace.edge: Destruction complete after 7s[0m

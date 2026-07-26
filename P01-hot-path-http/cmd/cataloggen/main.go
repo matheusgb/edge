@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/catalog"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/catalog"
 )
 
 func main() {

@@ -27,7 +27,7 @@ run_probe() {
   fi
   local out
   out="$(kubectl run -n "$NAMESPACE" "$name" --rm -i --restart=Never \
-    --image=p04-edge-lab:local --image-pull-policy=Never \
+    --image=p04-edge:local --image-pull-policy=Never \
     --overrides="$overrides" \
     --command -- /app/loadgen -url="$url" -scenario=probe -steps=x:2:3s:2 -evidence-dir=/tmp/ev -timeout=2s 2>&1 || true)"
   echo "$out" | awk '/^\[/{flag=1} flag{print} /^\]/{flag=0}'
@@ -78,7 +78,7 @@ run_once() {
 EOF
 
   {
-    echo "kubectl run -n $NAMESPACE probe-a --rm -i --restart=Never --image=p04-edge-lab:local --image-pull-policy=Never --overrides='{\"metadata\":{\"labels\":{\"role\":\"experiments\"}}}' --command -- /app/loadgen -url=http://edge.$NAMESPACE.svc.cluster.local:8080/object/rede-a.bin ..."
+    echo "kubectl run -n $NAMESPACE probe-a --rm -i --restart=Never --image=p04-edge:local --image-pull-policy=Never --overrides='{\"metadata\":{\"labels\":{\"role\":\"experiments\"}}}' --command -- /app/loadgen -url=http://edge.$NAMESPACE.svc.cluster.local:8080/object/rede-a.bin ..."
     echo "kubectl run -n $NAMESPACE probe-b --rm -i --restart=Never ... --overrides='{\"metadata\":{\"labels\":{\"role\":\"experiments\"}}}' --command -- /app/loadgen -url=http://origin.$NAMESPACE.svc.cluster.local:8080/object/rede-b.bin ..."
     echo "kubectl run -n $NAMESPACE probe-c --rm -i --restart=Never ... (sem rótulo) --command -- /app/loadgen -url=http://edge.$NAMESPACE.svc.cluster.local:8080/object/rede-c.bin ..."
     echo "kubectl run -n $NAMESPACE probe-d --rm -i --restart=Never ... (sem rótulo) --command -- /app/loadgen -url=http://origin.$NAMESPACE.svc.cluster.local:8080/object/rede-d.bin ..."

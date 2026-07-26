@@ -48,9 +48,9 @@ Passo 8.
 infra/kind/bootstrap.sh up
 ```
 
-Isso cria o cluster (`kind-edge-lab`, 1 control-plane + 2 workers), aplica o
+Isso cria o cluster (`kind-edge`, 1 control-plane + 2 workers), aplica o
 Calico (o CNI padrão do kind não aplica NetworkPolicy), builda a imagem
-`p04-edge-lab:local` e uma segunda imagem `p04-edge-lab:fail-ready` (usada só
+`p04-edge:local` e uma segunda imagem `p04-edge:fail-ready` (usada só
 no experimento de rollout inválido), e carrega as duas no cluster.
 
 Confirmar:
@@ -86,7 +86,7 @@ kubectl -n edge get pods,hpa,networkpolicy
 
 ```bash
 kubectl run -n edge smoke --rm -i --restart=Never \
-  --image=p04-edge-lab:local --image-pull-policy=Never \
+  --image=p04-edge:local --image-pull-policy=Never \
   --overrides='{"metadata":{"labels":{"role":"experiments"}}}' \
   --command -- /app/loadgen \
   -url=http://edge.edge.svc.cluster.local:8080/object/smoke.bin \
@@ -116,9 +116,9 @@ kubectl -n observability port-forward svc/kube-prometheus-stack-grafana 3000:80
 # usuário/senha padrão do chart, ver a documentação do kube-prometheus-stack
 ```
 
-O dashboard "edge-lab P04 - plataforma" já vem carregado (ConfigMap rotulado
-`edge_lab_dashboard=1`, recolhido pelo sidecar do Grafana). As regras de
-alerta ficam em `infra/terraform/edge-platform/alerts/edge-lab-p04-rules.yaml`
+O dashboard "edge P04 - plataforma" já vem carregado (ConfigMap rotulado
+`edge_dashboard=1`, recolhido pelo sidecar do Grafana). As regras de
+alerta ficam em `infra/terraform/edge-platform/alerts/edge-p04-rules.yaml`
 e são aplicadas via `kubectl apply` dentro do próprio `terraform apply`
 (ver `infra/terraform/edge-platform/alerts.tf` para o motivo de não usar
 `kubernetes_manifest` diretamente).
@@ -155,9 +155,9 @@ diferentes de propósito, ver o experimento de destruição
 
 ## Encerrando
 
-Depois do Passo 9, `kind get clusters` não deve listar `edge-lab`, e nenhum
+Depois do Passo 9, `kind get clusters` não deve listar `edge`, e nenhum
 recurso Docker do laboratório deve continuar rodando (`docker ps` sem
-containers `edge-lab-*`).
+containers `edge-*`).
 
 ## Se algo der errado
 
@@ -168,7 +168,7 @@ containers `edge-lab-*`).
   ainda não coletou a primeira amostra; esperar ~1 minuto ou checar
   `kubectl -n observability logs deploy/metrics-server`.
 - **`kubectl run` do experimento fica pendurado**: confirmar que a imagem
-  `p04-edge-lab:local` foi carregada no cluster certo
+  `p04-edge:local` foi carregada no cluster certo
   (`infra/kind/bootstrap.sh load`) e que o pod está com
   `image_pull_policy=Never`, não tentando puxar de um registry inexistente.
 - **Experimento de restrição de rede mostra tráfego liberado onde deveria

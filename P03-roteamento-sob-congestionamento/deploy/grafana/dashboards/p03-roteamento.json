@@ -2,7 +2,7 @@
   "uid": "p03-roteamento",
   "title": "P03: roteamento sob congestionamento",
   "description": "A decisão do roteador ao lado do efeito dela. A primeira linha é o que o cliente sente; as seguintes explicam por quê.",
-  "tags": ["edge-lab", "p03"],
+  "tags": ["edge", "p03"],
   "timezone": "browser",
   "refresh": "5s",
   "time": { "from": "now-15m", "to": "now" },

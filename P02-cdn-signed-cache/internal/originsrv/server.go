@@ -30,8 +30,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/metrics"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/objects"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/metrics"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/objects"
 )
 
 // HeaderCDNAuth é o segredo que a CDN envia e a origem exige nas rotas

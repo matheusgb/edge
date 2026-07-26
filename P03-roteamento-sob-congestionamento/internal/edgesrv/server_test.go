@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/metrics"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/metrics"
 )
 
 // origemFalsa conta quantas buscas chegaram até ela, que é o número que mede o

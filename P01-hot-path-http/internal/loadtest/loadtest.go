@@ -41,7 +41,7 @@ import (
 
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 
-	"github.com/matheusgb/edge-lab/p01-hot-path-http/internal/promscrape"
+	"github.com/matheusgb/edge/p01-hot-path-http/internal/promscrape"
 )
 
 // Config descreve um cenário de carga.

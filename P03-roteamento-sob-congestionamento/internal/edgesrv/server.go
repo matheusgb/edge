@@ -27,7 +27,7 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"golang.org/x/sync/singleflight"
 
-	"github.com/matheusgb/edge-lab/p03-roteamento-sob-congestionamento/internal/metrics"
+	"github.com/matheusgb/edge/p03-roteamento-sob-congestionamento/internal/metrics"
 )
 
 // Headers do contrato entre roteador e edge.

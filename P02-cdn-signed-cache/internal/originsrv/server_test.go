@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/metrics"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/objects"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/metrics"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/objects"
 )
 
 const secret = "segredo-de-teste-compartilhado"

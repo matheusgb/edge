@@ -42,7 +42,7 @@ run_once() {
 
   local pod_name="loadgen-escala-$RANDOM"
   kubectl run -n "$NAMESPACE" "$pod_name" --rm -i --restart=Never \
-    --image=p04-edge-lab:local --image-pull-policy=Never \
+    --image=p04-edge:local --image-pull-policy=Never \
     --overrides="{\"spec\":{\"serviceAccountName\":\"experiments\"},\"metadata\":{\"labels\":{\"role\":\"experiments\"}}}" \
     --command -- /app/loadgen \
     -url="http://edge.${NAMESPACE}.svc.cluster.local:8080/work?n=100000" \
@@ -77,7 +77,7 @@ $(kubectl get nodes -o wide 2>&1)
 EOF
 
   {
-    echo "kubectl run -n $NAMESPACE $pod_name --rm -i --restart=Never --image=p04-edge-lab:local --image-pull-policy=Never --command -- /app/loadgen -url=http://edge.$NAMESPACE.svc.cluster.local:8080/work?n=100000 -scenario=$SCENARIO -steps=$STEPS -evidence-dir=/tmp/ev -timeout=5s"
+    echo "kubectl run -n $NAMESPACE $pod_name --rm -i --restart=Never --image=p04-edge:local --image-pull-policy=Never --command -- /app/loadgen -url=http://edge.$NAMESPACE.svc.cluster.local:8080/work?n=100000 -scenario=$SCENARIO -steps=$STEPS -evidence-dir=/tmp/ev -timeout=5s"
     echo "kubectl -n $NAMESPACE get deploy origin -o jsonpath='{.status.replicas} {.status.readyReplicas}' (observado a cada 2s durante a carga e 130s depois)"
   } >"$run_dir/commands.txt"
 

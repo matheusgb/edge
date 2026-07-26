@@ -28,8 +28,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/cdnclient"
-	"github.com/matheusgb/edge-lab/p02-cdn-signed-cache/internal/evidence"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/cdnclient"
+	"github.com/matheusgb/edge/p02-cdn-signed-cache/internal/evidence"
 )
 
 // Passo é uma requisição do roteiro, com o que ela observou.
