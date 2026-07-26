@@ -1,0 +1,255 @@
+{
+  "uid": "p03-roteamento",
+  "title": "P03: roteamento sob congestionamento",
+  "description": "A decisão do roteador ao lado do efeito dela. A primeira linha é o que o cliente sente; as seguintes explicam por quê.",
+  "tags": ["edge-lab", "p03"],
+  "timezone": "browser",
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "editable": true,
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "type": "row",
+      "title": "O que o cliente sente",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Requisições por segundo, por código",
+      "description": "Carga concluída e erro no mesmo gráfico: 5xx subindo enquanto o total cai é perda de capacidade; 503 subindo com o total estável é backpressure.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 1 },
+      "fieldConfig": {
+        "defaults": { "unit": "reqps", "custom": { "fillOpacity": 20, "stacking": { "mode": "normal" } } },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (code) (rate(router_requests_total[30s]))",
+          "legendFormat": "{{code}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Latência vista pelo cliente",
+      "description": "Inclui espera, tentativas e retry. É esta curva que entra no SLO, e não a duração de uma tentativa.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50, sum by (le) (rate(router_request_duration_seconds_bucket[30s])))",
+          "legendFormat": "p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(router_request_duration_seconds_bucket[30s])))",
+          "legendFormat": "p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(router_request_duration_seconds_bucket[30s])))",
+          "legendFormat": "p99"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "A decisão do roteador",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Para onde o tráfego foi",
+      "description": "Com round-robin, as três linhas ficam coladas o tempo todo. Com a política adaptativa, a linha do destino doente cai.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 10 },
+      "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (backend) (rate(router_backend_attempts_total[30s]))",
+          "legendFormat": "{{backend}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Custo estimado por destino",
+      "description": "(fila + 1) x latência x (1 + erro x penalidade). É a conta que a política adaptativa usa para escolher, publicada ao lado do efeito dela.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 10 },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "router_backend_cost",
+          "legendFormat": "{{backend}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Latência e erro aprendidos por destino",
+      "description": "A média móvel que alimenta o custo. Ela sobe alguns segundos depois da degradação real: esse atraso é o preço de aprender pelo tráfego em vez de perguntar.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 10 },
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "router_backend_latency_ewma_seconds",
+          "legendFormat": "latência {{backend}}"
+        },
+        {
+          "refId": "B",
+          "expr": "router_backend_error_rate",
+          "legendFormat": "erro {{backend}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Tentativas por desfecho",
+      "description": "ok, 5xx, timeout e erro de transporte. Timeout é o desfecho do destino que está lá e não responde, que é o caso central do projeto.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 18 },
+      "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (outcome) (rate(router_backend_attempts_total[30s]))",
+          "legendFormat": "{{outcome}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Retry e o orçamento",
+      "description": "Retry negado subindo é a proteção contra amplificação agindo. As fichas caindo a zero mostram o balde secando.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 18 },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (decision) (rate(router_retries_total[30s]))",
+          "legendFormat": "{{decision}}/s"
+        },
+        {
+          "refId": "B",
+          "expr": "router_retry_budget_tokens",
+          "legendFormat": "fichas restantes"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Backpressure: recusa e ocupação",
+      "description": "Recusar é resultado legítimo de um sistema saturado. O que não pode acontecer é a ocupação crescer sem teto enquanto ninguém é recusado.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 18 },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (reason) (rate(router_rejected_total[30s]))",
+          "legendFormat": "recusa {{reason}}/s"
+        },
+        {
+          "refId": "B",
+          "expr": "router_inflight",
+          "legendFormat": "em andamento"
+        },
+        {
+          "refId": "C",
+          "expr": "router_inflight_capacity",
+          "legendFormat": "teto"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Edges, origem e saúde dos processos",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Cache dos edges",
+      "description": "Cada edge tem cache próprio. Deslocar carga para um destino que não tem o objeto troca latência de rede por uma viagem até a origem.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 27 },
+      "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (edge, cache) (rate(edge_requests_total[30s]))",
+          "legendFormat": "{{edge}} {{cache}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Pressão na origem",
+      "description": "Buscas simultâneas na origem. O pico depois de uma recuperação é o que diz se a volta causou avalanche.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 27 },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(origin_requests_total[30s]))",
+          "legendFormat": "requisições/s"
+        },
+        {
+          "refId": "B",
+          "expr": "origin_inflight",
+          "legendFormat": "simultâneas"
+        },
+        {
+          "refId": "C",
+          "expr": "sum(rate(edge_coalesced_total[30s]))",
+          "legendFormat": "buscas economizadas/s"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Saúde dos processos",
+      "description": "Goroutine crescendo sem parar é acúmulo interno; descritor no teto é o primeiro recurso a limitar quem fala com a rede.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 27 },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "go_goroutines",
+          "legendFormat": "goroutines {{job}}"
+        },
+        {
+          "refId": "B",
+          "expr": "process_open_fds",
+          "legendFormat": "descritores {{job}}"
+        }
+      ]
+    },
+    {
+      "type": "logs",
+      "title": "Log do roteador (aviso e erro)",
+      "description": "Aqui está o identificador de correlação. Copie um e procure o mesmo trace no Tempo para ver onde aquela requisição gastou o tempo.",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 35 },
+      "options": { "showTime": true, "wrapLogMessage": true, "sortOrder": "Descending" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{service=\"router\"} | json | level =~ \"WARN|ERROR\""
+        }
+      ]
+    }
+  ]
+}

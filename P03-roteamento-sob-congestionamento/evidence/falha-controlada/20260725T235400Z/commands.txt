@@ -1,0 +1,1 @@
+go run ./cmd/failover -rate=1200 -phase=8s -warmup=2s

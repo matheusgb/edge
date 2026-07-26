@@ -1,0 +1,36 @@
+# As três fontes do lab, provisionadas por arquivo.
+#
+# Provisionar em vez de clicar na interface é o que torna o ambiente
+# reproduzível: quem clonar o repositório sobe o Compose e encontra os mesmos
+# painéis apontando para os mesmos lugares, sem roteiro de configuração manual.
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    uid: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+
+  - name: Loki
+    type: loki
+    uid: loki
+    access: proxy
+    url: http://loki:3100
+    jsonData:
+      # Um identificador de correlação no log vira link para o trace. É o pulo
+      # entre as três observabilidades: da métrica para o log, do log para o
+      # trace.
+      derivedFields:
+        - name: trace
+          matcherRegex: '"correlation_id":"([a-f0-9]+)"'
+          url: "$${__value.raw}"
+          datasourceUid: tempo
+
+  - name: Tempo
+    type: tempo
+    uid: tempo
+    access: proxy
+    url: http://tempo:3200

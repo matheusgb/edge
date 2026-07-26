@@ -1,0 +1,20 @@
+[
+  {
+    "name": "edge-a",
+    "listen": "0.0.0.0:21001",
+    "upstream": "edge-a:8080",
+    "enabled": true
+  },
+  {
+    "name": "edge-b",
+    "listen": "0.0.0.0:21002",
+    "upstream": "edge-b:8080",
+    "enabled": true
+  },
+  {
+    "name": "edge-c",
+    "listen": "0.0.0.0:21003",
+    "upstream": "edge-c:8080",
+    "enabled": true
+  }
+]

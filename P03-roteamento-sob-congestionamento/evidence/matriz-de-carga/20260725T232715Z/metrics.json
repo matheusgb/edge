@@ -1,0 +1,596 @@
+{
+  "scenario": "matriz-de-carga",
+  "started_at": "2026-07-25T20:27:15.676832635-03:00",
+  "commit": "430c404",
+  "host": "windows-note",
+  "os": "linux",
+  "arch": "amd64",
+  "num_cpu": 32,
+  "go_version": "go1.25.5",
+  "commands": [
+    "go run ./cmd/matrix -strategy=adaptativa -rate=1200 -duration=20s -warmup=5s"
+  ],
+  "notes": "O gerador de carga divide a máquina com os containers medidos. Parte da\nlatência da cauda é disputa por CPU entre quem mede e quem é medido, e não\ncapacidade do serviço.\n\nO cenário chamado \"conexao-cortada\" corta conexões TCP com probabilidade; ele\nnão descarta pacotes IP. O Toxiproxy trabalha acima da camada de transporte, e\nusar o nome \"perda de pacotes\" aqui seria impreciso.",
+  "network": {
+    "edge-a": {
+      "enabled": true,
+      "listen": "[::]:21001",
+      "toxics": [],
+      "upstream": "edge-a:8080"
+    },
+    "edge-b": {
+      "enabled": true,
+      "listen": "[::]:21002",
+      "toxics": [],
+      "upstream": "edge-b:8080"
+    },
+    "edge-c": {
+      "enabled": true,
+      "listen": "[::]:21003",
+      "toxics": [],
+      "upstream": "edge-c:8080"
+    }
+  },
+  "data": {
+    "base_rate": 1200,
+    "results": [
+      {
+        "scenario": "baseline",
+        "strategy": "adaptativa",
+        "target_rate": 300,
+        "workers": 200,
+        "duration_sec": 20.001653142,
+        "offered": 6000,
+        "completed": 6000,
+        "errors": 0,
+        "offered_per_sec": 299.9752049194895,
+        "completed_per_sec": 299.9752049194895,
+        "error_rate": 0,
+        "p50_ms": 0.592649,
+        "p95_ms": 6.152487,
+        "p99_ms": 6.347091,
+        "max_ms": 7.95351,
+        "status_codes": {
+          "200": 6000
+        },
+        "attempts_by_backend": {
+          "edge-a": 2529,
+          "edge-b": 1546,
+          "edge-c": 1925
+        },
+        "attempts_by_outcome": {
+          "ok": 6000
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 393216000,
+        "router_bytes_per_sec": 19659175.029603664,
+        "router_goroutines_end": 817,
+        "router_open_fds_end": 417,
+        "edge_hits": {
+          "edge-a": 2134,
+          "edge-b": 1324,
+          "edge-c": 1643
+        },
+        "edge_misses": {
+          "edge-a": 395,
+          "edge-b": 222,
+          "edge-c": 282
+        },
+        "edge_origin_fetches": {
+          "edge-a": 395,
+          "edge-b": 222,
+          "edge-c": 281
+        },
+        "origin_requests": 898,
+        "origin_inflight_peak": 0
+      },
+      {
+        "scenario": "load",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.003033804,
+        "offered": 23999,
+        "completed": 23999,
+        "errors": 0,
+        "offered_per_sec": 1199.768006951072,
+        "completed_per_sec": 1199.768006951072,
+        "error_rate": 0,
+        "p50_ms": 0.525381,
+        "p95_ms": 6.306685,
+        "p99_ms": 6.771169,
+        "max_ms": 7.970222,
+        "status_codes": {
+          "200": 23999
+        },
+        "attempts_by_backend": {
+          "edge-a": 7963,
+          "edge-b": 7898,
+          "edge-c": 8138
+        },
+        "attempts_by_outcome": {
+          "ok": 23999
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1572798464,
+        "router_bytes_per_sec": 78627996.10354546,
+        "router_goroutines_end": 833,
+        "router_open_fds_end": 433,
+        "edge_hits": {
+          "edge-a": 6811,
+          "edge-b": 6752,
+          "edge-c": 6956
+        },
+        "edge_misses": {
+          "edge-a": 1152,
+          "edge-b": 1146,
+          "edge-c": 1182
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1151,
+          "edge-b": 1144,
+          "edge-c": 1179
+        },
+        "origin_requests": 3474,
+        "origin_inflight_peak": 0
+      },
+      {
+        "scenario": "spike",
+        "strategy": "adaptativa",
+        "target_rate": 7200,
+        "workers": 200,
+        "duration_sec": 5.01773934,
+        "offered": 36000,
+        "completed": 22238,
+        "errors": 13762,
+        "offered_per_sec": 7174.545659041746,
+        "completed_per_sec": 4431.876287938066,
+        "error_rate": 0.3822777777777778,
+        "p50_ms": 53.356589,
+        "p95_ms": 171.017421,
+        "p99_ms": 235.127638,
+        "max_ms": 349.191533,
+        "status_codes": {
+          "0": 6766,
+          "200": 22238,
+          "503": 6996
+        },
+        "error_messages": [
+          "503 Service Unavailable",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-6.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-1.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-4.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-0.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 7681,
+          "edge-b": 7280,
+          "edge-c": 7277
+        },
+        "attempts_by_outcome": {
+          "ok": 22238
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {
+          "concorrencia": 6996
+        },
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1457389568,
+        "router_bytes_per_sec": 290447444.40630907,
+        "router_goroutines_end": 1188,
+        "router_open_fds_end": 810,
+        "edge_hits": {
+          "edge-a": 6585,
+          "edge-b": 6219,
+          "edge-c": 6253
+        },
+        "edge_misses": {
+          "edge-a": 1096,
+          "edge-b": 1061,
+          "edge-c": 1024
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1072,
+          "edge-b": 1044,
+          "edge-c": 1000
+        },
+        "origin_requests": 3116,
+        "origin_inflight_peak": 0
+      },
+      {
+        "scenario": "stress",
+        "strategy": "adaptativa",
+        "target_rate": 12000,
+        "workers": 200,
+        "duration_sec": 10.001174547,
+        "offered": 120000,
+        "completed": 0,
+        "errors": 120000,
+        "offered_per_sec": 11998.590709127837,
+        "completed_per_sec": 0,
+        "error_rate": 1,
+        "p50_ms": 1.122142,
+        "p95_ms": 1.692725,
+        "p99_ms": 1.889285,
+        "max_ms": 6.295088,
+        "status_codes": {
+          "0": 120000
+        },
+        "error_messages": [
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-3.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-1.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-9.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/cauda-64KiB-54.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-4.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use"
+        ],
+        "attempts_by_backend": {},
+        "attempts_by_outcome": {},
+        "failures_by_backend": {},
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 50,
+        "router_bytes": 0,
+        "router_bytes_per_sec": 0,
+        "router_goroutines_end": 1188,
+        "router_open_fds_end": 810,
+        "edge_hits": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "edge_misses": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "edge_origin_fetches": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "origin_requests": 0,
+        "origin_inflight_peak": 0
+      },
+      {
+        "scenario": "bandwidth",
+        "strategy": "adaptativa",
+        "target_rate": 600,
+        "workers": 200,
+        "duration_sec": 20.007400403,
+        "offered": 12000,
+        "completed": 4101,
+        "errors": 7899,
+        "offered_per_sec": 599.7780700285614,
+        "completed_per_sec": 204.97415543226086,
+        "error_rate": 0.65825,
+        "p50_ms": 0.822832,
+        "p95_ms": 5.143462,
+        "p99_ms": 6.851962,
+        "max_ms": 520.338628,
+        "status_codes": {
+          "0": 7899,
+          "200": 4101
+        },
+        "error_messages": [
+          "Get \"http://127.0.0.1:9080/objects/pop-256KiB-2.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/cauda-256KiB-166.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-256KiB-3.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/cauda-256KiB-110.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-256KiB-9.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 1,
+          "edge-b": 1989,
+          "edge-c": 2111
+        },
+        "attempts_by_outcome": {
+          "ok": 4101
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1075052544,
+        "router_bytes_per_sec": 53732745.00163459,
+        "router_goroutines_end": 1180,
+        "router_open_fds_end": 806,
+        "edge_hits": {
+          "edge-a": 0,
+          "edge-b": 1677,
+          "edge-c": 1805
+        },
+        "edge_misses": {
+          "edge-a": 1,
+          "edge-b": 312,
+          "edge-c": 306
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1,
+          "edge-b": 312,
+          "edge-c": 306
+        },
+        "origin_requests": 619,
+        "origin_inflight_peak": 0
+      },
+      {
+        "scenario": "latency",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.002003837,
+        "offered": 24000,
+        "completed": 13500,
+        "errors": 10500,
+        "offered_per_sec": 1199.8797818248813,
+        "completed_per_sec": 674.9323772764958,
+        "error_rate": 0.4375,
+        "p50_ms": 0.759897,
+        "p95_ms": 6.030671,
+        "p99_ms": 6.667534,
+        "max_ms": 302.6004,
+        "status_codes": {
+          "0": 10500,
+          "200": 13500
+        },
+        "error_messages": [
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-3.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/cauda-64KiB-18.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-8.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-5.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use",
+          "Get \"http://127.0.0.1:9080/objects/pop-64KiB-9.bin\": dial tcp 0.0.0.0:0-\u003e127.0.0.1:9080: bind: address already in use"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 1,
+          "edge-b": 6668,
+          "edge-c": 6831
+        },
+        "attempts_by_outcome": {
+          "ok": 13500
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 884736000,
+        "router_bytes_per_sec": 44232368.27719243,
+        "router_goroutines_end": 1176,
+        "router_open_fds_end": 802,
+        "edge_hits": {
+          "edge-a": 0,
+          "edge-b": 5652,
+          "edge-c": 5841
+        },
+        "edge_misses": {
+          "edge-a": 1,
+          "edge-b": 1016,
+          "edge-c": 990
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1,
+          "edge-b": 1013,
+          "edge-c": 987
+        },
+        "origin_requests": 2001,
+        "origin_inflight_peak": 0
+      },
+      {
+        "scenario": "conexao-cortada",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.002033457,
+        "offered": 24000,
+        "completed": 24000,
+        "errors": 0,
+        "offered_per_sec": 1199.878004983581,
+        "completed_per_sec": 1199.878004983581,
+        "error_rate": 0,
+        "p50_ms": 0.504111,
+        "p95_ms": 6.290486,
+        "p99_ms": 6.744901,
+        "max_ms": 8.054542,
+        "status_codes": {
+          "200": 24000
+        },
+        "attempts_by_backend": {
+          "edge-b": 11886,
+          "edge-c": 12114
+        },
+        "attempts_by_outcome": {
+          "ok": 24000
+        },
+        "failures_by_backend": {
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1572864000,
+        "router_bytes_per_sec": 78635204.93460396,
+        "router_goroutines_end": 72,
+        "router_open_fds_end": 56,
+        "edge_hits": {
+          "edge-a": 0,
+          "edge-b": 10106,
+          "edge-c": 10344
+        },
+        "edge_misses": {
+          "edge-a": 0,
+          "edge-b": 1780,
+          "edge-c": 1770
+        },
+        "edge_origin_fetches": {
+          "edge-a": 0,
+          "edge-b": 1776,
+          "edge-c": 1766
+        },
+        "origin_requests": 3542,
+        "origin_inflight_peak": 0
+      },
+      {
+        "scenario": "outage",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.002626228,
+        "offered": 24000,
+        "completed": 21566,
+        "errors": 2434,
+        "offered_per_sec": 1199.8424470085038,
+        "completed_per_sec": 1078.1584255077248,
+        "error_rate": 0.10141666666666671,
+        "p50_ms": 0.561901,
+        "p95_ms": 6.945311,
+        "p99_ms": 12.562592,
+        "max_ms": 43.257517,
+        "status_codes": {
+          "200": 21566,
+          "502": 2434
+        },
+        "error_messages": [
+          "502 Bad Gateway"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 1421,
+          "edge-b": 4628,
+          "edge-c": 19851
+        },
+        "attempts_by_outcome": {
+          "5xx": 2913,
+          "erro": 1421,
+          "ok": 21566
+        },
+        "failures_by_backend": {
+          "edge-a": 1421,
+          "edge-b": 441,
+          "edge-c": 2472
+        },
+        "retries_granted": 1900,
+        "retries_denied": 673,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 1.4000000000008894,
+        "router_bytes": 1413349376,
+        "router_bytes_per_sec": 70658190.57407425,
+        "router_goroutines_end": 87,
+        "router_open_fds_end": 72,
+        "edge_hits": {
+          "edge-a": 0,
+          "edge-b": 3775,
+          "edge-c": 16947
+        },
+        "edge_misses": {
+          "edge-a": 0,
+          "edge-b": 853,
+          "edge-c": 2904
+        },
+        "edge_origin_fetches": {
+          "edge-a": 0,
+          "edge-b": 849,
+          "edge-c": 2884
+        },
+        "origin_requests": 3733,
+        "origin_inflight_peak": 0
+      },
+      {
+        "scenario": "recovery",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.001529972,
+        "offered": 24000,
+        "completed": 22018,
+        "errors": 1982,
+        "offered_per_sec": 1199.9082087019058,
+        "completed_per_sec": 1100.8157891332735,
+        "error_rate": 0.08258333333333334,
+        "p50_ms": 0.550641,
+        "p95_ms": 6.446943,
+        "p99_ms": 6.863309,
+        "max_ms": 33.989354,
+        "status_codes": {
+          "200": 22018,
+          "502": 1982
+        },
+        "error_messages": [
+          "502 Bad Gateway"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 13996,
+          "edge-b": 92,
+          "edge-c": 10110
+        },
+        "attempts_by_outcome": {
+          "5xx": 254,
+          "erro": 1926,
+          "ok": 22018
+        },
+        "failures_by_backend": {
+          "edge-a": 1926,
+          "edge-b": 91,
+          "edge-c": 163
+        },
+        "retries_granted": 198,
+        "retries_denied": 1785,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1442971648,
+        "router_bytes_per_sec": 72143063.55663821,
+        "router_goroutines_end": 131,
+        "router_open_fds_end": 106,
+        "edge_hits": {
+          "edge-a": 10284,
+          "edge-b": 0,
+          "edge-c": 8485
+        },
+        "edge_misses": {
+          "edge-a": 1786,
+          "edge-b": 92,
+          "edge-c": 1625
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1777,
+          "edge-b": 87,
+          "edge-c": 1618
+        },
+        "origin_requests": 3482,
+        "origin_inflight_peak": 0
+      }
+    ],
+    "strategy": "adaptativa"
+  }
+}

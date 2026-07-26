@@ -1,0 +1,7 @@
+evidence/
+deploy/
+*.pprof
+*.prof
+.git/
+README.md
+PASSO-A-PASSO.md

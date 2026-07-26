@@ -1,0 +1,81 @@
+# Alertas do P03.
+#
+# A regra de ouro aqui é uma só: alerta liga em SINTOMA PERCEBIDO PELO CLIENTE,
+# não em causa suspeita. "edge-a está lento" não é alerta, é um gráfico. Alerta é
+# "o cliente está recebendo erro" ou "o cliente está esperando demais", porque é
+# isso que justifica acordar alguém.
+#
+# Os alertas de causa que existem aqui embaixo têm severidade menor de propósito.
+# Eles não pedem ação imediata; existem para encurtar a investigação depois que um
+# sintoma acendeu.
+
+groups:
+  - name: sintomas-do-cliente
+    rules:
+      - alert: ClienteRecebendoErro
+        expr: |
+          sum(rate(router_requests_total{code=~"5.."}[1m]))
+            / clamp_min(sum(rate(router_requests_total[1m])), 0.001) > 0.05
+        for: 1m
+        labels:
+          severity: critico
+        annotations:
+          resumo: "Mais de 5% das respostas do roteador são erro"
+          acao: "Ver a distribuição por destino e o painel de tentativas: um destino doente ou todos?"
+
+      - alert: ClienteEsperandoDemais
+        expr: |
+          histogram_quantile(0.99, sum by (le) (rate(router_request_duration_seconds_bucket[1m]))) > 1
+        for: 2m
+        labels:
+          severity: critico
+        annotations:
+          resumo: "p99 visto pelo cliente passou de 1s"
+          acao: "Comparar com a duração das tentativas: espera na fila, tentativa lenta ou retry?"
+
+      - alert: RecusaSustentada
+        expr: sum(rate(router_rejected_total[1m])) > 1
+        for: 2m
+        labels:
+          severity: aviso
+        annotations:
+          resumo: "O roteador está recusando requisições de forma sustentada"
+          acao: "Recusa curta é backpressure funcionando; sustentada é falta de capacidade."
+
+  - name: causas-provaveis
+    rules:
+      - alert: OrcamentoDeRetrySeco
+        expr: router_retry_budget_tokens < 1
+        for: 30s
+        labels:
+          severity: aviso
+        annotations:
+          resumo: "O orçamento de retry acabou"
+          acao: "É a proteção contra amplificação agindo. Procure a falha que está gerando tanto retry."
+
+      - alert: DestinoIsolado
+        expr: router_backend_circuit_open == 1
+        for: 30s
+        labels:
+          severity: aviso
+        annotations:
+          resumo: "O disjuntor de um destino está aberto"
+          acao: "O roteador parou de mandar tráfego para ali. Confirme se o destino está mesmo ruim."
+
+      - alert: OrigemSobPressao
+        expr: origin_inflight > 50
+        for: 1m
+        labels:
+          severity: aviso
+        annotations:
+          resumo: "A origem está com muitas buscas simultâneas"
+          acao: "Cache frio nos edges ou avalanche de recuperação. Ver edge_coalesced_total."
+
+      - alert: RoteadorAcumulandoGoroutines
+        expr: go_goroutines{job="router"} > 2000
+        for: 2m
+        labels:
+          severity: aviso
+        annotations:
+          resumo: "O roteador está acumulando goroutines"
+          acao: "Trabalho entrando mais rápido do que sai. Verifique o teto de concorrência e os prazos."

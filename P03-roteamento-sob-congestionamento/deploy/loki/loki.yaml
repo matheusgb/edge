@@ -1,0 +1,39 @@
+# Loki mínimo, tudo num processo e tudo em disco efêmero.
+#
+# Este Loki existe para achar UMA requisição problemática pelo identificador de
+# correlação durante um experimento de minutos. Não tem retenção longa, não tem
+# armazenamento em objeto e não tem alta disponibilidade, de propósito.
+
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  log_level: warn
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /tmp/loki
+  storage:
+    filesystem:
+      chunks_directory: /tmp/loki/chunks
+      rules_directory: /tmp/loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+limits_config:
+  # Sem isto, log de container que chega com relógio adiantado ou atrasado é
+  # descartado, e o log some justamente na hora em que se está investigando.
+  reject_old_samples: false
+  allow_structured_metadata: true

@@ -1,0 +1,615 @@
+{
+  "scenario": "matriz-de-carga",
+  "started_at": "2026-07-25T22:02:54.295535562-03:00",
+  "commit": "430c404",
+  "host": "windows-note",
+  "os": "linux",
+  "arch": "amd64",
+  "num_cpu": 32,
+  "go_version": "go1.26.5",
+  "commands": [
+    "go run ./cmd/matrix -strategy=adaptativa -rate=1200 -duration=20s -warmup=5s"
+  ],
+  "notes": "O gerador de carga divide a máquina com os containers medidos. Parte da\nlatência da cauda é disputa por CPU entre quem mede e quem é medido, e não\ncapacidade do serviço.\n\nO cenário chamado \"conexao-cortada\" corta conexões TCP com probabilidade; ele\nnão descarta pacotes IP. O Toxiproxy trabalha acima da camada de transporte, e\nusar o nome \"perda de pacotes\" aqui seria impreciso.",
+  "network": {
+    "edge-a": {
+      "enabled": true,
+      "listen": "[::]:21001",
+      "toxics": [
+        {
+          "attributes": {
+            "rate": 512
+          },
+          "name": "banda",
+          "stream": "downstream",
+          "toxicity": 0,
+          "type": "bandwidth"
+        },
+        {
+          "attributes": {
+            "jitter": 50,
+            "latency": 300
+          },
+          "name": "latencia",
+          "stream": "downstream",
+          "toxicity": 0,
+          "type": "latency"
+        },
+        {
+          "attributes": {
+            "timeout": 100
+          },
+          "name": "reset",
+          "stream": "downstream",
+          "toxicity": 0,
+          "type": "reset_peer"
+        }
+      ],
+      "upstream": "edge-a:8080"
+    },
+    "edge-b": {
+      "enabled": true,
+      "listen": "[::]:21002",
+      "toxics": [],
+      "upstream": "edge-b:8080"
+    },
+    "edge-c": {
+      "enabled": true,
+      "listen": "[::]:21003",
+      "toxics": [],
+      "upstream": "edge-c:8080"
+    }
+  },
+  "data": {
+    "base_rate": 1200,
+    "results": [
+      {
+        "scenario": "baseline",
+        "strategy": "adaptativa",
+        "target_rate": 300,
+        "workers": 200,
+        "duration_sec": 20.000829863,
+        "offered": 6000,
+        "completed": 6000,
+        "errors": 0,
+        "offered_per_sec": 299.98755257148304,
+        "completed_per_sec": 299.98755257148304,
+        "error_rate": 0,
+        "p50_ms": 0.600444,
+        "p95_ms": 6.185589,
+        "p99_ms": 6.480691,
+        "max_ms": 7.983783,
+        "status_codes": {
+          "200": 6000
+        },
+        "attempts_by_backend": {
+          "edge-a": 2083,
+          "edge-b": 1660,
+          "edge-c": 2257
+        },
+        "attempts_by_outcome": {
+          "ok": 6000
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 393216000,
+        "router_bytes_per_sec": 19659984.245324712,
+        "router_goroutines_end": 35,
+        "router_open_fds_end": 26,
+        "edge_hits": {
+          "edge-a": 1767,
+          "edge-b": 1398,
+          "edge-c": 1923
+        },
+        "edge_misses": {
+          "edge-a": 316,
+          "edge-b": 262,
+          "edge-c": 334
+        },
+        "edge_origin_fetches": {
+          "edge-a": 315,
+          "edge-b": 262,
+          "edge-c": 334
+        },
+        "origin_requests": 911,
+        "origin_inflight_peak": 3
+      },
+      {
+        "scenario": "load",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.000688271,
+        "offered": 24000,
+        "completed": 24000,
+        "errors": 0,
+        "offered_per_sec": 1199.958705161102,
+        "completed_per_sec": 1199.958705161102,
+        "error_rate": 0,
+        "p50_ms": 0.538165,
+        "p95_ms": 6.28325,
+        "p99_ms": 6.768029,
+        "max_ms": 7.562353,
+        "status_codes": {
+          "200": 24000
+        },
+        "attempts_by_backend": {
+          "edge-a": 7595,
+          "edge-b": 8032,
+          "edge-c": 8373
+        },
+        "attempts_by_outcome": {
+          "ok": 24000
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1572864000,
+        "router_bytes_per_sec": 78640493.70143798,
+        "router_goroutines_end": 68,
+        "router_open_fds_end": 51,
+        "edge_hits": {
+          "edge-a": 6452,
+          "edge-b": 6902,
+          "edge-c": 7211
+        },
+        "edge_misses": {
+          "edge-a": 1143,
+          "edge-b": 1130,
+          "edge-c": 1162
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1143,
+          "edge-b": 1127,
+          "edge-c": 1161
+        },
+        "origin_requests": 3431,
+        "origin_inflight_peak": 9
+      },
+      {
+        "scenario": "spike",
+        "strategy": "adaptativa",
+        "target_rate": 7200,
+        "workers": 200,
+        "duration_sec": 5.089919782,
+        "offered": 36000,
+        "completed": 23910,
+        "errors": 12090,
+        "offered_per_sec": 7072.803018882627,
+        "completed_per_sec": 4697.520005041211,
+        "error_rate": 0.3358333333333333,
+        "p50_ms": 61.124926,
+        "p95_ms": 135.911879,
+        "p99_ms": 178.864466,
+        "max_ms": 293.704801,
+        "status_codes": {
+          "200": 23910,
+          "503": 12090
+        },
+        "error_messages": [
+          "503 Service Unavailable"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 8087,
+          "edge-b": 7768,
+          "edge-c": 8055
+        },
+        "attempts_by_outcome": {
+          "ok": 23910
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {
+          "concorrencia": 12090
+        },
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1566965760,
+        "router_bytes_per_sec": 307856671.0503808,
+        "router_goroutines_end": 2670,
+        "router_open_fds_end": 2261,
+        "edge_hits": {
+          "edge-a": 6882,
+          "edge-b": 6601,
+          "edge-c": 6848
+        },
+        "edge_misses": {
+          "edge-a": 1205,
+          "edge-b": 1167,
+          "edge-c": 1207
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1178,
+          "edge-b": 1136,
+          "edge-c": 1184
+        },
+        "origin_requests": 3498,
+        "origin_inflight_peak": 31
+      },
+      {
+        "scenario": "stress",
+        "strategy": "adaptativa",
+        "target_rate": 12000,
+        "workers": 200,
+        "duration_sec": 10.179766936,
+        "offered": 120000,
+        "completed": 28554,
+        "errors": 91446,
+        "offered_per_sec": 11788.089133517271,
+        "completed_per_sec": 2804.9758093204346,
+        "error_rate": 0.76205,
+        "p50_ms": 97.975654,
+        "p95_ms": 208.787924,
+        "p99_ms": 271.57275,
+        "max_ms": 463.946384,
+        "status_codes": {
+          "200": 28554,
+          "503": 91446
+        },
+        "error_messages": [
+          "503 Service Unavailable"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 9323,
+          "edge-b": 9652,
+          "edge-c": 9579
+        },
+        "attempts_by_outcome": {
+          "ok": 28554
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {
+          "concorrencia": 91446
+        },
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1871314944,
+        "router_bytes_per_sec": 183826894.639624,
+        "router_goroutines_end": 5934,
+        "router_open_fds_end": 5494,
+        "edge_hits": {
+          "edge-a": 7964,
+          "edge-b": 8281,
+          "edge-c": 8202
+        },
+        "edge_misses": {
+          "edge-a": 1359,
+          "edge-b": 1371,
+          "edge-c": 1377
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1331,
+          "edge-b": 1355,
+          "edge-c": 1361
+        },
+        "origin_requests": 4047,
+        "origin_inflight_peak": 38
+      },
+      {
+        "scenario": "bandwidth",
+        "strategy": "adaptativa",
+        "target_rate": 600,
+        "workers": 200,
+        "duration_sec": 20.007379675,
+        "offered": 12000,
+        "completed": 12000,
+        "errors": 0,
+        "offered_per_sec": 599.7786914092737,
+        "completed_per_sec": 599.7786914092737,
+        "error_rate": 0,
+        "p50_ms": 0.616673,
+        "p95_ms": 6.418252,
+        "p99_ms": 7.032454,
+        "max_ms": 518.730219,
+        "status_codes": {
+          "200": 12000
+        },
+        "attempts_by_backend": {
+          "edge-a": 8,
+          "edge-b": 5883,
+          "edge-c": 6109
+        },
+        "attempts_by_outcome": {
+          "ok": 12000
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 3145728000,
+        "router_bytes_per_sec": 157228385.28079265,
+        "router_goroutines_end": 5095,
+        "router_open_fds_end": 5080,
+        "edge_hits": {
+          "edge-a": 5,
+          "edge-b": 4983,
+          "edge-c": 5223
+        },
+        "edge_misses": {
+          "edge-a": 3,
+          "edge-b": 900,
+          "edge-c": 886
+        },
+        "edge_origin_fetches": {
+          "edge-a": 3,
+          "edge-b": 899,
+          "edge-c": 886
+        },
+        "origin_requests": 1788,
+        "origin_inflight_peak": 5
+      },
+      {
+        "scenario": "latency",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.002136339,
+        "offered": 23999,
+        "completed": 23999,
+        "errors": 0,
+        "offered_per_sec": 1199.8218386906476,
+        "completed_per_sec": 1199.8218386906476,
+        "error_rate": 0,
+        "p50_ms": 0.524974,
+        "p95_ms": 6.273134,
+        "p99_ms": 6.76175,
+        "max_ms": 344.149,
+        "status_codes": {
+          "200": 23999
+        },
+        "attempts_by_backend": {
+          "edge-a": 3,
+          "edge-b": 11983,
+          "edge-c": 12013
+        },
+        "attempts_by_outcome": {
+          "ok": 23999
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1572798464,
+        "router_bytes_per_sec": 78631524.02043028,
+        "router_goroutines_end": 5108,
+        "router_open_fds_end": 5089,
+        "edge_hits": {
+          "edge-a": 1,
+          "edge-b": 10241,
+          "edge-c": 10279
+        },
+        "edge_misses": {
+          "edge-a": 2,
+          "edge-b": 1742,
+          "edge-c": 1734
+        },
+        "edge_origin_fetches": {
+          "edge-a": 2,
+          "edge-b": 1737,
+          "edge-c": 1728
+        },
+        "origin_requests": 3467,
+        "origin_inflight_peak": 9
+      },
+      {
+        "scenario": "conexao-cortada",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.002177842,
+        "offered": 24001,
+        "completed": 24001,
+        "errors": 0,
+        "offered_per_sec": 1199.919338263426,
+        "completed_per_sec": 1199.919338263426,
+        "error_rate": 0,
+        "p50_ms": 0.547332,
+        "p95_ms": 6.377635,
+        "p99_ms": 6.858308,
+        "max_ms": 26.718931,
+        "status_codes": {
+          "200": 24001
+        },
+        "attempts_by_backend": {
+          "edge-a": 7063,
+          "edge-b": 8666,
+          "edge-c": 8272
+        },
+        "attempts_by_outcome": {
+          "ok": 24001
+        },
+        "failures_by_backend": {
+          "edge-a": 0,
+          "edge-b": 0,
+          "edge-c": 0
+        },
+        "retries_granted": 0,
+        "retries_denied": 0,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1572929536,
+        "router_bytes_per_sec": 78637913.75243188,
+        "router_goroutines_end": 1877,
+        "router_open_fds_end": 1809,
+        "edge_hits": {
+          "edge-a": 6033,
+          "edge-b": 7422,
+          "edge-c": 7027
+        },
+        "edge_misses": {
+          "edge-a": 1030,
+          "edge-b": 1244,
+          "edge-c": 1245
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1029,
+          "edge-b": 1239,
+          "edge-c": 1240
+        },
+        "origin_requests": 3508,
+        "origin_inflight_peak": 10
+      },
+      {
+        "scenario": "outage",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.002769922,
+        "offered": 24000,
+        "completed": 21440,
+        "errors": 2560,
+        "offered_per_sec": 1199.8338276942163,
+        "completed_per_sec": 1071.8515527401667,
+        "error_rate": 0.10666666666666669,
+        "p50_ms": 0.553292,
+        "p95_ms": 6.842837,
+        "p99_ms": 7.730703,
+        "max_ms": 72.834631,
+        "status_codes": {
+          "200": 21440,
+          "502": 2560
+        },
+        "error_messages": [
+          "502 Bad Gateway"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 1824,
+          "edge-b": 11224,
+          "edge-c": 12862
+        },
+        "attempts_by_outcome": {
+          "5xx": 2646,
+          "erro": 1824,
+          "ok": 21440
+        },
+        "failures_by_backend": {
+          "edge-a": 1824,
+          "edge-b": 1171,
+          "edge-c": 1475
+        },
+        "retries_granted": 1910,
+        "retries_denied": 686,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 3.0999999999981758,
+        "router_bytes": 1405091840,
+        "router_bytes_per_sec": 70244863.36037956,
+        "router_goroutines_end": 333,
+        "router_open_fds_end": 268,
+        "edge_hits": {
+          "edge-a": 0,
+          "edge-b": 9613,
+          "edge-c": 10968
+        },
+        "edge_misses": {
+          "edge-a": 0,
+          "edge-b": 1611,
+          "edge-c": 1894
+        },
+        "edge_origin_fetches": {
+          "edge-a": 0,
+          "edge-b": 1606,
+          "edge-c": 1875
+        },
+        "origin_requests": 3481,
+        "origin_inflight_peak": 8
+      },
+      {
+        "scenario": "recovery",
+        "strategy": "adaptativa",
+        "target_rate": 1200,
+        "workers": 200,
+        "duration_sec": 20.003268338,
+        "offered": 24000,
+        "completed": 22010,
+        "errors": 1990,
+        "offered_per_sec": 1199.8039317608636,
+        "completed_per_sec": 1100.3201890856922,
+        "error_rate": 0.08291666666666664,
+        "p50_ms": 0.548219,
+        "p95_ms": 6.396628,
+        "p99_ms": 6.857585,
+        "max_ms": 8.295198,
+        "status_codes": {
+          "200": 22010,
+          "502": 1990
+        },
+        "error_messages": [
+          "502 Bad Gateway"
+        ],
+        "attempts_by_backend": {
+          "edge-a": 11553,
+          "edge-b": 5073,
+          "edge-c": 7574
+        },
+        "attempts_by_outcome": {
+          "5xx": 199,
+          "erro": 1991,
+          "ok": 22010
+        },
+        "failures_by_backend": {
+          "edge-a": 1991,
+          "edge-b": 125,
+          "edge-c": 74
+        },
+        "retries_granted": 200,
+        "retries_denied": 1791,
+        "rejected_by_reason": {},
+        "retry_budget_tokens_end": 100,
+        "router_bytes": 1442447360,
+        "router_bytes_per_sec": 72110583.91191992,
+        "router_goroutines_end": 254,
+        "router_open_fds_end": 230,
+        "edge_hits": {
+          "edge-a": 8137,
+          "edge-b": 4201,
+          "edge-c": 6419
+        },
+        "edge_misses": {
+          "edge-a": 1425,
+          "edge-b": 872,
+          "edge-c": 1155
+        },
+        "edge_origin_fetches": {
+          "edge-a": 1415,
+          "edge-b": 869,
+          "edge-c": 1151
+        },
+        "origin_requests": 3435,
+        "origin_inflight_peak": 9
+      }
+    ],
+    "strategy": "adaptativa"
+  }
+}

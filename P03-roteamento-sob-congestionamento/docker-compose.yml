@@ -1,0 +1,189 @@
+# Topologia do lab: cliente -> roteador -> Toxiproxy -> três edges -> origem.
+#
+# O Toxiproxy no meio é o que permite degradar UM caminho sem tocar nos outros.
+# O roteador nunca fala com um edge diretamente: ele fala com a porta do
+# Toxiproxy correspondente àquele edge. Assim a degradação é do CAMINHO, e não do
+# processo do edge, que continua saudável e respondendo, que é exatamente o
+# cenário que este projeto investiga.
+#
+# Repare no que não está publicado: as portas públicas dos edges e da origem. Elas
+# existem só dentro da rede do Compose. Se estivessem publicadas, um experimento
+# poderia medir um edge direto e concluir coisas erradas sobre o roteamento.
+#
+# As portas administrativas ficam presas a 127.0.0.1. Elas expõem métricas, o
+# estado do roteador e os controles de degradação, que são o equivalente a um
+# botão de "derrube a produção".
+
+name: p03-roteamento
+
+# Os limites de CPU e memória valem para todos os serviços Go do lab.
+#
+# Sem teto, "saturação" seria a saturação da máquina inteira, que muda de
+# notebook para notebook e não se compara com nada. Com teto, o ponto em que o
+# sistema começa a recusar é uma propriedade do experimento.
+x-limites: &limites
+  deploy:
+    resources:
+      limits:
+        cpus: "1.0"
+        memory: 256M
+
+x-seguranca: &seguranca
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+
+services:
+  origin:
+    build: .
+    image: p03-edge-lab:local
+    entrypoint: ["/usr/local/bin/origin"]
+    command:
+      - "-addr=:8080"
+      - "-admin-addr=:8090"
+      - "-max-age=${ORIGIN_MAX_AGE:-30s}"
+      - "-latency=${ORIGIN_LATENCY:-5ms}"
+    ports:
+      - "127.0.0.1:9094:8090" # administrativa
+    <<: [*limites, *seguranca]
+
+  edge-a: &edge
+    image: p03-edge-lab:local
+    entrypoint: ["/usr/local/bin/edge"]
+    command:
+      - "-name=edge-a"
+      - "-addr=:8080"
+      - "-admin-addr=:8090"
+      - "-origin=http://origin:8080"
+      - "-cache-entries=${EDGE_CACHE_ENTRIES:-64}"
+      - "-cache-ttl=${EDGE_CACHE_TTL:-30s}"
+      - "-otlp-endpoint=${OTLP_ENDPOINT:-tempo:4318}"
+    environment:
+      # O nome do serviço nos traces vem daqui quando o comando não passa -name.
+      OTEL_SERVICE_NAME: edge-a
+    ports:
+      - "127.0.0.1:9091:8090"
+    depends_on: [origin]
+    <<: [*limites, *seguranca]
+
+  edge-b:
+    <<: *edge
+    command:
+      - "-name=edge-b"
+      - "-addr=:8080"
+      - "-admin-addr=:8090"
+      - "-origin=http://origin:8080"
+      - "-cache-entries=${EDGE_CACHE_ENTRIES:-64}"
+      - "-cache-ttl=${EDGE_CACHE_TTL:-30s}"
+      - "-otlp-endpoint=${OTLP_ENDPOINT:-tempo:4318}"
+    environment:
+      OTEL_SERVICE_NAME: edge-b
+    ports:
+      - "127.0.0.1:9092:8090"
+
+  edge-c:
+    <<: *edge
+    command:
+      - "-name=edge-c"
+      - "-addr=:8080"
+      - "-admin-addr=:8090"
+      - "-origin=http://origin:8080"
+      - "-cache-entries=${EDGE_CACHE_ENTRIES:-64}"
+      - "-cache-ttl=${EDGE_CACHE_TTL:-30s}"
+      - "-otlp-endpoint=${OTLP_ENDPOINT:-tempo:4318}"
+    environment:
+      OTEL_SERVICE_NAME: edge-c
+    ports:
+      - "127.0.0.1:9093:8090"
+
+  toxiproxy:
+    image: ghcr.io/shopify/toxiproxy:2.12.0
+    command: ["-host=0.0.0.0", "-config=/config/toxiproxy.json"]
+    volumes:
+      - ./deploy/toxiproxy/toxiproxy.json:/config/toxiproxy.json:ro
+    ports:
+      # A API de controle. É por ela que os experimentos injetam latência, banda
+      # e corte de conexão.
+      - "127.0.0.1:8474:8474"
+    depends_on: [edge-a, edge-b, edge-c]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+  router:
+    image: p03-edge-lab:local
+    entrypoint: ["/usr/local/bin/router"]
+    command:
+      # Os destinos são as portas do Toxiproxy, nunca os edges diretamente.
+      - "-backends=edge-a=http://toxiproxy:21001,edge-b=http://toxiproxy:21002,edge-c=http://toxiproxy:21003"
+      - "-strategy=${ROUTER_STRATEGY:-adaptativa}"
+      - "-attempt-timeout=${ROUTER_ATTEMPT_TIMEOUT:-800ms}"
+      - "-request-timeout=${ROUTER_REQUEST_TIMEOUT:-2s}"
+      - "-max-attempts=${ROUTER_MAX_ATTEMPTS:-2}"
+      - "-max-inflight=${ROUTER_MAX_INFLIGHT:-256}"
+      - "-retry-ratio=${ROUTER_RETRY_RATIO:-0.1}"
+      - "-otlp-endpoint=${OTLP_ENDPOINT:-tempo:4318}"
+    ports:
+      - "127.0.0.1:9080:8080" # pública: é o único endereço que o cliente conhece
+      - "127.0.0.1:9090:8090" # administrativa
+    depends_on: [toxiproxy]
+    <<: [*limites, *seguranca]
+
+  prometheus:
+    image: prom/prometheus:v3.6.0
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=2h"
+      # A janela curta é proposital: este Prometheus existe para explicar um
+      # experimento de minutos, não para guardar histórico.
+      - "--web.enable-lifecycle"
+    volumes:
+      - ./deploy/prometheus:/etc/prometheus:ro
+    ports:
+      - "127.0.0.1:9095:9090"
+    depends_on: [router]
+
+  loki:
+    image: grafana/loki:3.5.7
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes:
+      - ./deploy/loki/loki.yaml:/etc/loki/loki.yaml:ro
+    ports:
+      - "127.0.0.1:3100:3100"
+
+  promtail:
+    image: grafana/promtail:3.5.7
+    command: ["-config.file=/etc/promtail/promtail.yaml"]
+    volumes:
+      - ./deploy/loki/promtail.yaml:/etc/promtail/promtail.yaml:ro
+      # O socket do Docker entra somente-leitura, e é a única concessão de
+      # privilégio do lab: é assim que o promtail descobre os containers e lê o
+      # log deles. Num ambiente compartilhado isso seria caro demais, e o
+      # caminho seria o agente escrever em arquivo.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on: [loki]
+
+  tempo:
+    image: grafana/tempo:2.9.1
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
+    volumes:
+      - ./deploy/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+    ports:
+      - "127.0.0.1:3200:3200" # consulta
+    # 4318 (OTLP HTTP) fica só na rede interna: quem manda trace são os serviços.
+
+  grafana:
+    image: grafana/grafana:12.3.0
+    environment:
+      # Sem login: o Grafana do lab não guarda nada que precise ser protegido, e
+      # uma tela de senha entre o experimento e o gráfico só atrapalha a
+      # demonstração. Isto NÃO é uma configuração para copiar para fora daqui.
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_FEATURE_TOGGLES_ENABLE: traceqlEditor
+    volumes:
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./deploy/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on: [prometheus, loki, tempo]

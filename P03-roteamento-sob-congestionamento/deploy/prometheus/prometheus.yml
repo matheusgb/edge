@@ -1,0 +1,34 @@
+# Configuração do Prometheus do lab.
+#
+# O intervalo de coleta é curto porque os experimentos duram minutos: com os 15s
+# de um ambiente normal, uma fase de vinte segundos caberia em uma ou duas
+# amostras, e nenhuma curva seria visível.
+
+global:
+  scrape_interval: 2s
+  evaluation_interval: 2s
+
+rule_files:
+  - alerts.yml
+
+scrape_configs:
+  - job_name: router
+    static_configs:
+      - targets: ["router:8090"]
+
+  - job_name: edges
+    static_configs:
+      - targets: ["edge-a:8090"]
+        labels: { edge: edge-a }
+      - targets: ["edge-b:8090"]
+        labels: { edge: edge-b }
+      - targets: ["edge-c:8090"]
+        labels: { edge: edge-c }
+
+  - job_name: origin
+    static_configs:
+      - targets: ["origin:8090"]
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]

@@ -1,0 +1,5654 @@
+{
+  "scenario": "falha-controlada",
+  "started_at": "2026-07-25T20:54:00.836020376-03:00",
+  "commit": "430c404",
+  "host": "windows-note",
+  "os": "linux",
+  "arch": "amd64",
+  "num_cpu": 32,
+  "go_version": "go1.25.5",
+  "commands": [
+    "go run ./cmd/failover -rate=1200 -phase=8s -warmup=2s"
+  ],
+  "notes": "As duas políticas rodam no mesmo processo e nos mesmos containers, com a mesma\nsemente de catálogo e a mesma sequência de degradação. O roteador é zerado entre\nas políticas, mas não entre as fases: o que a política aprendeu na fase anterior\nfaz parte do comportamento que se quer observar.\n\nO tempo de detecção é aproximado por amostragem a cada 250ms do estado do\nroteador, e mede quando a fatia do edge doente caiu abaixo de 15% das tentativas.\nEle não é o instante exato da primeira decisão diferente.\n\nO gerador divide a máquina com os containers medidos.",
+  "network": {
+    "edge-a": {
+      "enabled": true,
+      "listen": "[::]:21001",
+      "toxics": [
+        {
+          "attributes": {
+            "jitter": 100,
+            "latency": 800
+          },
+          "name": "latencia",
+          "stream": "downstream",
+          "toxicity": 0,
+          "type": "latency"
+        },
+        {
+          "attributes": {
+            "timeout": 100
+          },
+          "name": "reset",
+          "stream": "downstream",
+          "toxicity": 0,
+          "type": "reset_peer"
+        }
+      ],
+      "upstream": "edge-a:8080"
+    },
+    "edge-b": {
+      "enabled": true,
+      "listen": "[::]:21002",
+      "toxics": [],
+      "upstream": "edge-b:8080"
+    },
+    "edge-c": {
+      "enabled": true,
+      "listen": "[::]:21003",
+      "toxics": [],
+      "upstream": "edge-c:8080"
+    }
+  },
+  "data": {
+    "phase": "8s",
+    "rate": 1200,
+    "runs": {
+      "adaptativa": [
+        {
+          "fase": "sem-falha",
+          "resultado": {
+            "scenario": "sem-falha",
+            "strategy": "adaptativa",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.00599767,
+            "offered": 9601,
+            "completed": 9601,
+            "errors": 0,
+            "offered_per_sec": 1199.2259298271817,
+            "completed_per_sec": 1199.2259298271817,
+            "error_rate": 0,
+            "p50_ms": 0.540608,
+            "p95_ms": 6.356011,
+            "p99_ms": 6.852052,
+            "max_ms": 7.607782,
+            "status_codes": {
+              "200": 9601
+            },
+            "attempts_by_backend": {
+              "edge-a": 3254,
+              "edge-b": 3096,
+              "edge-c": 3251
+            },
+            "attempts_by_outcome": {
+              "ok": 9601
+            },
+            "failures_by_backend": {
+              "edge-a": 0,
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629211136,
+            "router_bytes_per_sec": 78592470.53715418,
+            "router_goroutines_end": 1305,
+            "router_open_fds_end": 1287,
+            "edge_hits": {
+              "edge-a": 2791,
+              "edge-b": 2639,
+              "edge-c": 2772
+            },
+            "edge_misses": {
+              "edge-a": 463,
+              "edge-b": 457,
+              "edge-c": 479
+            },
+            "edge_origin_fetches": {
+              "edge-a": 461,
+              "edge-b": 455,
+              "edge-c": 478
+            },
+            "origin_requests": 1394,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 2.500335327,
+          "fotos": [
+            {
+              "t": 0.250370415,
+              "share_pct": {
+                "edge-a": 40.33333333333333,
+                "edge-b": 33.666666666666664,
+                "edge-c": 26
+              },
+              "custo_doente_sobre_saudavel": 0.8496077061681943,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.50017108,
+              "share_pct": {
+                "edge-a": 24.496644295302016,
+                "edge-b": 38.92617449664429,
+                "edge-c": 36.577181208053695
+              },
+              "custo_doente_sobre_saudavel": 1.236071861482681,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.749995849,
+              "share_pct": {
+                "edge-a": 41.19601328903654,
+                "edge-b": 38.205980066445186,
+                "edge-c": 20.59800664451827
+              },
+              "custo_doente_sobre_saudavel": 0.8603421816936598,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.00013575,
+              "share_pct": {
+                "edge-a": 25.666666666666664,
+                "edge-b": 17.666666666666668,
+                "edge-c": 56.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 1.217521637667668,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.250444669,
+              "share_pct": {
+                "edge-a": 31.893687707641195,
+                "edge-b": 32.22591362126246,
+                "edge-c": 35.880398671096344
+              },
+              "custo_doente_sobre_saudavel": 0.31934851314444535,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.500342512,
+              "share_pct": {
+                "edge-a": 51.83946488294314,
+                "edge-b": 36.45484949832776,
+                "edge-c": 11.705685618729097
+              },
+              "custo_doente_sobre_saudavel": 0.398720359212673,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.750255068,
+              "share_pct": {
+                "edge-a": 37,
+                "edge-b": 49,
+                "edge-c": 14.000000000000002
+              },
+              "custo_doente_sobre_saudavel": 2.372038444146932,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.000313582,
+              "share_pct": {
+                "edge-a": 33.56643356643357,
+                "edge-b": 31.46853146853147,
+                "edge-c": 34.96503496503497
+              },
+              "custo_doente_sobre_saudavel": 0.12118171370799753,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.25075906,
+              "share_pct": {
+                "edge-a": 43.47826086956522,
+                "edge-b": 31.77257525083612,
+                "edge-c": 24.74916387959866
+              },
+              "custo_doente_sobre_saudavel": 1.469019087690898,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.500335327,
+              "share_pct": {
+                "edge-a": 11.295681063122924,
+                "edge-b": 42.524916943521596,
+                "edge-c": 46.179401993355484
+              },
+              "custo_doente_sobre_saudavel": 0.9752072510699553,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.750070052,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 37.79264214046823,
+                "edge-c": 28.762541806020064
+              },
+              "custo_doente_sobre_saudavel": 0.5697200131570724,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.000153142,
+              "share_pct": {
+                "edge-a": 44.85049833887043,
+                "edge-b": 13.621262458471762,
+                "edge-c": 41.52823920265781
+              },
+              "custo_doente_sobre_saudavel": 0.3119637686952746,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.250369337,
+              "share_pct": {
+                "edge-a": 31.103678929765888,
+                "edge-b": 33.11036789297659,
+                "edge-c": 35.785953177257525
+              },
+              "custo_doente_sobre_saudavel": 2.5841829946431147,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.500086309,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 17.666666666666668,
+                "edge-c": 49
+              },
+              "custo_doente_sobre_saudavel": 0.5475237011081956,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.750286827,
+              "share_pct": {
+                "edge-a": 38.205980066445186,
+                "edge-b": 34.21926910299003,
+                "edge-c": 27.57475083056478
+              },
+              "custo_doente_sobre_saudavel": 1.7524250541257809,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.000535453,
+              "share_pct": {
+                "edge-a": 19.12751677852349,
+                "edge-b": 35.90604026845637,
+                "edge-c": 44.966442953020135
+              },
+              "custo_doente_sobre_saudavel": 2.378185308721844,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.250706754,
+              "share_pct": {
+                "edge-a": 35.548172757475086,
+                "edge-b": 28.57142857142857,
+                "edge-c": 35.880398671096344
+              },
+              "custo_doente_sobre_saudavel": 1.9876105941637736,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.500124321,
+              "share_pct": {
+                "edge-a": 36,
+                "edge-b": 19.666666666666664,
+                "edge-c": 44.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 0.33566611855713385,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.750343626,
+              "share_pct": {
+                "edge-a": 40.33333333333333,
+                "edge-b": 21.666666666666668,
+                "edge-c": 38
+              },
+              "custo_doente_sobre_saudavel": 0.36999234250416446,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.000927165,
+              "share_pct": {
+                "edge-a": 43.85382059800664,
+                "edge-b": 47.840531561461795,
+                "edge-c": 8.305647840531561
+              },
+              "custo_doente_sobre_saudavel": 0.8030816320546935,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.250241436,
+              "share_pct": {
+                "edge-a": 35.66666666666667,
+                "edge-b": 28.333333333333332,
+                "edge-c": 36
+              },
+              "custo_doente_sobre_saudavel": 0.44171114152970326,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.500044096,
+              "share_pct": {
+                "edge-a": 38.79598662207358,
+                "edge-b": 39.79933110367893,
+                "edge-c": 21.40468227424749
+              },
+              "custo_doente_sobre_saudavel": 0.31774620163057604,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.750446464,
+              "share_pct": {
+                "edge-a": 39.202657807308974,
+                "edge-b": 29.568106312292358,
+                "edge-c": 31.22923588039867
+              },
+              "custo_doente_sobre_saudavel": 0.36779129112942655,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.000222986,
+              "share_pct": {
+                "edge-a": 38.666666666666664,
+                "edge-b": 32.33333333333333,
+                "edge-c": 28.999999999999996
+              },
+              "custo_doente_sobre_saudavel": 0.734260896573875,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.250080551,
+              "share_pct": {
+                "edge-a": 42.14046822742475,
+                "edge-b": 28.428093645484946,
+                "edge-c": 29.431438127090303
+              },
+              "custo_doente_sobre_saudavel": 1.1073825333939942,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.500558881,
+              "share_pct": {
+                "edge-a": 38.333333333333336,
+                "edge-b": 44.333333333333336,
+                "edge-c": 17.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 0.3677047505369676,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.750194817,
+              "share_pct": {
+                "edge-a": 27.906976744186046,
+                "edge-b": 17.940199335548172,
+                "edge-c": 54.15282392026578
+              },
+              "custo_doente_sobre_saudavel": 2.154428587865211,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.000459587,
+              "share_pct": {
+                "edge-a": 27.759197324414714,
+                "edge-b": 24.08026755852843,
+                "edge-c": 48.16053511705686
+              },
+              "custo_doente_sobre_saudavel": 0.5217353320943484,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.250351066,
+              "share_pct": {
+                "edge-a": 35.21594684385382,
+                "edge-b": 13.621262458471762,
+                "edge-c": 51.162790697674424
+              },
+              "custo_doente_sobre_saudavel": 1.347922354715001,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.500489873,
+              "share_pct": {
+                "edge-a": 25.838926174496645,
+                "edge-b": 39.59731543624161,
+                "edge-c": 34.56375838926174
+              },
+              "custo_doente_sobre_saudavel": 0.37954134140966495,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.7513209419999995,
+              "share_pct": {
+                "edge-a": 39.8671096345515,
+                "edge-b": 31.22923588039867,
+                "edge-c": 28.903654485049834
+              },
+              "custo_doente_sobre_saudavel": 1.7215426627725765,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.000488014,
+              "share_pct": {
+                "edge-a": 51.49501661129568,
+                "edge-b": 44.85049833887043,
+                "edge-c": 3.6544850498338874
+              },
+              "custo_doente_sobre_saudavel": 0.2995470221417066,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.250011984,
+              "share_pct": {
+                "edge-a": 38.12709030100335,
+                "edge-b": 28.093645484949832,
+                "edge-c": 33.77926421404682
+              },
+              "custo_doente_sobre_saudavel": 2.997298907580367,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.499962921,
+              "share_pct": {
+                "edge-a": 28.903654485049834,
+                "edge-b": 53.156146179402,
+                "edge-c": 17.940199335548172
+              },
+              "custo_doente_sobre_saudavel": 0.19894179318029875,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.750278067,
+              "share_pct": {
+                "edge-a": 31,
+                "edge-b": 33.666666666666664,
+                "edge-c": 35.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 0.18847500115167287,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.000535508,
+              "share_pct": {
+                "edge-a": 20.666666666666668,
+                "edge-b": 44,
+                "edge-c": 35.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 2.341954869281267,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.250429722,
+              "share_pct": {
+                "edge-a": 14.61794019933555,
+                "edge-b": 46.51162790697674,
+                "edge-c": 38.87043189368771
+              },
+              "custo_doente_sobre_saudavel": 1.3680374599764824,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.500228529,
+              "share_pct": {
+                "edge-a": 28.762541806020064,
+                "edge-b": 29.76588628762542,
+                "edge-c": 41.47157190635451
+              },
+              "custo_doente_sobre_saudavel": 0.4968804131248041,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.75039686,
+              "share_pct": {
+                "edge-a": 37,
+                "edge-b": 25,
+                "edge-c": 38
+              },
+              "custo_doente_sobre_saudavel": 0.13546316418273624,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "latencia-50ms",
+          "resultado": {
+            "scenario": "latencia-50ms",
+            "strategy": "adaptativa",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.000922756,
+            "offered": 9600,
+            "completed": 9600,
+            "errors": 0,
+            "offered_per_sec": 1199.8616025633833,
+            "completed_per_sec": 1199.8616025633833,
+            "error_rate": 0,
+            "p50_ms": 0.526149,
+            "p95_ms": 6.233786,
+            "p99_ms": 6.736306,
+            "max_ms": 7.325397,
+            "status_codes": {
+              "200": 9600
+            },
+            "attempts_by_backend": {
+              "edge-b": 4766,
+              "edge-c": 4834
+            },
+            "attempts_by_outcome": {
+              "ok": 9600
+            },
+            "failures_by_backend": {
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629145600,
+            "router_bytes_per_sec": 78634129.98559389,
+            "router_goroutines_end": 1312,
+            "router_open_fds_end": 1295,
+            "edge_hits": {
+              "edge-a": 0,
+              "edge-b": 4080,
+              "edge-c": 4154
+            },
+            "edge_misses": {
+              "edge-a": 0,
+              "edge-b": 686,
+              "edge-c": 680
+            },
+            "edge_origin_fetches": {
+              "edge-a": 0,
+              "edge-b": 684,
+              "edge-c": 680
+            },
+            "origin_requests": 1364,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 0.250219796,
+          "fotos": [
+            {
+              "t": 0.250219796,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.50167224080268,
+                "edge-c": 49.49832775919732
+              },
+              "custo_doente_sobre_saudavel": 10.271532927619159,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.500961452,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 58.666666666666664,
+                "edge-c": 41.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 12.915527941113062,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.750063744,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.837209302325576,
+                "edge-c": 51.162790697674424
+              },
+              "custo_doente_sobre_saudavel": 12.292964203880668,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.999963114,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.50167224080268,
+                "edge-c": 49.49832775919732
+              },
+              "custo_doente_sobre_saudavel": 11.245882081237005,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.250344002,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.159468438538205,
+                "edge-c": 47.840531561461795
+              },
+              "custo_doente_sobre_saudavel": 22.56963384177121,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.500819653,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.84949832775919,
+                "edge-c": 45.1505016722408
+              },
+              "custo_doente_sobre_saudavel": 10.701594241208488,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.7507207949999999,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.666666666666664,
+                "edge-c": 55.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 26.131917769711837,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.001006062,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.052264808362374,
+                "edge-c": 44.94773519163763
+              },
+              "custo_doente_sobre_saudavel": 27.234384112042246,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.25079794,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.836120401337794,
+                "edge-c": 49.163879598662206
+              },
+              "custo_doente_sobre_saudavel": 13.690603615529952,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.500021976,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.49832775919732,
+                "edge-c": 50.50167224080268
+              },
+              "custo_doente_sobre_saudavel": 16.168323762957083,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.750886436,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.15282392026578,
+                "edge-c": 45.84717607973422
+              },
+              "custo_doente_sobre_saudavel": 33.63704575422876,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.001056074,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.18060200668896,
+                "edge-c": 45.819397993311036
+              },
+              "custo_doente_sobre_saudavel": 5.74730761266058,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.249976169,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.18604651162791,
+                "edge-c": 55.81395348837209
+              },
+              "custo_doente_sobre_saudavel": 27.50269881252249,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.500792288,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.333333333333336,
+                "edge-c": 46.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 27.95885580676183,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.750068249,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.666666666666664,
+                "edge-c": 44.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 10.633203419065755,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.000221959,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 45.302013422818796,
+                "edge-c": 54.69798657718121
+              },
+              "custo_doente_sobre_saudavel": 9.924881079838242,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.249946391,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.675496688741724,
+                "edge-c": 51.324503311258276
+              },
+              "custo_doente_sobre_saudavel": 11.79834997265736,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.500887746,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 42.857142857142854,
+                "edge-c": 57.14285714285714
+              },
+              "custo_doente_sobre_saudavel": 24.49670381049502,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.749960461,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.50501672240802,
+                "edge-c": 48.49498327759198
+              },
+              "custo_doente_sobre_saudavel": 9.74433109677466,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.999976092,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.50498338870432,
+                "edge-c": 51.49501661129568
+              },
+              "custo_doente_sobre_saudavel": 13.644955020408878,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.250811354,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.50167224080268,
+                "edge-c": 49.49832775919732
+              },
+              "custo_doente_sobre_saudavel": 15.133070185062806,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.501026678,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.66666666666667,
+                "edge-c": 48.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 22.48847227335756,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.750139293,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.836120401337794,
+                "edge-c": 49.163879598662206
+              },
+              "custo_doente_sobre_saudavel": 14.69963970693752,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.000016542,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 40.666666666666664,
+                "edge-c": 59.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 21.23145995981358,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.25026559,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46.48829431438127,
+                "edge-c": 53.51170568561873
+              },
+              "custo_doente_sobre_saudavel": 16.1808466958129,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.501075759,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.03973509933775,
+                "edge-c": 55.960264900662246
+              },
+              "custo_doente_sobre_saudavel": 16.460448777920956,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.75038913,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.49498327759198,
+                "edge-c": 51.50501672240802
+              },
+              "custo_doente_sobre_saudavel": 9.895775944141539,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.000303119,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 60.797342192691026,
+                "edge-c": 39.202657807308974
+              },
+              "custo_doente_sobre_saudavel": 14.251886084259354,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.250020944,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.83946488294314,
+                "edge-c": 48.16053511705686
+              },
+              "custo_doente_sobre_saudavel": 11.818477096022505,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.500862571,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.333333333333336,
+                "edge-c": 50.66666666666667
+              },
+              "custo_doente_sobre_saudavel": 7.422328250890315,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.75014459,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53,
+                "edge-c": 47
+              },
+              "custo_doente_sobre_saudavel": 41.69069289447861,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.00000581,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.66666666666667,
+                "edge-c": 49.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 18.398203040202354,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.249997326999999,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46.51162790697674,
+                "edge-c": 53.48837209302325
+              },
+              "custo_doente_sobre_saudavel": 11.255383389158261,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.50034638,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.333333333333336,
+                "edge-c": 46.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 38.20212647413275,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.750061319,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.47826086956522,
+                "edge-c": 56.52173913043478
+              },
+              "custo_doente_sobre_saudavel": 12.674684963673615,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.000298069,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46.51162790697674,
+                "edge-c": 53.48837209302325
+              },
+              "custo_doente_sobre_saudavel": 13.280494697178009,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.250889852,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.823920265780735,
+                "edge-c": 47.176079734219265
+              },
+              "custo_doente_sobre_saudavel": 23.842004363218877,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.500883332,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46.308724832214764,
+                "edge-c": 53.691275167785236
+              },
+              "custo_doente_sobre_saudavel": 10.005035439541578,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.749988109,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.176079734219265,
+                "edge-c": 52.823920265780735
+              },
+              "custo_doente_sobre_saudavel": 27.878059740499033,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "latencia-200ms",
+          "resultado": {
+            "scenario": "latencia-200ms",
+            "strategy": "adaptativa",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.002602279,
+            "offered": 9600,
+            "completed": 9600,
+            "errors": 0,
+            "offered_per_sec": 1199.6097850810113,
+            "completed_per_sec": 1199.6097850810113,
+            "error_rate": 0,
+            "p50_ms": 0.553537,
+            "p95_ms": 6.372074,
+            "p99_ms": 6.844795,
+            "max_ms": 7.789669,
+            "status_codes": {
+              "200": 9600
+            },
+            "attempts_by_backend": {
+              "edge-b": 4819,
+              "edge-c": 4781
+            },
+            "attempts_by_outcome": {
+              "ok": 9600
+            },
+            "failures_by_backend": {
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629145600,
+            "router_bytes_per_sec": 78617626.87506916,
+            "router_goroutines_end": 1142,
+            "router_open_fds_end": 1125,
+            "edge_hits": {
+              "edge-a": 0,
+              "edge-b": 4107,
+              "edge-c": 4056
+            },
+            "edge_misses": {
+              "edge-a": 0,
+              "edge-b": 712,
+              "edge-c": 725
+            },
+            "edge_origin_fetches": {
+              "edge-a": 0,
+              "edge-b": 710,
+              "edge-c": 721
+            },
+            "origin_requests": 1431,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 0.249906462,
+          "fotos": [
+            {
+              "t": 0.249906462,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.333333333333336,
+                "edge-c": 56.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 15.322715279369149,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.499232777,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.16835016835017,
+                "edge-c": 49.831649831649834
+              },
+              "custo_doente_sobre_saudavel": 7.879547886081662,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.749512595,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 45.21452145214521,
+                "edge-c": 54.78547854785478
+              },
+              "custo_doente_sobre_saudavel": 14.833446087473035,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.999937588,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46,
+                "edge-c": 54
+              },
+              "custo_doente_sobre_saudavel": 25.606989524003605,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.249970564,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.333333333333336,
+                "edge-c": 55.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 8.854577816050117,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.499036046,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.18060200668896,
+                "edge-c": 45.819397993311036
+              },
+              "custo_doente_sobre_saudavel": 35.168317864961466,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.7499392870000001,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.49498327759198,
+                "edge-c": 51.50501672240802
+              },
+              "custo_doente_sobre_saudavel": 30.938316040959194,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.999261306,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.349650349650354,
+                "edge-c": 49.65034965034965
+              },
+              "custo_doente_sobre_saudavel": 29.357231070027595,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.249600169,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.98657718120805,
+                "edge-c": 52.013422818791945
+              },
+              "custo_doente_sobre_saudavel": 7.691966902705366,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.49942359,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 40.397350993377486,
+                "edge-c": 59.60264900662252
+              },
+              "custo_doente_sobre_saudavel": 30.47474785362793,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.749306311,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.966442953020135,
+                "edge-c": 55.033557046979865
+              },
+              "custo_doente_sobre_saudavel": 29.804428426271457,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.9994132479999998,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.84615384615385,
+                "edge-c": 46.15384615384615
+              },
+              "custo_doente_sobre_saudavel": 6.050784422987106,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.249222465,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.70860927152318,
+                "edge-c": 56.29139072847682
+              },
+              "custo_doente_sobre_saudavel": 29.659392716782026,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.499136722,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.83056478405316,
+                "edge-c": 49.16943521594684
+              },
+              "custo_doente_sobre_saudavel": 38.326348909298986,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.749134318,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.333333333333336,
+                "edge-c": 56.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 17.240689875494862,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.999130504,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46.15384615384615,
+                "edge-c": 53.84615384615385
+              },
+              "custo_doente_sobre_saudavel": 12.307565884015247,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.249090999,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46,
+                "edge-c": 54
+              },
+              "custo_doente_sobre_saudavel": 8.515585213096815,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.499310851,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 56.00000000000001,
+                "edge-c": 44
+              },
+              "custo_doente_sobre_saudavel": 21.797816898820244,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.749715737,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.651006711409394,
+                "edge-c": 52.348993288590606
+              },
+              "custo_doente_sobre_saudavel": 5.704080771989129,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.999391792,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.81727574750831,
+                "edge-c": 45.182724252491695
+              },
+              "custo_doente_sobre_saudavel": 9.499400818576962,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.249115636,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.498338870431894,
+                "edge-c": 49.501661129568106
+              },
+              "custo_doente_sobre_saudavel": 19.400317288978297,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.499097454,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.501661129568106,
+                "edge-c": 50.498338870431894
+              },
+              "custo_doente_sobre_saudavel": 26.176413472164846,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.749582335,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 42.281879194630875,
+                "edge-c": 57.71812080536913
+              },
+              "custo_doente_sobre_saudavel": 16.25180542338086,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.99913357,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.14950166112956,
+                "edge-c": 44.85049833887043
+              },
+              "custo_doente_sobre_saudavel": 14.345056709355394,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.249364301,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 56.9023569023569,
+                "edge-c": 43.09764309764309
+              },
+              "custo_doente_sobre_saudavel": 10.892597236376512,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.499410592,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.32894736842105,
+                "edge-c": 49.67105263157895
+              },
+              "custo_doente_sobre_saudavel": 50.558076890290685,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.7491492090000005,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.49832775919732,
+                "edge-c": 50.50167224080268
+              },
+              "custo_doente_sobre_saudavel": 13.460010775328945,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.999310738,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.66666666666667,
+                "edge-c": 52.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 29.68971056505866,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.249274902,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52,
+                "edge-c": 48
+              },
+              "custo_doente_sobre_saudavel": 10.431529243000364,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.499151722,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.84280936454849,
+                "edge-c": 47.15719063545151
+              },
+              "custo_doente_sobre_saudavel": 37.69978578829273,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.74927465,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.823920265780735,
+                "edge-c": 47.176079734219265
+              },
+              "custo_doente_sobre_saudavel": 16.460019365812652,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.999164572,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.162790697674424,
+                "edge-c": 48.837209302325576
+              },
+              "custo_doente_sobre_saudavel": 29.540606474762097,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.249375623,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.16722408026756,
+                "edge-c": 49.83277591973244
+              },
+              "custo_doente_sobre_saudavel": 15.437088514520337,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.499152491,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 56.666666666666664,
+                "edge-c": 43.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 24.526587982113814,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.749360683,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 59.333333333333336,
+                "edge-c": 40.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 16.337058107188316,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.999271725,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.501661129568106,
+                "edge-c": 50.498338870431894
+              },
+              "custo_doente_sobre_saudavel": 63.3520474432595,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.249151851,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.841750841750844,
+                "edge-c": 49.158249158249156
+              },
+              "custo_doente_sobre_saudavel": 10.564984804402439,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.499412791,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 58.333333333333336,
+                "edge-c": 41.66666666666667
+              },
+              "custo_doente_sobre_saudavel": 20.026174969813695,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.749457174,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 45.33333333333333,
+                "edge-c": 54.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 4.987884698254475,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "latencia-800ms",
+          "resultado": {
+            "scenario": "latencia-800ms",
+            "strategy": "adaptativa",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.0010232,
+            "offered": 9600,
+            "completed": 9600,
+            "errors": 0,
+            "offered_per_sec": 1199.8465396275815,
+            "completed_per_sec": 1199.8465396275815,
+            "error_rate": 0,
+            "p50_ms": 0.512557,
+            "p95_ms": 6.25951,
+            "p99_ms": 6.740616,
+            "max_ms": 7.459409,
+            "status_codes": {
+              "200": 9600
+            },
+            "attempts_by_backend": {
+              "edge-b": 4969,
+              "edge-c": 4631
+            },
+            "attempts_by_outcome": {
+              "ok": 9600
+            },
+            "failures_by_backend": {
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629145600,
+            "router_bytes_per_sec": 78633142.82103318,
+            "router_goroutines_end": 1011,
+            "router_open_fds_end": 991,
+            "edge_hits": {
+              "edge-a": 0,
+              "edge-b": 4285,
+              "edge-c": 3913
+            },
+            "edge_misses": {
+              "edge-a": 0,
+              "edge-b": 684,
+              "edge-c": 718
+            },
+            "edge_origin_fetches": {
+              "edge-a": 0,
+              "edge-b": 681,
+              "edge-c": 717
+            },
+            "origin_requests": 1398,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 0.24988397,
+          "fotos": [
+            {
+              "t": 0.24988397,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.18060200668896,
+                "edge-c": 45.819397993311036
+              },
+              "custo_doente_sobre_saudavel": 18.357821910523786,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.500253996,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 41.66666666666667,
+                "edge-c": 58.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 9.118029228276344,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.75034596,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.176079734219265,
+                "edge-c": 52.823920265780735
+              },
+              "custo_doente_sobre_saudavel": 7.206112702218149,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.000495531,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.33333333333333,
+                "edge-c": 48.66666666666667
+              },
+              "custo_doente_sobre_saudavel": 20.496012396508576,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.249941866,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 42.333333333333336,
+                "edge-c": 57.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 16.239150225955672,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.49992314,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.84280936454849,
+                "edge-c": 47.15719063545151
+              },
+              "custo_doente_sobre_saudavel": 18.623493171977003,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.750537016,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.333333333333336,
+                "edge-c": 51.66666666666667
+              },
+              "custo_doente_sobre_saudavel": 15.444826957631312,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.000562863,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.825783972125436,
+                "edge-c": 50.174216027874564
+              },
+              "custo_doente_sobre_saudavel": 31.30051133416049,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.249997711,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.84615384615385,
+                "edge-c": 46.15384615384615
+              },
+              "custo_doente_sobre_saudavel": 8.085985946859612,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.499668317,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.14950166112956,
+                "edge-c": 44.85049833887043
+              },
+              "custo_doente_sobre_saudavel": 20.54187763680199,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.7496608719999998,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.33333333333333,
+                "edge-c": 49.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 27.921685158821624,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.000133866,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.013422818791945,
+                "edge-c": 47.98657718120805
+              },
+              "custo_doente_sobre_saudavel": 6.926776650131541,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.249905028,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.00000000000001,
+                "edge-c": 45
+              },
+              "custo_doente_sobre_saudavel": 13.911291873660113,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.5007639299999997,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.019867549668874,
+                "edge-c": 52.980132450331126
+              },
+              "custo_doente_sobre_saudavel": 18.045545242504105,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.749594717,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48,
+                "edge-c": 52
+              },
+              "custo_doente_sobre_saudavel": 9.145531934053745,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.000002,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 61.20401337792642,
+                "edge-c": 38.79598662207358
+              },
+              "custo_doente_sobre_saudavel": 9.647915080971512,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.249996164,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.00000000000001,
+                "edge-c": 45
+              },
+              "custo_doente_sobre_saudavel": 4.742852975402605,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.499730143,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.81727574750831,
+                "edge-c": 45.182724252491695
+              },
+              "custo_doente_sobre_saudavel": 31.63409011630698,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.750039612,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.837209302325576,
+                "edge-c": 51.162790697674424
+              },
+              "custo_doente_sobre_saudavel": 7.391087728235802,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.999924024,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.18060200668896,
+                "edge-c": 45.819397993311036
+              },
+              "custo_doente_sobre_saudavel": 9.56551428827174,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.249754635,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.51839464882943,
+                "edge-c": 44.481605351170565
+              },
+              "custo_doente_sobre_saudavel": 16.505822849347304,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.499986149,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 57.666666666666664,
+                "edge-c": 42.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 8.202875876582496,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.749762029,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.66666666666667,
+                "edge-c": 49.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 25.055364162313673,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.000525831,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46.688741721854306,
+                "edge-c": 53.31125827814569
+              },
+              "custo_doente_sobre_saudavel": 14.747994674679514,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.249596529,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.16053511705686,
+                "edge-c": 51.83946488294314
+              },
+              "custo_doente_sobre_saudavel": 10.915430629956807,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.500671659,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.666666666666664,
+                "edge-c": 45.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 40.766673288165094,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.749920067,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 42.61744966442953,
+                "edge-c": 57.38255033557047
+              },
+              "custo_doente_sobre_saudavel": 15.759030868842492,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.000148346,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.48514851485149,
+                "edge-c": 48.51485148514851
+              },
+              "custo_doente_sobre_saudavel": 11.37264609787278,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.250339493,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 59.53177257525084,
+                "edge-c": 40.468227424749166
+              },
+              "custo_doente_sobre_saudavel": 20.08296670123895,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.500032944,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.966442953020135,
+                "edge-c": 55.033557046979865
+              },
+              "custo_doente_sobre_saudavel": 8.536292175066466,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.749606727,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.837209302325576,
+                "edge-c": 51.162790697674424
+              },
+              "custo_doente_sobre_saudavel": 40.367728784027065,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.000474135,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.980132450331126,
+                "edge-c": 47.019867549668874
+              },
+              "custo_doente_sobre_saudavel": 22.29856553016432,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.249933674,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.664429530201346,
+                "edge-c": 50.33557046979866
+              },
+              "custo_doente_sobre_saudavel": 8.039568281935937,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.499741665,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.14950166112956,
+                "edge-c": 44.85049833887043
+              },
+              "custo_doente_sobre_saudavel": 14.643591671946224,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.750153563,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.820598006644516,
+                "edge-c": 46.179401993355484
+              },
+              "custo_doente_sobre_saudavel": 15.15667605222041,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.000624878,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.33333333333333,
+                "edge-c": 49.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 28.28698062157291,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.249754669,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.47826086956522,
+                "edge-c": 56.52173913043478
+              },
+              "custo_doente_sobre_saudavel": 19.190059295047053,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.499995517,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.033557046979865,
+                "edge-c": 44.966442953020135
+              },
+              "custo_doente_sobre_saudavel": 12.180815122940434,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.749823504,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.82508250825083,
+                "edge-c": 49.17491749174918
+              },
+              "custo_doente_sobre_saudavel": 19.994558861554715,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "conexao-cortada",
+          "resultado": {
+            "scenario": "conexao-cortada",
+            "strategy": "adaptativa",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.001086412,
+            "offered": 9600,
+            "completed": 9600,
+            "errors": 0,
+            "offered_per_sec": 1199.837060327452,
+            "completed_per_sec": 1199.837060327452,
+            "error_rate": 0,
+            "p50_ms": 0.528055,
+            "p95_ms": 6.271411,
+            "p99_ms": 6.753069,
+            "max_ms": 7.401889,
+            "status_codes": {
+              "200": 9600
+            },
+            "attempts_by_backend": {
+              "edge-b": 4781,
+              "edge-c": 4819
+            },
+            "attempts_by_outcome": {
+              "ok": 9600
+            },
+            "failures_by_backend": {
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629145600,
+            "router_bytes_per_sec": 78632521.5856199,
+            "router_goroutines_end": 795,
+            "router_open_fds_end": 778,
+            "edge_hits": {
+              "edge-a": 0,
+              "edge-b": 4089,
+              "edge-c": 4092
+            },
+            "edge_misses": {
+              "edge-a": 0,
+              "edge-b": 692,
+              "edge-c": 727
+            },
+            "edge_origin_fetches": {
+              "edge-a": 0,
+              "edge-b": 689,
+              "edge-c": 726
+            },
+            "origin_requests": 1415,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 0.249989108,
+          "fotos": [
+            {
+              "t": 0.249989108,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.18604651162791,
+                "edge-c": 55.81395348837209
+              },
+              "custo_doente_sobre_saudavel": 20.461188218073076,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.499905685,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 58.053691275167786,
+                "edge-c": 41.946308724832214
+              },
+              "custo_doente_sobre_saudavel": 9.468516573505603,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.750113334,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.3046357615894,
+                "edge-c": 45.6953642384106
+              },
+              "custo_doente_sobre_saudavel": 15.779407429637457,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.000815161,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46,
+                "edge-c": 54
+              },
+              "custo_doente_sobre_saudavel": 11.885988486300878,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.251135055,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49,
+                "edge-c": 51
+              },
+              "custo_doente_sobre_saudavel": 50.41655297166848,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.5002952619999999,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.16722408026756,
+                "edge-c": 49.83277591973244
+              },
+              "custo_doente_sobre_saudavel": 25.067182185848104,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.749932053,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.83946488294314,
+                "edge-c": 48.16053511705686
+              },
+              "custo_doente_sobre_saudavel": 10.206367286308302,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.000298647,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.17301038062284,
+                "edge-c": 49.82698961937716
+              },
+              "custo_doente_sobre_saudavel": 32.544319995083484,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.250841798,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.49498327759198,
+                "edge-c": 51.50501672240802
+              },
+              "custo_doente_sobre_saudavel": 12.512638233647301,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.500025385,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 37.12374581939799,
+                "edge-c": 62.87625418060201
+              },
+              "custo_doente_sobre_saudavel": 21.298064993383594,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.7499224460000002,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.324503311258276,
+                "edge-c": 48.675496688741724
+              },
+              "custo_doente_sobre_saudavel": 29.391608752016936,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.000144801,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.494949494949495,
+                "edge-c": 50.505050505050505
+              },
+              "custo_doente_sobre_saudavel": 7.733395016542592,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.250127059,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 55.81395348837209,
+                "edge-c": 44.18604651162791
+              },
+              "custo_doente_sobre_saudavel": 18.326628571216688,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.500017009,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.837209302325576,
+                "edge-c": 51.162790697674424
+              },
+              "custo_doente_sobre_saudavel": 23.955763793521285,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.75001834,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.50830564784053,
+                "edge-c": 52.49169435215947
+              },
+              "custo_doente_sobre_saudavel": 22.03458605330608,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.999877524,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48,
+                "edge-c": 52
+              },
+              "custo_doente_sobre_saudavel": 35.89350869261834,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.250259131,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.82943143812709,
+                "edge-c": 51.17056856187291
+              },
+              "custo_doente_sobre_saudavel": 6.288726747039664,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.500873671,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.70198675496689,
+                "edge-c": 55.29801324503312
+              },
+              "custo_doente_sobre_saudavel": 25.01116673863759,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.750188,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50,
+                "edge-c": 50
+              },
+              "custo_doente_sobre_saudavel": 11.40785763470808,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.000889414,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.50501672240802,
+                "edge-c": 48.49498327759198
+              },
+              "custo_doente_sobre_saudavel": 11.818540682322647,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.250100719,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.33333333333333,
+                "edge-c": 48.66666666666667
+              },
+              "custo_doente_sobre_saudavel": 15.939953004970143,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.499993869,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.163879598662206,
+                "edge-c": 50.836120401337794
+              },
+              "custo_doente_sobre_saudavel": 16.339303965587824,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.750243569,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46.51162790697674,
+                "edge-c": 53.48837209302325
+              },
+              "custo_doente_sobre_saudavel": 22.792883017423527,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.999911195,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.33333333333333,
+                "edge-c": 47.66666666666667
+              },
+              "custo_doente_sobre_saudavel": 28.588847638117514,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.250345209,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.49169435215947,
+                "edge-c": 47.50830564784053
+              },
+              "custo_doente_sobre_saudavel": 12.707702203215916,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.50024873,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.50501672240802,
+                "edge-c": 48.49498327759198
+              },
+              "custo_doente_sobre_saudavel": 24.84389438418561,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.750035242,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.163879598662206,
+                "edge-c": 50.836120401337794
+              },
+              "custo_doente_sobre_saudavel": 14.90634537215924,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.000157203,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 52.317880794701985,
+                "edge-c": 47.682119205298015
+              },
+              "custo_doente_sobre_saudavel": 22.477818620344905,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.250038049,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.836120401337794,
+                "edge-c": 49.163879598662206
+              },
+              "custo_doente_sobre_saudavel": 21.11644692056385,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.499970979,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 58.52842809364549,
+                "edge-c": 41.47157190635451
+              },
+              "custo_doente_sobre_saudavel": 9.686742989445296,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.749981796,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.682119205298015,
+                "edge-c": 52.317880794701985
+              },
+              "custo_doente_sobre_saudavel": 25.03452977166579,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.000077014,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.66666666666667,
+                "edge-c": 51.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 26.12284807968943,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.250881062,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.666666666666664,
+                "edge-c": 56.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 21.327566360877604,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.500136069,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.50501672240802,
+                "edge-c": 48.49498327759198
+              },
+              "custo_doente_sobre_saudavel": 21.725873746753557,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.750843864,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.82724252491694,
+                "edge-c": 48.17275747508305
+              },
+              "custo_doente_sobre_saudavel": 16.36798723450173,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.000230843,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.50167224080268,
+                "edge-c": 49.49832775919732
+              },
+              "custo_doente_sobre_saudavel": 25.602181139754304,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.250230583,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.666666666666664,
+                "edge-c": 50.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 24.52687197780453,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.499893126,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 56.85618729096989,
+                "edge-c": 43.1438127090301
+              },
+              "custo_doente_sobre_saudavel": 14.394791731893799,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.750174901,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.50830564784053,
+                "edge-c": 52.49169435215947
+              },
+              "custo_doente_sobre_saudavel": 12.644380372984584,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "recuperacao",
+          "resultado": {
+            "scenario": "recuperacao",
+            "strategy": "adaptativa",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.0019686,
+            "offered": 9600,
+            "completed": 9600,
+            "errors": 0,
+            "offered_per_sec": 1199.7047826456105,
+            "completed_per_sec": 1199.7047826456105,
+            "error_rate": 0,
+            "p50_ms": 0.526617,
+            "p95_ms": 6.256871,
+            "p99_ms": 6.731506,
+            "max_ms": 7.454719,
+            "status_codes": {
+              "200": 9600
+            },
+            "attempts_by_backend": {
+              "edge-b": 4834,
+              "edge-c": 4766
+            },
+            "attempts_by_outcome": {
+              "ok": 9600
+            },
+            "failures_by_backend": {
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629145600,
+            "router_bytes_per_sec": 78623852.63546273,
+            "router_goroutines_end": 499,
+            "router_open_fds_end": 486,
+            "edge_hits": {
+              "edge-a": 0,
+              "edge-b": 4144,
+              "edge-c": 4022
+            },
+            "edge_misses": {
+              "edge-a": 0,
+              "edge-b": 690,
+              "edge-c": 744
+            },
+            "edge_origin_fetches": {
+              "edge-a": 0,
+              "edge-b": 686,
+              "edge-c": 738
+            },
+            "origin_requests": 1424,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 0.249392086,
+          "fotos": [
+            {
+              "t": 0.249392086,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.95973154362416,
+                "edge-c": 56.04026845637584
+              },
+              "custo_doente_sobre_saudavel": 11.926390987452589,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.499342197,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 46,
+                "edge-c": 54
+              },
+              "custo_doente_sobre_saudavel": 8.637188225458187,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.749730871,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.66225165562914,
+                "edge-c": 49.337748344370866
+              },
+              "custo_doente_sobre_saudavel": 14.300327792961191,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.000257298,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 56.666666666666664,
+                "edge-c": 43.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 24.093945363200618,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.25021442,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 56.00000000000001,
+                "edge-c": 44
+              },
+              "custo_doente_sobre_saudavel": 17.90209604461452,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.499415059,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.836120401337794,
+                "edge-c": 49.163879598662206
+              },
+              "custo_doente_sobre_saudavel": 14.12859833352629,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.7493921019999998,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.624161073825505,
+                "edge-c": 56.375838926174495
+              },
+              "custo_doente_sobre_saudavel": 34.0480222648056,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.000028872,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.95833333333333,
+                "edge-c": 51.041666666666664
+              },
+              "custo_doente_sobre_saudavel": 25.41025944224801,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.250213851,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 41.80602006688963,
+                "edge-c": 58.19397993311036
+              },
+              "custo_doente_sobre_saudavel": 7.538167980165525,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.49960656,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.162790697674424,
+                "edge-c": 48.837209302325576
+              },
+              "custo_doente_sobre_saudavel": 28.91189113354139,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.749696166,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 58.7248322147651,
+                "edge-c": 41.2751677852349
+              },
+              "custo_doente_sobre_saudavel": 32.214333201527786,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.000013247,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.333333333333336,
+                "edge-c": 45.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 6.578859329895581,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.24936626,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 44.333333333333336,
+                "edge-c": 55.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 13.426128278507983,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.499621799,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.17275747508305,
+                "edge-c": 51.82724252491694
+              },
+              "custo_doente_sobre_saudavel": 14.714924402939527,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.749335212,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.33333333333333,
+                "edge-c": 48.66666666666667
+              },
+              "custo_doente_sobre_saudavel": 12.819911585147066,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.000335732,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49,
+                "edge-c": 51
+              },
+              "custo_doente_sobre_saudavel": 9.865301562821235,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.249932499,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.176079734219265,
+                "edge-c": 52.823920265780735
+              },
+              "custo_doente_sobre_saudavel": 14.976261575669794,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.499400923,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.51170568561873,
+                "edge-c": 46.48829431438127
+              },
+              "custo_doente_sobre_saudavel": 12.412822005743708,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.749663505,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.666666666666664,
+                "edge-c": 50.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 9.1903919829474,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.999418133,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.48837209302325,
+                "edge-c": 46.51162790697674
+              },
+              "custo_doente_sobre_saudavel": 12.150719725573767,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.2495431,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.84615384615385,
+                "edge-c": 46.15384615384615
+              },
+              "custo_doente_sobre_saudavel": 11.148985156787797,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.499878275,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.666666666666664,
+                "edge-c": 56.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 18.034916345937773,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.749651869,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.333333333333336,
+                "edge-c": 46.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 15.197583747952953,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.999754592,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.48837209302325,
+                "edge-c": 46.51162790697674
+              },
+              "custo_doente_sobre_saudavel": 22.406766419061306,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.250239131,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.65771812080537,
+                "edge-c": 51.34228187919463
+              },
+              "custo_doente_sobre_saudavel": 19.715517934868966,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.50016357,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 43.521594684385384,
+                "edge-c": 56.47840531561462
+              },
+              "custo_doente_sobre_saudavel": 12.841259225306965,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.750063319,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.33333333333333,
+                "edge-c": 49.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 8.939297157345441,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.9996552869999995,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 47.50830564784053,
+                "edge-c": 52.49169435215947
+              },
+              "custo_doente_sobre_saudavel": 11.876123216794783,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.249441385,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.33557046979866,
+                "edge-c": 49.664429530201346
+              },
+              "custo_doente_sobre_saudavel": 21.258064111455795,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.499562744,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.69798657718121,
+                "edge-c": 45.302013422818796
+              },
+              "custo_doente_sobre_saudavel": 9.346717497367035,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.749782788,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 48.84488448844885,
+                "edge-c": 51.15511551155115
+              },
+              "custo_doente_sobre_saudavel": 44.685601831132566,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.99969649,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54,
+                "edge-c": 46
+              },
+              "custo_doente_sobre_saudavel": 35.65856573753086,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.249620293,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.33333333333333,
+                "edge-c": 48.66666666666667
+              },
+              "custo_doente_sobre_saudavel": 8.154972538865232,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.4996093,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 42.524916943521596,
+                "edge-c": 57.475083056478404
+              },
+              "custo_doente_sobre_saudavel": 20.56620300279974,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.750129098,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53,
+                "edge-c": 47
+              },
+              "custo_doente_sobre_saudavel": 6.083982595879405,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.000071699,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.66666666666667,
+                "edge-c": 48.333333333333336
+              },
+              "custo_doente_sobre_saudavel": 24.233225316277778,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.249752833,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 51.162790697674424,
+                "edge-c": 48.837209302325576
+              },
+              "custo_doente_sobre_saudavel": 34.85819204258,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.500222522,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 53.198653198653204,
+                "edge-c": 46.801346801346796
+              },
+              "custo_doente_sobre_saudavel": 9.398332345586674,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.749622637,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 54.48504983388705,
+                "edge-c": 45.51495016611295
+              },
+              "custo_doente_sobre_saudavel": 28.139700059828616,
+              "disjuntor_aberto": false
+            }
+          ]
+        }
+      ],
+      "round-robin": [
+        {
+          "fase": "sem-falha",
+          "resultado": {
+            "scenario": "sem-falha",
+            "strategy": "round-robin",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.00530151,
+            "offered": 9600,
+            "completed": 9600,
+            "errors": 0,
+            "offered_per_sec": 1199.2053001386575,
+            "completed_per_sec": 1199.2053001386575,
+            "error_rate": 0,
+            "p50_ms": 0.509481,
+            "p95_ms": 6.300154,
+            "p99_ms": 6.761876,
+            "max_ms": 7.345934,
+            "status_codes": {
+              "200": 9600
+            },
+            "attempts_by_backend": {
+              "edge-a": 3200,
+              "edge-b": 3200,
+              "edge-c": 3200
+            },
+            "attempts_by_outcome": {
+              "ok": 9600
+            },
+            "failures_by_backend": {
+              "edge-a": 0,
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629145600,
+            "router_bytes_per_sec": 78591118.54988706,
+            "router_goroutines_end": 59,
+            "router_open_fds_end": 45,
+            "edge_hits": {
+              "edge-a": 2767,
+              "edge-b": 2721,
+              "edge-c": 2684
+            },
+            "edge_misses": {
+              "edge-a": 433,
+              "edge-b": 479,
+              "edge-c": 516
+            },
+            "edge_origin_fetches": {
+              "edge-a": 432,
+              "edge-b": 479,
+              "edge-c": 515
+            },
+            "origin_requests": 1426,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": null,
+          "fotos": [
+            {
+              "t": 0.249774963,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 1.4526468071952894,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.499663568,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 1.5170624549025895,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.749545416,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.7471699146283469,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.000516937,
+              "share_pct": {
+                "edge-a": 33.11258278145696,
+                "edge-b": 33.77483443708609,
+                "edge-c": 33.11258278145696
+              },
+              "custo_doente_sobre_saudavel": 0.6149999324053337,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.250367537,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.9995733785104661,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.5003011640000001,
+              "share_pct": {
+                "edge-a": 33.11036789297659,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 10.77818221343605,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.750352086,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.8256548342731655,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.999709686,
+              "share_pct": {
+                "edge-a": 33.21678321678322,
+                "edge-b": 33.21678321678322,
+                "edge-c": 33.56643356643357
+              },
+              "custo_doente_sobre_saudavel": 1.7454399370120797,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.250138591,
+              "share_pct": {
+                "edge-a": 33.77926421404682,
+                "edge-b": 33.44481605351171,
+                "edge-c": 32.77591973244147
+              },
+              "custo_doente_sobre_saudavel": 0.8494674519624665,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.500026549,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.7203847065604403,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.749835557,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33,
+                "edge-c": 33.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 0.4052637989525116,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.000237238,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33
+              },
+              "custo_doente_sobre_saudavel": 1.0305601872963945,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.249539339,
+              "share_pct": {
+                "edge-a": 33,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 2.5784534355057325,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.499837947,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.5548172757475
+              },
+              "custo_doente_sobre_saudavel": 0.4751664059143527,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.750108882,
+              "share_pct": {
+                "edge-a": 33.77926421404682,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.3724911286140011,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.999912355,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.08067331703652939,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.249643847,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 32.89036544850498,
+                "edge-c": 33.88704318936877
+              },
+              "custo_doente_sobre_saudavel": 0.47918001333535687,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.499879398,
+              "share_pct": {
+                "edge-a": 32.89036544850498,
+                "edge-b": 33.88704318936877,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 2.8207376288941024,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.750043366,
+              "share_pct": {
+                "edge-a": 33.89261744966443,
+                "edge-b": 33.22147651006711,
+                "edge-c": 32.88590604026846
+              },
+              "custo_doente_sobre_saudavel": 0.166979006058412,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.000014844,
+              "share_pct": {
+                "edge-a": 33.11258278145696,
+                "edge-b": 33.443708609271525,
+                "edge-c": 33.443708609271525
+              },
+              "custo_doente_sobre_saudavel": 1.0390383201483981,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.249782568,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33,
+                "edge-c": 33.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 0.7876346834346271,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.499882452,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.389988822666322,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.749524391,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.15933085153802784,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.000091556,
+              "share_pct": {
+                "edge-a": 32.89036544850498,
+                "edge-b": 33.5548172757475,
+                "edge-c": 33.5548172757475
+              },
+              "custo_doente_sobre_saudavel": 0.6653563776737053,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.249594558,
+              "share_pct": {
+                "edge-a": 33.557046979865774,
+                "edge-b": 32.88590604026846,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 0.5266372313770445,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.499876882,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.960921766892281,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.749682631,
+              "share_pct": {
+                "edge-a": 33.11036789297659,
+                "edge-b": 33.77926421404682,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.9604722322040697,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.000152261,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 1.8393914768188204,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.249484417,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.30844305011536194,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.50007699,
+              "share_pct": {
+                "edge-a": 33.557046979865774,
+                "edge-b": 33.22147651006711,
+                "edge-c": 33.22147651006711
+              },
+              "custo_doente_sobre_saudavel": 0.4039531568056794,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.749732285,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.8165450030102348,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.000237653,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.43261401062819504,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.250154035,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33
+              },
+              "custo_doente_sobre_saudavel": 0.4000610439616755,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.499619674,
+              "share_pct": {
+                "edge-a": 33.11258278145696,
+                "edge-b": 33.11258278145696,
+                "edge-c": 33.77483443708609
+              },
+              "custo_doente_sobre_saudavel": 2.495098108873786,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.749740896,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.23133122876592427,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.999636837,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 1.7532858545467165,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.249830268,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.5548172757475
+              },
+              "custo_doente_sobre_saudavel": 1.4882376185389983,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.499622514,
+              "share_pct": {
+                "edge-a": 33.670033670033675,
+                "edge-b": 32.996632996633,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.15094013272235865,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.749971765,
+              "share_pct": {
+                "edge-a": 32.89036544850498,
+                "edge-b": 33.88704318936877,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 0.6528641723145483,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "latencia-50ms",
+          "resultado": {
+            "scenario": "latencia-50ms",
+            "strategy": "round-robin",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.05902566,
+            "offered": 9599,
+            "completed": 9599,
+            "errors": 0,
+            "offered_per_sec": 1191.0869136009178,
+            "completed_per_sec": 1191.0869136009178,
+            "error_rate": 0,
+            "p50_ms": 0.599705,
+            "p95_ms": 59.867648,
+            "p99_ms": 65.140591,
+            "max_ms": 151.662937,
+            "status_codes": {
+              "200": 9599
+            },
+            "attempts_by_backend": {
+              "edge-a": 3200,
+              "edge-b": 3200,
+              "edge-c": 3199
+            },
+            "attempts_by_outcome": {
+              "ok": 9599
+            },
+            "failures_by_backend": {
+              "edge-a": 0,
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629080064,
+            "router_bytes_per_sec": 78059071.96974975,
+            "router_goroutines_end": 719,
+            "router_open_fds_end": 523,
+            "edge_hits": {
+              "edge-a": 2733,
+              "edge-b": 2724,
+              "edge-c": 2723
+            },
+            "edge_misses": {
+              "edge-a": 467,
+              "edge-b": 476,
+              "edge-c": 476
+            },
+            "edge_origin_fetches": {
+              "edge-a": 467,
+              "edge-b": 476,
+              "edge-c": 474
+            },
+            "origin_requests": 1417,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": null,
+          "fotos": [
+            {
+              "t": 0.250780287,
+              "share_pct": {
+                "edge-a": 36.04651162790697,
+                "edge-b": 32.325581395348834,
+                "edge-c": 31.627906976744185
+              },
+              "custo_doente_sobre_saudavel": 820.6505749899055,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.500115924,
+              "share_pct": {
+                "edge-a": 32.88135593220339,
+                "edge-b": 33.559322033898304,
+                "edge-c": 33.559322033898304
+              },
+              "custo_doente_sobre_saudavel": 413.96725929489645,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.750158525,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 678.7154712653847,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.000207375,
+              "share_pct": {
+                "edge-a": 33.5548172757475,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 2337.992980795773,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.250954968,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 1344.0085646537366,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.500370312,
+              "share_pct": {
+                "edge-a": 33.666666666666664,
+                "edge-b": 33,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 2162.5723674832125,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.750223525,
+              "share_pct": {
+                "edge-a": 32.88590604026846,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 852.6442729163803,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.000249086,
+              "share_pct": {
+                "edge-a": 30,
+                "edge-b": 35.26315789473684,
+                "edge-c": 34.73684210526316
+              },
+              "custo_doente_sobre_saudavel": 391.35817292680883,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.250638117,
+              "share_pct": {
+                "edge-a": 35.588235294117645,
+                "edge-b": 32.05882352941177,
+                "edge-c": 32.35294117647059
+              },
+              "custo_doente_sobre_saudavel": 1067.918241118106,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.5005271220000003,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 1543.2155904917918,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.750142302,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 720.2074949777966,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.000627447,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.5548172757475
+              },
+              "custo_doente_sobre_saudavel": 545.2956875233183,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.250614337,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 364.18852443219106,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.500438121,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 429.4054541288746,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.75037422,
+              "share_pct": {
+                "edge-a": 33.5548172757475,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 712.4236396489301,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.00032339,
+              "share_pct": {
+                "edge-a": 32.5503355704698,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.89261744966443
+              },
+              "custo_doente_sobre_saudavel": 1399.1162984875093,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.2502727,
+              "share_pct": {
+                "edge-a": 32.88590604026846,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 825.3689920287371,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.499975534,
+              "share_pct": {
+                "edge-a": 34.21052631578947,
+                "edge-b": 32.89473684210527,
+                "edge-c": 32.89473684210527
+              },
+              "custo_doente_sobre_saudavel": 765.6614108256603,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.750041938,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 777.3082557756012,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.000358424,
+              "share_pct": {
+                "edge-a": 32.5503355704698,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.89261744966443
+              },
+              "custo_doente_sobre_saudavel": 1131.3486015619337,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.250137394,
+              "share_pct": {
+                "edge-a": 33.88704318936877,
+                "edge-b": 32.89036544850498,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 390.5903917888807,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.501002741,
+              "share_pct": {
+                "edge-a": 33,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 1186.957655716518,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.750442895,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 2746.3217600021394,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.000470007,
+              "share_pct": {
+                "edge-a": 33.443708609271525,
+                "edge-b": 33.443708609271525,
+                "edge-c": 33.11258278145696
+              },
+              "custo_doente_sobre_saudavel": 1620.0775208276168,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.25031055,
+              "share_pct": {
+                "edge-a": 33.557046979865774,
+                "edge-b": 33.22147651006711,
+                "edge-c": 33.22147651006711
+              },
+              "custo_doente_sobre_saudavel": 478.5829626145621,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.500067233,
+              "share_pct": {
+                "edge-a": 33.5548172757475,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 284.70797080705364,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.750764778,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.5548172757475,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 736.3691626531596,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.000332088,
+              "share_pct": {
+                "edge-a": 33.443708609271525,
+                "edge-b": 33.11258278145696,
+                "edge-c": 33.443708609271525
+              },
+              "custo_doente_sobre_saudavel": 976.7307179483348,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.250119646,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 967.2791070197494,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.5006806059999995,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 1453.9095364850705,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.750634081,
+              "share_pct": {
+                "edge-a": 32.659932659932664,
+                "edge-b": 33.670033670033675,
+                "edge-c": 33.670033670033675
+              },
+              "custo_doente_sobre_saudavel": 885.7665032680977,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.000009817,
+              "share_pct": {
+                "edge-a": 33.5548172757475,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 2471.360294470344,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.250225214,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 879.5084305801166,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.500113763,
+              "share_pct": {
+                "edge-a": 33,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 1760.5759923219305,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.750083637,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 1035.569172601433,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.000833414,
+              "share_pct": {
+                "edge-a": 33.663366336633665,
+                "edge-b": 33.003300330033,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 964.5452646526361,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.249989393,
+              "share_pct": {
+                "edge-a": 32.77027027027027,
+                "edge-b": 33.44594594594595,
+                "edge-c": 33.78378378378378
+              },
+              "custo_doente_sobre_saudavel": 1152.2547403959693,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.50009219,
+              "share_pct": {
+                "edge-a": 33.881578947368425,
+                "edge-b": 33.223684210526315,
+                "edge-c": 32.89473684210527
+              },
+              "custo_doente_sobre_saudavel": 781.0054087017193,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.750245546,
+              "share_pct": {
+                "edge-a": 33.77926421404682,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 247.65627963844193,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "latencia-200ms",
+          "resultado": {
+            "scenario": "latencia-200ms",
+            "strategy": "round-robin",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.223308181,
+            "offered": 9599,
+            "completed": 9599,
+            "errors": 0,
+            "offered_per_sec": 1167.2917746386477,
+            "completed_per_sec": 1167.2917746386477,
+            "error_rate": 0,
+            "p50_ms": 0.600584,
+            "p95_ms": 227.984085,
+            "p99_ms": 232.252524,
+            "max_ms": 280.666416,
+            "status_codes": {
+              "200": 9599
+            },
+            "attempts_by_backend": {
+              "edge-a": 3200,
+              "edge-b": 3199,
+              "edge-c": 3200
+            },
+            "attempts_by_outcome": {
+              "ok": 9599
+            },
+            "failures_by_backend": {
+              "edge-a": 0,
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629080064,
+            "router_bytes_per_sec": 76499633.74271841,
+            "router_goroutines_end": 1019,
+            "router_open_fds_end": 797,
+            "edge_hits": {
+              "edge-a": 2699,
+              "edge-b": 2736,
+              "edge-c": 2735
+            },
+            "edge_misses": {
+              "edge-a": 501,
+              "edge-b": 463,
+              "edge-c": 465
+            },
+            "edge_origin_fetches": {
+              "edge-a": 500,
+              "edge-b": 461,
+              "edge-c": 465
+            },
+            "origin_requests": 1426,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 2.249988647,
+          "fotos": [
+            {
+              "t": 0.249972611,
+              "share_pct": {
+                "edge-a": 34.64052287581699,
+                "edge-b": 32.6797385620915,
+                "edge-c": 32.6797385620915
+              },
+              "custo_doente_sobre_saudavel": 20598.948022419452,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.50028329,
+              "share_pct": {
+                "edge-a": 32.88590604026846,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 11109.183278707837,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.749962616,
+              "share_pct": {
+                "edge-a": 33.77483443708609,
+                "edge-b": 33.11258278145696,
+                "edge-c": 33.11258278145696
+              },
+              "custo_doente_sobre_saudavel": 4951.09413462419,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.00035475,
+              "share_pct": {
+                "edge-a": 33.77483443708609,
+                "edge-b": 33.11258278145696,
+                "edge-c": 33.11258278145696
+              },
+              "custo_doente_sobre_saudavel": 13924.924578302713,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.250539044,
+              "share_pct": {
+                "edge-a": 32.88590604026846,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 27779.554077445882,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.500284092,
+              "share_pct": {
+                "edge-a": 32.88590604026846,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 15182.615828951504,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.7501983,
+              "share_pct": {
+                "edge-a": 32.77027027027027,
+                "edge-b": 33.78378378378378,
+                "edge-c": 33.44594594594595
+              },
+              "custo_doente_sobre_saudavel": 8702.26003321668,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.999951976,
+              "share_pct": {
+                "edge-a": 87.36842105263159,
+                "edge-b": 6.315789473684211,
+                "edge-c": 6.315789473684211
+              },
+              "custo_doente_sobre_saudavel": 1112.4440561337917,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.249988647,
+              "share_pct": {
+                "edge-a": 11.555555555555555,
+                "edge-b": 43.55555555555555,
+                "edge-c": 44.888888888888886
+              },
+              "custo_doente_sobre_saudavel": 7120.880152641703,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.500549178,
+              "share_pct": {
+                "edge-a": 33,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 6474.012848512641,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.749729955,
+              "share_pct": {
+                "edge-a": 34.42622950819672,
+                "edge-b": 32.78688524590164,
+                "edge-c": 32.78688524590164
+              },
+              "custo_doente_sobre_saudavel": 6544.393460115901,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.000701166,
+              "share_pct": {
+                "edge-a": 31.63265306122449,
+                "edge-b": 34.35374149659864,
+                "edge-c": 34.01360544217687
+              },
+              "custo_doente_sobre_saudavel": 14416.819391170353,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.25004018,
+              "share_pct": {
+                "edge-a": 34.437086092715234,
+                "edge-b": 33.11258278145696,
+                "edge-c": 32.450331125827816
+              },
+              "custo_doente_sobre_saudavel": 6555.324010236557,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.500555067,
+              "share_pct": {
+                "edge-a": 33.11258278145696,
+                "edge-b": 33.11258278145696,
+                "edge-c": 33.77483443708609
+              },
+              "custo_doente_sobre_saudavel": 14116.931693085473,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.749813821,
+              "share_pct": {
+                "edge-a": 33.22147651006711,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.22147651006711
+              },
+              "custo_doente_sobre_saudavel": 51980.20378339564,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.999835548,
+              "share_pct": {
+                "edge-a": 32.659932659932664,
+                "edge-b": 33.670033670033675,
+                "edge-c": 33.670033670033675
+              },
+              "custo_doente_sobre_saudavel": 8798.981202067138,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.249721985,
+              "share_pct": {
+                "edge-a": 34.32343234323432,
+                "edge-b": 32.67326732673268,
+                "edge-c": 33.003300330033
+              },
+              "custo_doente_sobre_saudavel": 2931.2642373120316,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.500794224,
+              "share_pct": {
+                "edge-a": 32.77591973244147,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.77926421404682
+              },
+              "custo_doente_sobre_saudavel": 11184.88514687865,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.750047649,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33
+              },
+              "custo_doente_sobre_saudavel": 9386.402132811043,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.999726058,
+              "share_pct": {
+                "edge-a": 33.22147651006711,
+                "edge-b": 33.22147651006711,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 6301.902461879751,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.250005607,
+              "share_pct": {
+                "edge-a": 33.11036789297659,
+                "edge-b": 33.77926421404682,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 5484.1784876400025,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.5006572590000005,
+              "share_pct": {
+                "edge-a": 34.627831715210355,
+                "edge-b": 32.362459546925564,
+                "edge-c": 33.00970873786408
+              },
+              "custo_doente_sobre_saudavel": 10102.609320092835,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.750135723,
+              "share_pct": {
+                "edge-a": 32.54237288135593,
+                "edge-b": 33.559322033898304,
+                "edge-c": 33.89830508474576
+              },
+              "custo_doente_sobre_saudavel": 14201.296883442106,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.999781428,
+              "share_pct": {
+                "edge-a": 32.88135593220339,
+                "edge-b": 33.89830508474576,
+                "edge-c": 33.220338983050844
+              },
+              "custo_doente_sobre_saudavel": 4681.787835016552,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.250177534,
+              "share_pct": {
+                "edge-a": 33.876221498371336,
+                "edge-b": 32.89902280130293,
+                "edge-c": 33.22475570032573
+              },
+              "custo_doente_sobre_saudavel": 45930.27856472209,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.500554167,
+              "share_pct": {
+                "edge-a": 32.88590604026846,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 17184.582261064323,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.74976597,
+              "share_pct": {
+                "edge-a": 33.666666666666664,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33
+              },
+              "custo_doente_sobre_saudavel": 19322.21980627974,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.999789886,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 37212.652220261814,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.249949236,
+              "share_pct": {
+                "edge-a": 32.996632996633,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.670033670033675
+              },
+              "custo_doente_sobre_saudavel": 14772.092742170838,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.500153192,
+              "share_pct": {
+                "edge-a": 32.666666666666664,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 8992.452580993728,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.749860713,
+              "share_pct": {
+                "edge-a": 33.88704318936877,
+                "edge-b": 33.222591362126245,
+                "edge-c": 32.89036544850498
+              },
+              "custo_doente_sobre_saudavel": 16227.516262561294,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.000868311,
+              "share_pct": {
+                "edge-a": 33.993399339933994,
+                "edge-b": 32.67326732673268,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 24283.170783699734,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.249738806,
+              "share_pct": {
+                "edge-a": 32.996632996633,
+                "edge-b": 34.00673400673401,
+                "edge-c": 32.996632996633
+              },
+              "custo_doente_sobre_saudavel": 15298.92968412631,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.499839216,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.5548172757475
+              },
+              "custo_doente_sobre_saudavel": 5724.524055181228,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.749837489,
+              "share_pct": {
+                "edge-a": 32.88590604026846,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.557046979865774
+              },
+              "custo_doente_sobre_saudavel": 26215.22136536561,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.999940645,
+              "share_pct": {
+                "edge-a": 33.666666666666664,
+                "edge-b": 33,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 7677.069705658325,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.25053738,
+              "share_pct": {
+                "edge-a": 33.443708609271525,
+                "edge-b": 33.443708609271525,
+                "edge-c": 33.11258278145696
+              },
+              "custo_doente_sobre_saudavel": 18554.70023072577,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.500780029,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33,
+                "edge-c": 33.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 4669.762077663415,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.750082746,
+              "share_pct": {
+                "edge-a": 33.5548172757475,
+                "edge-b": 33.5548172757475,
+                "edge-c": 32.89036544850498
+              },
+              "custo_doente_sobre_saudavel": 11940.327210558788,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.000677025,
+              "share_pct": {
+                "edge-a": 34.375,
+                "edge-b": 32.63888888888889,
+                "edge-c": 32.98611111111111
+              },
+              "custo_doente_sobre_saudavel": 25808.259439049383,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "latencia-800ms",
+          "resultado": {
+            "scenario": "latencia-800ms",
+            "strategy": "round-robin",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.800822574,
+            "offered": 9600,
+            "completed": 6163,
+            "errors": 3437,
+            "offered_per_sec": 1090.8071284564905,
+            "completed_per_sec": 700.2754513205574,
+            "error_rate": 0.35802083333333334,
+            "p50_ms": 0.603159,
+            "p95_ms": 801.095497,
+            "p99_ms": 806.229507,
+            "max_ms": 807.839164,
+            "status_codes": {
+              "0": 1029,
+              "200": 6163,
+              "503": 1894,
+              "504": 514
+            },
+            "error_messages": [
+              "503 Service Unavailable",
+              "unexpected EOF",
+              "504 Gateway Timeout"
+            ],
+            "attempts_by_backend": {
+              "edge-a": 2562,
+              "edge-b": 2995,
+              "edge-c": 2919
+            },
+            "attempts_by_outcome": {
+              "ok": 7192,
+              "timeout": 1284
+            },
+            "failures_by_backend": {
+              "edge-a": 1284,
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 770,
+            "retries_denied": 514,
+            "rejected_by_reason": {
+              "concorrencia": 1894
+            },
+            "retry_budget_tokens_end": 0.7999999999993874,
+            "router_bytes": 429188413,
+            "router_bytes_per_sec": 48766852.11993004,
+            "router_goroutines_end": 1137,
+            "router_open_fds_end": 1007,
+            "edge_hits": {
+              "edge-a": 2149,
+              "edge-b": 2545,
+              "edge-c": 2487
+            },
+            "edge_misses": {
+              "edge-a": 413,
+              "edge-b": 450,
+              "edge-c": 432
+            },
+            "edge_origin_fetches": {
+              "edge-a": 413,
+              "edge-b": 450,
+              "edge-c": 431
+            },
+            "origin_requests": 1294,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 0.249836552,
+          "fotos": [
+            {
+              "t": 0.249836552,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.25125628140703,
+                "edge-c": 49.74874371859296
+              },
+              "custo_doente_sobre_saudavel": 33317.022836298565,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.500129788,
+              "share_pct": {
+                "edge-a": 0.8771929824561403,
+                "edge-b": 49.122807017543856,
+                "edge-c": 50
+              },
+              "custo_doente_sobre_saudavel": 123591.23944531751,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.749062826,
+              "share_pct": {
+                "edge-a": 31.521739130434785,
+                "edge-b": 34.05797101449276,
+                "edge-c": 34.42028985507246
+              },
+              "custo_doente_sobre_saudavel": 893859.4338038563,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.999248549,
+              "share_pct": {
+                "edge-a": 29.81366459627329,
+                "edge-b": 35.40372670807454,
+                "edge-c": 34.78260869565217
+              },
+              "custo_doente_sobre_saudavel": 269982.08655552036,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.249027779,
+              "share_pct": {
+                "edge-a": 23.684210526315788,
+                "edge-b": 37.17105263157895,
+                "edge-c": 39.14473684210527
+              },
+              "custo_doente_sobre_saudavel": 1269570.6652313382,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.499390248,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 32.82828282828283,
+                "edge-c": 33.83838383838384
+              },
+              "custo_doente_sobre_saudavel": 778672.8532602725,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.749595853,
+              "share_pct": {
+                "edge-a": 27.607361963190186,
+                "edge-b": 36.809815950920246,
+                "edge-c": 35.58282208588957
+              },
+              "custo_doente_sobre_saudavel": 518225.0061757102,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.999097362,
+              "share_pct": {
+                "edge-a": 95.83333333333334,
+                "edge-b": 2.083333333333333,
+                "edge-c": 2.083333333333333
+              },
+              "custo_doente_sobre_saudavel": 371326.1057414742,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.249708151,
+              "share_pct": {
+                "edge-a": 100,
+                "edge-b": 0,
+                "edge-c": 0
+              },
+              "custo_doente_sobre_saudavel": 147190.90951849867,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.499985124,
+              "share_pct": {
+                "edge-a": 100,
+                "edge-b": 0,
+                "edge-c": 0
+              },
+              "custo_doente_sobre_saudavel": 53832.4607078863,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.74935529,
+              "share_pct": {
+                "edge-a": 8.333333333333332,
+                "edge-b": 45.83333333333333,
+                "edge-c": 45.83333333333333
+              },
+              "custo_doente_sobre_saudavel": 479957.5718691443,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 2.9991122690000003,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50.505050505050505,
+                "edge-c": 49.494949494949495
+              },
+              "custo_doente_sobre_saudavel": 1085117.772552462,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 3.250029111,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.36708860759494,
+                "edge-c": 50.63291139240506
+              },
+              "custo_doente_sobre_saudavel": 2599598.3746845266,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 3.499020328,
+              "share_pct": {
+                "edge-a": 33.175355450236964,
+                "edge-b": 33.175355450236964,
+                "edge-c": 33.649289099526065
+              },
+              "custo_doente_sobre_saudavel": 378625.67523743835,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.749521917,
+              "share_pct": {
+                "edge-a": 27.77777777777778,
+                "edge-b": 39.473684210526315,
+                "edge-c": 32.748538011695906
+              },
+              "custo_doente_sobre_saudavel": 323947.6087512177,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.999699583,
+              "share_pct": {
+                "edge-a": 26.53061224489796,
+                "edge-b": 37.02623906705539,
+                "edge-c": 36.44314868804665
+              },
+              "custo_doente_sobre_saudavel": 861321.689881181,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.249553613,
+              "share_pct": {
+                "edge-a": 31.57894736842105,
+                "edge-b": 33.83458646616541,
+                "edge-c": 34.58646616541353
+              },
+              "custo_doente_sobre_saudavel": 562499.8735666092,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.499673745,
+              "share_pct": {
+                "edge-a": 28.445747800586513,
+                "edge-b": 37.5366568914956,
+                "edge-c": 34.01759530791789
+              },
+              "custo_doente_sobre_saudavel": 538754.6980086012,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.749642275,
+              "share_pct": {
+                "edge-a": 30.83832335329341,
+                "edge-b": 32.33532934131736,
+                "edge-c": 36.82634730538922
+              },
+              "custo_doente_sobre_saudavel": 705362.8245641447,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.999214697,
+              "share_pct": {
+                "edge-a": 23.57142857142857,
+                "edge-b": 39.285714285714285,
+                "edge-c": 37.142857142857146
+              },
+              "custo_doente_sobre_saudavel": 595797.2623128119,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.249507785,
+              "share_pct": {
+                "edge-a": 28.84012539184953,
+                "edge-b": 35.42319749216301,
+                "edge-c": 35.73667711598746
+              },
+              "custo_doente_sobre_saudavel": 2359976.5200169496,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.499213629,
+              "share_pct": {
+                "edge-a": 33.5483870967742,
+                "edge-b": 36.12903225806451,
+                "edge-c": 30.32258064516129
+              },
+              "custo_doente_sobre_saudavel": 2068954.3950573104,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.749793244,
+              "share_pct": {
+                "edge-a": 29.19254658385093,
+                "edge-b": 37.88819875776397,
+                "edge-c": 32.91925465838509
+              },
+              "custo_doente_sobre_saudavel": 329324.4304678296,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.999311025,
+              "share_pct": {
+                "edge-a": 32.196969696969695,
+                "edge-b": 33.71212121212121,
+                "edge-c": 34.090909090909086
+              },
+              "custo_doente_sobre_saudavel": 968864.2911786381,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.249043479,
+              "share_pct": {
+                "edge-a": 31.32530120481928,
+                "edge-b": 36.74698795180723,
+                "edge-c": 31.92771084337349
+              },
+              "custo_doente_sobre_saudavel": 719293.2903183291,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.499090588,
+              "share_pct": {
+                "edge-a": 24.897959183673468,
+                "edge-b": 36.734693877551024,
+                "edge-c": 38.36734693877551
+              },
+              "custo_doente_sobre_saudavel": 1559518.3431145074,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.749463244,
+              "share_pct": {
+                "edge-a": 35.09615384615385,
+                "edge-b": 32.69230769230769,
+                "edge-c": 32.21153846153847
+              },
+              "custo_doente_sobre_saudavel": 898551.5098325412,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.999229527,
+              "share_pct": {
+                "edge-a": 28.57142857142857,
+                "edge-b": 36.95652173913043,
+                "edge-c": 34.47204968944099
+              },
+              "custo_doente_sobre_saudavel": 1713559.4566152797,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.249613073,
+              "share_pct": {
+                "edge-a": 29.03225806451613,
+                "edge-b": 33.87096774193548,
+                "edge-c": 37.096774193548384
+              },
+              "custo_doente_sobre_saudavel": 873221.9306838366,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 7.499418413,
+              "share_pct": {
+                "edge-a": 33.5483870967742,
+                "edge-b": 34.83870967741935,
+                "edge-c": 31.61290322580645
+              },
+              "custo_doente_sobre_saudavel": 2175419.426364658,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.748966848,
+              "share_pct": {
+                "edge-a": 31.84931506849315,
+                "edge-b": 34.93150684931507,
+                "edge-c": 33.21917808219178
+              },
+              "custo_doente_sobre_saudavel": 1569814.7995191694,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.999750728,
+              "share_pct": {
+                "edge-a": 27.96352583586626,
+                "edge-b": 35.56231003039514,
+                "edge-c": 36.474164133738604
+              },
+              "custo_doente_sobre_saudavel": 495300.99400384864,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.24971969,
+              "share_pct": {
+                "edge-a": 29.01234567901235,
+                "edge-b": 37.03703703703704,
+                "edge-c": 33.95061728395062
+              },
+              "custo_doente_sobre_saudavel": 408104.18159424886,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.499221113,
+              "share_pct": {
+                "edge-a": 31.93548387096774,
+                "edge-b": 33.5483870967742,
+                "edge-c": 34.516129032258064
+              },
+              "custo_doente_sobre_saudavel": 780149.8746742242,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.749111236,
+              "share_pct": {
+                "edge-a": 29.292929292929294,
+                "edge-b": 34.34343434343434,
+                "edge-c": 36.36363636363637
+              },
+              "custo_doente_sobre_saudavel": 1293340.1843098127,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.999741467,
+              "share_pct": {
+                "edge-a": 28.342245989304814,
+                "edge-b": 34.75935828877005,
+                "edge-c": 36.898395721925134
+              },
+              "custo_doente_sobre_saudavel": 1250603.9173469585,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.249165404,
+              "share_pct": {
+                "edge-a": 32.74021352313167,
+                "edge-b": 34.16370106761566,
+                "edge-c": 33.096085409252666
+              },
+              "custo_doente_sobre_saudavel": 894366.2364921247,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.499153787000001,
+              "share_pct": {
+                "edge-a": 28.30188679245283,
+                "edge-b": 37.735849056603776,
+                "edge-c": 33.9622641509434
+              },
+              "custo_doente_sobre_saudavel": 2761596.1078499686,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.749995303,
+              "share_pct": {
+                "edge-a": 27.615062761506277,
+                "edge-b": 35.56485355648535,
+                "edge-c": 36.82008368200837
+              },
+              "custo_doente_sobre_saudavel": 1453770.7734719636,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.000013465,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 32.407407407407405,
+                "edge-c": 34.25925925925926
+              },
+              "custo_doente_sobre_saudavel": 836054.5116412966,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.249398112,
+              "share_pct": {
+                "edge-a": 31.372549019607842,
+                "edge-b": 35.62091503267974,
+                "edge-c": 33.006535947712415
+              },
+              "custo_doente_sobre_saudavel": 1112539.3841817,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.499511071,
+              "share_pct": {
+                "edge-a": 30.49645390070922,
+                "edge-b": 35.1063829787234,
+                "edge-c": 34.39716312056738
+              },
+              "custo_doente_sobre_saudavel": 324658.25391905714,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.74999565,
+              "share_pct": {
+                "edge-a": 74.66666666666667,
+                "edge-b": 13.333333333333334,
+                "edge-c": 12
+              },
+              "custo_doente_sobre_saudavel": 853619.4461661865,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.999970645,
+              "share_pct": {
+                "edge-a": 100,
+                "edge-b": 0,
+                "edge-c": 0
+              },
+              "custo_doente_sobre_saudavel": 665303.4198325013,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 11.249918874,
+              "share_pct": {
+                "edge-a": 100,
+                "edge-b": 0,
+                "edge-c": 0
+              },
+              "custo_doente_sobre_saudavel": 128858.44387118772,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "conexao-cortada",
+          "resultado": {
+            "scenario": "conexao-cortada",
+            "strategy": "round-robin",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.78693709,
+            "offered": 9600,
+            "completed": 6002,
+            "errors": 3598,
+            "offered_per_sec": 1092.5308673172713,
+            "completed_per_sec": 683.0594026706523,
+            "error_rate": 0.37479166666666663,
+            "p50_ms": 0.632717,
+            "p95_ms": 801.132722,
+            "p99_ms": 805.490988,
+            "max_ms": 807.692404,
+            "status_codes": {
+              "0": 740,
+              "200": 6002,
+              "503": 1977,
+              "504": 881
+            },
+            "error_messages": [
+              "503 Service Unavailable",
+              "unexpected EOF",
+              "504 Gateway Timeout"
+            ],
+            "attempts_by_backend": {
+              "edge-a": 2561,
+              "edge-b": 2963,
+              "edge-c": 2861
+            },
+            "attempts_by_outcome": {
+              "ok": 6742,
+              "timeout": 1643
+            },
+            "failures_by_backend": {
+              "edge-a": 1643,
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 762,
+            "retries_denied": 881,
+            "rejected_by_reason": {
+              "concorrencia": 1977
+            },
+            "retry_budget_tokens_end": 0.7999999999989246,
+            "router_bytes": 411544195,
+            "router_bytes_per_sec": 46835910.03153523,
+            "router_goroutines_end": 1483,
+            "router_open_fds_end": 1361,
+            "edge_hits": {
+              "edge-a": 2168,
+              "edge-b": 2560,
+              "edge-c": 2424
+            },
+            "edge_misses": {
+              "edge-a": 393,
+              "edge-b": 403,
+              "edge-c": 437
+            },
+            "edge_origin_fetches": {
+              "edge-a": 393,
+              "edge-b": 403,
+              "edge-c": 437
+            },
+            "origin_requests": 1233,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": 0.250080658,
+          "fotos": [
+            {
+              "t": 0.250080658,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50,
+                "edge-c": 50
+              },
+              "custo_doente_sobre_saudavel": 3052794.620543858,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 0.499815463,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50,
+                "edge-c": 50
+              },
+              "custo_doente_sobre_saudavel": 2849671.056474533,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 0.749058759,
+              "share_pct": {
+                "edge-a": 29.06574394463668,
+                "edge-b": 35.294117647058826,
+                "edge-c": 35.6401384083045
+              },
+              "custo_doente_sobre_saudavel": 1150921.2650324989,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.999167491,
+              "share_pct": {
+                "edge-a": 30.72463768115942,
+                "edge-b": 35.07246376811594,
+                "edge-c": 34.20289855072463
+              },
+              "custo_doente_sobre_saudavel": 811827.4535739467,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.249754222,
+              "share_pct": {
+                "edge-a": 24.354243542435423,
+                "edge-b": 37.269372693726936,
+                "edge-c": 38.37638376383764
+              },
+              "custo_doente_sobre_saudavel": 1983977.6921336057,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 1.49927714,
+              "share_pct": {
+                "edge-a": 31.693989071038253,
+                "edge-b": 34.97267759562842,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 873101.2270486844,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.7493013579999999,
+              "share_pct": {
+                "edge-a": 28.792569659442723,
+                "edge-b": 36.22291021671827,
+                "edge-c": 34.984520123839005
+              },
+              "custo_doente_sobre_saudavel": 938327.4874900479,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.999749046,
+              "share_pct": {
+                "edge-a": 96,
+                "edge-b": 1,
+                "edge-c": 3
+              },
+              "custo_doente_sobre_saudavel": 859067.8347221703,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 2.249080348,
+              "share_pct": {
+                "edge-a": 100,
+                "edge-b": 0,
+                "edge-c": 0
+              },
+              "custo_doente_sobre_saudavel": 368639.424657907,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.50010953,
+              "share_pct": {
+                "edge-a": 100,
+                "edge-b": 0,
+                "edge-c": 0
+              },
+              "custo_doente_sobre_saudavel": 61007.27493051746,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.749685343,
+              "share_pct": {
+                "edge-a": 7.83132530120482,
+                "edge-b": 46.3855421686747,
+                "edge-c": 45.78313253012048
+              },
+              "custo_doente_sobre_saudavel": 270927.8543620805,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.99918446,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 49.74874371859296,
+                "edge-c": 50.25125628140703
+              },
+              "custo_doente_sobre_saudavel": 962676.2513081001,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.249591485,
+              "share_pct": {
+                "edge-a": 0,
+                "edge-b": 50,
+                "edge-c": 50
+              },
+              "custo_doente_sobre_saudavel": 1986224.7782280568,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.499177936,
+              "share_pct": {
+                "edge-a": 32,
+                "edge-b": 32,
+                "edge-c": 36
+              },
+              "custo_doente_sobre_saudavel": 561405.9835515167,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.749182763,
+              "share_pct": {
+                "edge-a": 27.298050139275766,
+                "edge-b": 36.768802228412255,
+                "edge-c": 35.93314763231198
+              },
+              "custo_doente_sobre_saudavel": 529203.2016426474,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 3.999108512,
+              "share_pct": {
+                "edge-a": 27.514792899408285,
+                "edge-b": 36.09467455621302,
+                "edge-c": 36.3905325443787
+              },
+              "custo_doente_sobre_saudavel": 1808737.3023292806,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 4.249167555,
+              "share_pct": {
+                "edge-a": 33.88429752066116,
+                "edge-b": 34.710743801652896,
+                "edge-c": 31.40495867768595
+              },
+              "custo_doente_sobre_saudavel": 805704.9840394601,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.499117029,
+              "share_pct": {
+                "edge-a": 31.41025641025641,
+                "edge-b": 36.217948717948715,
+                "edge-c": 32.371794871794876
+              },
+              "custo_doente_sobre_saudavel": 554945.9242319271,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.749189367,
+              "share_pct": {
+                "edge-a": 30.721003134796238,
+                "edge-b": 36.05015673981191,
+                "edge-c": 33.22884012539185
+              },
+              "custo_doente_sobre_saudavel": 476623.2186292769,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.999775574,
+              "share_pct": {
+                "edge-a": 30.14705882352941,
+                "edge-b": 33.82352941176471,
+                "edge-c": 36.029411764705884
+              },
+              "custo_doente_sobre_saudavel": 1044457.4205820971,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.249666146,
+              "share_pct": {
+                "edge-a": 29.903536977491964,
+                "edge-b": 36.33440514469453,
+                "edge-c": 33.762057877813504
+              },
+              "custo_doente_sobre_saudavel": 665149.2233588203,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.499319494,
+              "share_pct": {
+                "edge-a": 30.630630630630627,
+                "edge-b": 34.234234234234236,
+                "edge-c": 35.13513513513514
+              },
+              "custo_doente_sobre_saudavel": 1110655.0945051473,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.750072303,
+              "share_pct": {
+                "edge-a": 27.10843373493976,
+                "edge-b": 39.75903614457831,
+                "edge-c": 33.13253012048193
+              },
+              "custo_doente_sobre_saudavel": 620495.1022835291,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.999224883,
+              "share_pct": {
+                "edge-a": 31.88405797101449,
+                "edge-b": 33.33333333333333,
+                "edge-c": 34.78260869565217
+              },
+              "custo_doente_sobre_saudavel": 1114306.4849033004,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.249775883,
+              "share_pct": {
+                "edge-a": 30.9375,
+                "edge-b": 36.25,
+                "edge-c": 32.8125
+              },
+              "custo_doente_sobre_saudavel": 703487.3375791931,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.499482238,
+              "share_pct": {
+                "edge-a": 26.859504132231404,
+                "edge-b": 34.29752066115703,
+                "edge-c": 38.84297520661157
+              },
+              "custo_doente_sobre_saudavel": 1965209.7336384545,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 6.749266274,
+              "share_pct": {
+                "edge-a": 31.63265306122449,
+                "edge-b": 34.69387755102041,
+                "edge-c": 33.6734693877551
+              },
+              "custo_doente_sobre_saudavel": 1787757.8704792818,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.999580872,
+              "share_pct": {
+                "edge-a": 30.973451327433626,
+                "edge-b": 36.87315634218289,
+                "edge-c": 32.15339233038348
+              },
+              "custo_doente_sobre_saudavel": 910682.464871275,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.249170404,
+              "share_pct": {
+                "edge-a": 28.29581993569132,
+                "edge-b": 38.263665594855304,
+                "edge-c": 33.440514469453376
+              },
+              "custo_doente_sobre_saudavel": 438389.5602394577,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.499355987,
+              "share_pct": {
+                "edge-a": 34.92063492063492,
+                "edge-b": 30.158730158730158,
+                "edge-c": 34.92063492063492
+              },
+              "custo_doente_sobre_saudavel": 614339.1709006712,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.74920746,
+              "share_pct": {
+                "edge-a": 29.64169381107492,
+                "edge-b": 32.89902280130293,
+                "edge-c": 37.45928338762215
+              },
+              "custo_doente_sobre_saudavel": 1256854.6233467252,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.999515372,
+              "share_pct": {
+                "edge-a": 31.845238095238095,
+                "edge-b": 36.30952380952381,
+                "edge-c": 31.845238095238095
+              },
+              "custo_doente_sobre_saudavel": 1389856.0922562005,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.249736325,
+              "share_pct": {
+                "edge-a": 29.333333333333332,
+                "edge-b": 36.666666666666664,
+                "edge-c": 34
+              },
+              "custo_doente_sobre_saudavel": 3402757.2861797325,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 8.49937031,
+              "share_pct": {
+                "edge-a": 31.5018315018315,
+                "edge-b": 35.53113553113553,
+                "edge-c": 32.967032967032964
+              },
+              "custo_doente_sobre_saudavel": 975461.7870049743,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.749669229,
+              "share_pct": {
+                "edge-a": 30.368098159509206,
+                "edge-b": 35.2760736196319,
+                "edge-c": 34.355828220858896
+              },
+              "custo_doente_sobre_saudavel": 1712680.4470293648,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.999881535,
+              "share_pct": {
+                "edge-a": 26.595744680851062,
+                "edge-b": 37.234042553191486,
+                "edge-c": 36.17021276595745
+              },
+              "custo_doente_sobre_saudavel": 1257575.7079892969,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.249154975,
+              "share_pct": {
+                "edge-a": 34.83606557377049,
+                "edge-b": 34.83606557377049,
+                "edge-c": 30.327868852459016
+              },
+              "custo_doente_sobre_saudavel": 723484.819572932,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 9.500340708,
+              "share_pct": {
+                "edge-a": 30.721003134796238,
+                "edge-b": 34.79623824451411,
+                "edge-c": 34.48275862068966
+              },
+              "custo_doente_sobre_saudavel": 603034.775334154,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.749400025,
+              "share_pct": {
+                "edge-a": 27.049180327868854,
+                "edge-b": 38.114754098360656,
+                "edge-c": 34.83606557377049
+              },
+              "custo_doente_sobre_saudavel": 1078267.106339835,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.999369837,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.789954337899545,
+                "edge-c": 32.87671232876712
+              },
+              "custo_doente_sobre_saudavel": 496305.81039116316,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.24908462,
+              "share_pct": {
+                "edge-a": 31.164383561643838,
+                "edge-b": 33.9041095890411,
+                "edge-c": 34.93150684931507
+              },
+              "custo_doente_sobre_saudavel": 1607588.4589167198,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.499314546,
+              "share_pct": {
+                "edge-a": 29.508196721311474,
+                "edge-b": 37.37704918032787,
+                "edge-c": 33.114754098360656
+              },
+              "custo_doente_sobre_saudavel": 3029773.0513322907,
+              "disjuntor_aberto": true
+            },
+            {
+              "t": 10.749687806,
+              "share_pct": {
+                "edge-a": 87.09677419354838,
+                "edge-b": 4.838709677419355,
+                "edge-c": 8.064516129032258
+              },
+              "custo_doente_sobre_saudavel": 1017094.5496810145,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 10.999916674,
+              "share_pct": {
+                "edge-a": 100,
+                "edge-b": 0,
+                "edge-c": 0
+              },
+              "custo_doente_sobre_saudavel": 503726.9202215324,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 11.249820399,
+              "share_pct": {
+                "edge-a": 100,
+                "edge-b": 0,
+                "edge-c": 0
+              },
+              "custo_doente_sobre_saudavel": 122943.8221594238,
+              "disjuntor_aberto": false
+            }
+          ]
+        },
+        {
+          "fase": "recuperacao",
+          "resultado": {
+            "scenario": "recuperacao",
+            "strategy": "round-robin",
+            "target_rate": 1200,
+            "workers": 200,
+            "duration_sec": 8.005383599,
+            "offered": 9600,
+            "completed": 9600,
+            "errors": 0,
+            "offered_per_sec": 1199.1930032183834,
+            "completed_per_sec": 1199.1930032183834,
+            "error_rate": 0,
+            "p50_ms": 0.581757,
+            "p95_ms": 6.46343,
+            "p99_ms": 6.946821,
+            "max_ms": 8.498071,
+            "status_codes": {
+              "200": 9600
+            },
+            "attempts_by_backend": {
+              "edge-a": 3200,
+              "edge-b": 3200,
+              "edge-c": 3200
+            },
+            "attempts_by_outcome": {
+              "ok": 9600
+            },
+            "failures_by_backend": {
+              "edge-a": 0,
+              "edge-b": 0,
+              "edge-c": 0
+            },
+            "retries_granted": 0,
+            "retries_denied": 0,
+            "rejected_by_reason": {},
+            "retry_budget_tokens_end": 100,
+            "router_bytes": 629145600,
+            "router_bytes_per_sec": 78590312.65891998,
+            "router_goroutines_end": 1476,
+            "router_open_fds_end": 1364,
+            "edge_hits": {
+              "edge-a": 2754,
+              "edge-b": 2695,
+              "edge-c": 2717
+            },
+            "edge_misses": {
+              "edge-a": 446,
+              "edge-b": 505,
+              "edge-c": 483
+            },
+            "edge_origin_fetches": {
+              "edge-a": 444,
+              "edge-b": 503,
+              "edge-c": 480
+            },
+            "origin_requests": 1427,
+            "origin_inflight_peak": 0
+          },
+          "deteccao_seg": null,
+          "fotos": [
+            {
+              "t": 0.249443558,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.17491806016877495,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.500004082,
+              "share_pct": {
+                "edge-a": 33.11036789297659,
+                "edge-b": 33.77926421404682,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.3279763028569545,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.749484921,
+              "share_pct": {
+                "edge-a": 33.5548172757475,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 0.9086632111585484,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 0.999722662,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.5548172757475
+              },
+              "custo_doente_sobre_saudavel": 1.6098570428968968,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.250274798,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.42396394890101524,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.5000971779999999,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 1.1541429362329,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.7493720000000001,
+              "share_pct": {
+                "edge-a": 33,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 3.828369518903006,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 1.999622266,
+              "share_pct": {
+                "edge-a": 33.56643356643357,
+                "edge-b": 33.21678321678322,
+                "edge-c": 33.21678321678322
+              },
+              "custo_doente_sobre_saudavel": 1.1322295336269015,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.249730431,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.6306956015892329,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.499887401,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.466271820110586,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.749618909,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.3152412976172892,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 2.999628758,
+              "share_pct": {
+                "edge-a": 33.22147651006711,
+                "edge-b": 33.557046979865774,
+                "edge-c": 33.22147651006711
+              },
+              "custo_doente_sobre_saudavel": 1.5710239000294037,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.249653513,
+              "share_pct": {
+                "edge-a": 33.11258278145696,
+                "edge-b": 33.11258278145696,
+                "edge-c": 33.77483443708609
+              },
+              "custo_doente_sobre_saudavel": 4.047782356643724,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.499657304,
+              "share_pct": {
+                "edge-a": 33.443708609271525,
+                "edge-b": 33.443708609271525,
+                "edge-c": 33.11258278145696
+              },
+              "custo_doente_sobre_saudavel": 0.3656045389651947,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 3.749874738,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.7660871884663658,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.000014042,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.24758853773626457,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.249587541,
+              "share_pct": {
+                "edge-a": 33.11036789297659,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.2918653921081874,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.499609145,
+              "share_pct": {
+                "edge-a": 33.557046979865774,
+                "edge-b": 33.22147651006711,
+                "edge-c": 33.22147651006711
+              },
+              "custo_doente_sobre_saudavel": 1.3977939442863065,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.749729035,
+              "share_pct": {
+                "edge-a": 33.443708609271525,
+                "edge-b": 33.443708609271525,
+                "edge-c": 33.11258278145696
+              },
+              "custo_doente_sobre_saudavel": 0.07830645360203413,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 4.999660678,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.5548172757475
+              },
+              "custo_doente_sobre_saudavel": 0.6944324171272527,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.249652241,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 1.020671332589316,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.500206,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.08094646884104048,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.749649406,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33
+              },
+              "custo_doente_sobre_saudavel": 0.1908970763090718,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 5.99981018,
+              "share_pct": {
+                "edge-a": 33.11036789297659,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.77926421404682
+              },
+              "custo_doente_sobre_saudavel": 0.5439191339170936,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.249830712,
+              "share_pct": {
+                "edge-a": 33.557046979865774,
+                "edge-b": 33.22147651006711,
+                "edge-c": 33.22147651006711
+              },
+              "custo_doente_sobre_saudavel": 0.712477821206972,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.500063402,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.6670363553455626,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.750041256,
+              "share_pct": {
+                "edge-a": 33.11036789297659,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.4922052634021177,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 6.999571632,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.5548172757475,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 0.5538719827596138,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.24979832,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33.33333333333333,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 2.0874587328726646,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.499500235,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 32.996632996633,
+                "edge-c": 33.670033670033675
+              },
+              "custo_doente_sobre_saudavel": 0.9794331048187016,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.749579464,
+              "share_pct": {
+                "edge-a": 33.663366336633665,
+                "edge-b": 33.663366336633665,
+                "edge-c": 32.67326732673268
+              },
+              "custo_doente_sobre_saudavel": 0.7714609576699094,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 7.999823287,
+              "share_pct": {
+                "edge-a": 33.33333333333333,
+                "edge-b": 33,
+                "edge-c": 33.666666666666664
+              },
+              "custo_doente_sobre_saudavel": 0.8266638020054564,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.24963379,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.11036789297659,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.45292567820836477,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.500113195,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.5548172757475,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 1.2651000299582706,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.74997722,
+              "share_pct": {
+                "edge-a": 33.44481605351171,
+                "edge-b": 33.44481605351171,
+                "edge-c": 33.11036789297659
+              },
+              "custo_doente_sobre_saudavel": 0.10622802938033192,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 8.999766702,
+              "share_pct": {
+                "edge-a": 33.222591362126245,
+                "edge-b": 33.222591362126245,
+                "edge-c": 33.5548172757475
+              },
+              "custo_doente_sobre_saudavel": 4.056110731402907,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.249609277,
+              "share_pct": {
+                "edge-a": 33,
+                "edge-b": 33.666666666666664,
+                "edge-c": 33.33333333333333
+              },
+              "custo_doente_sobre_saudavel": 0.6912431754828706,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.499468392,
+              "share_pct": {
+                "edge-a": 33.77926421404682,
+                "edge-b": 32.77591973244147,
+                "edge-c": 33.44481605351171
+              },
+              "custo_doente_sobre_saudavel": 0.28842908813588186,
+              "disjuntor_aberto": false
+            },
+            {
+              "t": 9.749616313,
+              "share_pct": {
+                "edge-a": 32.89036544850498,
+                "edge-b": 33.88704318936877,
+                "edge-c": 33.222591362126245
+              },
+              "custo_doente_sobre_saudavel": 1.42603152853019,
+              "disjuntor_aberto": false
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
