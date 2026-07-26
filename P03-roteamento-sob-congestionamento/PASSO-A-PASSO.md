@@ -285,7 +285,7 @@ que o prazo atravessa roteador, edge e origem; que o orçamento de retry contém
 amplificação quando tudo falha; e que as duas políticas se comportam de forma
 diferente diante do mesmo edge lento.
 
-Com o ambiente já de pé, `EDGE_LAB_SKIP_COMPOSE=1 go test -tags=integration ./test/...`
+Com o ambiente já de pé, `EDGE_SKIP_COMPOSE=1 go test -tags=integration ./test/...`
 reaproveita os containers em vez de subir tudo de novo.
 
 ## Encerrando

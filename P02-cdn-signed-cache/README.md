@@ -504,7 +504,7 @@ go test ./internal/signer -bench=. -benchmem -run '^$'
 
 O teste de integração sobe o ambiente pelo testcontainers, roda e derruba tudo,
 inclusive os volumes. Para iterar com o ambiente já de pé, use
-`EDGE_LAB_SKIP_COMPOSE=1`.
+`EDGE_SKIP_COMPOSE=1`.
 
 ### 6. Ver as métricas
 

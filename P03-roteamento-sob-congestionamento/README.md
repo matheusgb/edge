@@ -447,7 +447,7 @@ go test -tags=integration ./test/... -v   # sobe o Compose inteiro e mede
 ```
 
 O teste de integração sobe e derruba o ambiente sozinho. Com o ambiente já de pé,
-`EDGE_LAB_SKIP_COMPOSE=1` reaproveita o que está rodando.
+`EDGE_SKIP_COMPOSE=1` reaproveita o que está rodando.
 
 ## Onde isto aparece em produção
 

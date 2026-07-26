@@ -15,7 +15,7 @@
 //
 //	go test -tags=integration ./test/... -v
 //
-// Para iterar rápido com o ambiente já de pé, use EDGE_LAB_SKIP_COMPOSE=1.
+// Para iterar rápido com o ambiente já de pé, use EDGE_SKIP_COMPOSE=1.
 package test
 
 import (
@@ -46,7 +46,7 @@ func TestMain(m *testing.M) {
 	defer cancel()
 
 	var stack compose.ComposeStack
-	if os.Getenv("EDGE_LAB_SKIP_COMPOSE") == "" {
+	if os.Getenv("EDGE_SKIP_COMPOSE") == "" {
 		criada, err := compose.NewDockerCompose(filepath.Join("..", "docker-compose.yml"))
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "não consegui preparar o compose:", err)
