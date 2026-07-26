@@ -1,0 +1,92 @@
+{
+  "scenario": "pod-encerrado",
+  "steps": [
+    {
+      "name": "antes1",
+      "target_rps": 40,
+      "duration_ns": 10000000000,
+      "requested": 400,
+      "completed": 400,
+      "errors": 0,
+      "bytes_read": 36400,
+      "p50_ms": 0.764,
+      "p95_ms": 0.912,
+      "p99_ms": 1.114,
+      "throughput_rps": 40,
+      "error_rate_ratio": 0
+    },
+    {
+      "name": "antes2",
+      "target_rps": 40,
+      "duration_ns": 10000000000,
+      "requested": 400,
+      "completed": 400,
+      "errors": 0,
+      "bytes_read": 36400,
+      "p50_ms": 0.756,
+      "p95_ms": 0.891,
+      "p99_ms": 0.975,
+      "throughput_rps": 40,
+      "error_rate_ratio": 0
+    },
+    {
+      "name": "durante1",
+      "target_rps": 40,
+      "duration_ns": 10000000000,
+      "requested": 400,
+      "completed": 400,
+      "errors": 0,
+      "bytes_read": 36400,
+      "p50_ms": 0.787,
+      "p95_ms": 0.979,
+      "p99_ms": 1.283,
+      "throughput_rps": 40,
+      "error_rate_ratio": 0
+    },
+    {
+      "name": "durante2",
+      "target_rps": 40,
+      "duration_ns": 10000000000,
+      "requested": 400,
+      "completed": 400,
+      "errors": 0,
+      "bytes_read": 36400,
+      "p50_ms": 0.762,
+      "p95_ms": 0.967,
+      "p99_ms": 1.062,
+      "throughput_rps": 40,
+      "error_rate_ratio": 0
+    },
+    {
+      "name": "depois1",
+      "target_rps": 40,
+      "duration_ns": 10000000000,
+      "requested": 400,
+      "completed": 400,
+      "errors": 0,
+      "bytes_read": 36400,
+      "p50_ms": 0.78,
+      "p95_ms": 0.992,
+      "p99_ms": 1.097,
+      "throughput_rps": 40,
+      "error_rate_ratio": 0
+    },
+    {
+      "name": "depois2",
+      "target_rps": 40,
+      "duration_ns": 10000000000,
+      "requested": 400,
+      "completed": 400,
+      "errors": 0,
+      "bytes_read": 36400,
+      "p50_ms": 0.823,
+      "p95_ms": 1.146,
+      "p99_ms": 1.267,
+      "throughput_rps": 40,
+      "error_rate_ratio": 0
+    }
+  ],
+  "delete_ts": "2026-07-26T03:28:00Z",
+  "recovery_ts": "2026-07-26T03:28:05Z",
+  "recovery_seconds": 5.0
+}

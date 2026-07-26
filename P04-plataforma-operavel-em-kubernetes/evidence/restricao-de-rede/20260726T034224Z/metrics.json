@@ -1,0 +1,41 @@
+{
+  "scenario": "restricao-de-rede",
+  "cases": {
+    "A_autorizado_para_edge": {
+      "completed": 6,
+      "errors": 0,
+      "allowed_observado": true,
+      "permitido_esperado": true,
+      "resultado_correto": true
+    },
+    "B_autorizado_para_origin_direto": {
+      "completed": 0,
+      "errors": 4,
+      "allowed_observado": false,
+      "permitido_esperado": false,
+      "resultado_correto": true
+    },
+    "C_nao_autorizado_para_edge": {
+      "completed": 0,
+      "errors": 4,
+      "allowed_observado": false,
+      "permitido_esperado": false,
+      "resultado_correto": true
+    },
+    "D_nao_autorizado_para_origin_direto": {
+      "completed": 0,
+      "errors": 4,
+      "allowed_observado": false,
+      "permitido_esperado": false,
+      "resultado_correto": true
+    },
+    "E_autorizado_para_porta_admin": {
+      "completed": 0,
+      "errors": 4,
+      "allowed_observado": false,
+      "permitido_esperado": false,
+      "resultado_correto": true
+    }
+  },
+  "all_as_expected": true
+}

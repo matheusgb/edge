@@ -1,0 +1,2 @@
+kubectl -n edge delete pod origin-7664f4ffcb-n2q6k --wait=false
+kubectl run -n edge loadgen-pod-enc-13528 --rm -i --restart=Never --image=p04-edge-lab:local --image-pull-policy=Never --command -- /app/loadgen -url=http://edge.edge.svc.cluster.local:8080/work?n=20000 -scenario=pod-encerrado -steps=antes1:40:10s:16,antes2:40:10s:16,durante1:40:10s:16,durante2:40:10s:16,depois1:40:10s:16,depois2:40:10s:16 -evidence-dir=/tmp/ev -timeout=5s

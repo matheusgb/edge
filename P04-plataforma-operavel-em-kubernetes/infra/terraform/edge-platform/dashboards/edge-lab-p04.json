@@ -1,0 +1,90 @@
+{
+  "title": "edge-lab P04 - plataforma",
+  "uid": "edge-lab-p04",
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "time": { "from": "now-30m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Requisicoes por segundo (origin)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(rate(origin_requests_total[1m])) by (route)",
+          "legendFormat": "{{route}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "p99 de latencia (origin), por rota",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(origin_request_duration_seconds_bucket[1m])) by (le, route))",
+          "legendFormat": "{{route}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Replicas do HPA (origin)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "kube_horizontalpodautoscaler_status_current_replicas{namespace=\"edge\", horizontalpodautoscaler=\"origin\"}",
+          "legendFormat": "atual"
+        },
+        {
+          "expr": "kube_horizontalpodautoscaler_status_desired_replicas{namespace=\"edge\", horizontalpodautoscaler=\"origin\"}",
+          "legendFormat": "desejado"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Cache hit ratio (edge)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "sum(rate(edge_cache_hits_total[1m])) / (sum(rate(edge_cache_hits_total[1m])) + sum(rate(edge_cache_misses_total[1m])))",
+          "legendFormat": "hit ratio"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Pods prontos por Deployment",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "kube_deployment_status_replicas_ready{namespace=\"edge\"}",
+          "legendFormat": "{{deployment}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Taxa de erro (origin + edge)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        {
+          "expr": "sum(rate(origin_requests_total{status=~\"5..\"}[1m])) / sum(rate(origin_requests_total[1m]))",
+          "legendFormat": "origin"
+        },
+        {
+          "expr": "sum(rate(edge_requests_total{status=~\"5..\"}[1m])) / sum(rate(edge_requests_total[1m]))",
+          "legendFormat": "edge"
+        }
+      ]
+    }
+  ]
+}

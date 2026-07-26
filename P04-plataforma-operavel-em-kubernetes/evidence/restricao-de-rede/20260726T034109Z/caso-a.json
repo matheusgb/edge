@@ -1,0 +1,16 @@
+[
+  {
+    "name": "x",
+    "target_rps": 2,
+    "duration_ns": 3000000000,
+    "requested": 6,
+    "completed": 6,
+    "errors": 0,
+    "bytes_read": 393216,
+    "p50_ms": 0.342,
+    "p95_ms": 0.354,
+    "p99_ms": 0.354,
+    "throughput_rps": 2,
+    "error_rate_ratio": 0
+  }
+]

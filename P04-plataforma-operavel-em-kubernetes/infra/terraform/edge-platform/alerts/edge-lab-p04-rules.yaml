@@ -1,0 +1,54 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: edge-lab-p04-rules
+  namespace: edge
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: edge-lab-p04.sli
+      rules:
+        - alert: OrigemTaxaDeErroAlta
+          expr: |
+            sum(rate(origin_requests_total{status=~"5.."}[5m]))
+            /
+            sum(rate(origin_requests_total[5m]))
+            > 0.05
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Taxa de erro da origem acima de 5% por 2 minutos"
+            description: "Ação humana: seguir runbooks/latencia-alta.md, checar rollout em andamento e status dos pods."
+        - alert: OrigemP99Alto
+          expr: |
+            histogram_quantile(0.99, sum(rate(origin_request_duration_seconds_bucket[5m])) by (le)) > 0.5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "p99 da origem acima de 500ms por 5 minutos"
+            description: "Ação humana: seguir runbooks/latencia-alta.md e verificar saturação de CPU/HPA."
+        - alert: DeploymentComPodsIndisponiveis
+          expr: |
+            kube_deployment_status_replicas_ready{namespace="edge"}
+            <
+            kube_deployment_spec_replicas{namespace="edge"}
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Deployment {{ $labels.deployment }} com menos réplicas prontas do que o desejado por 5 minutos"
+            description: "Ação humana: seguir runbooks/esgotamento-de-conexoes.md, verificar eventos do pod e o rollout."
+        - alert: HPANoLimiteMaximo
+          expr: |
+            kube_horizontalpodautoscaler_status_current_replicas{namespace="edge"}
+            ==
+            kube_horizontalpodautoscaler_spec_max_replicas{namespace="edge"}
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "HPA {{ $labels.horizontalpodautoscaler }} no limite máximo de réplicas por 10 minutos"
+            description: "Ação humana: revisar o modelo de capacidade (cmd/capacity) e considerar aumentar origin_replicas_max."

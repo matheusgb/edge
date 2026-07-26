@@ -1,0 +1,4 @@
+terraform -chdir=infra/terraform/environments/local destroy -auto-approve
+kubectl get ns edge
+kubectl get ns observability
+kubectl get nodes

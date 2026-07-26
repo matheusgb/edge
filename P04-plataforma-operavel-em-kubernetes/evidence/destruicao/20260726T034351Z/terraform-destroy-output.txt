@@ -1,0 +1,1943 @@
+[0m[1mnull_resource.preflight_kind_context: Refreshing state... [id=1055222728771456561][0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Refreshing state... [id=observability][0m
+[0m[1mmodule.bootstrap_observability.helm_release.metrics_server: Refreshing state... [id=metrics-server][0m
+[0m[1mmodule.bootstrap_observability.helm_release.ingress_nginx: Refreshing state... [id=ingress-nginx][0m
+[0m[1mmodule.bootstrap_observability.helm_release.kube_prometheus_stack: Refreshing state... [id=kube-prometheus-stack][0m
+[0m[1mmodule.edge_platform.kubernetes_namespace.edge: Refreshing state... [id=edge][0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.experiments: Refreshing state... [id=edge/experiments][0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_experiments_egress: Refreshing state... [id=edge/allow-experiments-egress][0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.edge: Refreshing state... [id=edge/edge][0m
+[0m[1mmodule.edge_platform.kubernetes_service_v1.origin: Refreshing state... [id=edge/origin][0m
+[0m[1mmodule.edge_platform.null_resource.prometheus_rules: Refreshing state... [id=7444242519831456148][0m
+[0m[1mmodule.edge_platform.kubernetes_pod_disruption_budget_v1.origin: Refreshing state... [id=edge/origin][0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_dns_egress: Refreshing state... [id=edge/allow-dns-egress][0m
+[0m[1mmodule.edge_platform.kubernetes_role.experiments_read_only: Refreshing state... [id=edge/experiments-read-only][0m
+[0m[1mmodule.edge_platform.kubernetes_pod_disruption_budget_v1.edge: Refreshing state... [id=edge/edge][0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_experiments_to_edge: Refreshing state... [id=edge/allow-experiments-to-edge][0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_prometheus_scrape: Refreshing state... [id=edge/allow-prometheus-scrape][0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_edge_to_origin: Refreshing state... [id=edge/allow-edge-to-origin][0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_edge_egress_to_origin: Refreshing state... [id=edge/allow-edge-egress-to-origin][0m
+[0m[1mmodule.edge_platform.kubernetes_config_map.platform: Refreshing state... [id=edge/platform-config][0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.default_deny: Refreshing state... [id=edge/default-deny-all][0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_ingress_nginx_to_edge: Refreshing state... [id=edge/allow-ingress-nginx-to-edge][0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.origin: Refreshing state... [id=edge/origin][0m
+[0m[1mmodule.edge_platform.kubernetes_config_map.dashboard: Refreshing state... [id=edge/edge-lab-p04-dashboard][0m
+[0m[1mmodule.edge_platform.kubernetes_service_v1.edge: Refreshing state... [id=edge/edge][0m
+[0m[1mmodule.edge_platform.kubernetes_role_binding.experiments_read_only: Refreshing state... [id=edge/experiments-read-only][0m
+[0m[1mmodule.edge_platform.kubernetes_deployment_v1.edge: Refreshing state... [id=edge/edge][0m
+[0m[1mmodule.edge_platform.kubernetes_deployment_v1.origin: Refreshing state... [id=edge/origin][0m
+[0m[1mmodule.edge_platform.kubernetes_horizontal_pod_autoscaler_v2.origin: Refreshing state... [id=edge/origin][0m
+[0m[1mmodule.edge_platform.kubernetes_horizontal_pod_autoscaler_v2.edge: Refreshing state... [id=edge/edge][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [31m-[0m destroy[0m
+
+Terraform will perform the following actions:
+
+[1m  # null_resource.preflight_kind_context[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "null_resource" "preflight_kind_context" {
+      [31m-[0m[0m id       = "1055222728771456561" [90m-> null[0m[0m
+      [31m-[0m[0m triggers = {
+          [31m-[0m[0m "always_run" = "2026-07-26T02:57:15Z"
+        } [90m-> null[0m[0m
+    }
+
+[1m  # module.bootstrap_observability.helm_release.ingress_nginx[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "helm_release" "ingress_nginx" {
+      [31m-[0m[0m atomic                     = false [90m-> null[0m[0m
+      [31m-[0m[0m chart                      = "ingress-nginx" [90m-> null[0m[0m
+      [31m-[0m[0m cleanup_on_fail            = false [90m-> null[0m[0m
+      [31m-[0m[0m create_namespace           = false [90m-> null[0m[0m
+      [31m-[0m[0m dependency_update          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_crd_hooks          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_openapi_validation = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_webhooks           = false [90m-> null[0m[0m
+      [31m-[0m[0m force_update               = false [90m-> null[0m[0m
+      [31m-[0m[0m id                         = "ingress-nginx" [90m-> null[0m[0m
+      [31m-[0m[0m lint                       = false [90m-> null[0m[0m
+      [31m-[0m[0m max_history                = 0 [90m-> null[0m[0m
+      [31m-[0m[0m metadata                   = [
+          [31m-[0m[0m {
+              [31m-[0m[0m app_version    = "1.11.3"
+              [31m-[0m[0m chart          = "ingress-nginx"
+              [31m-[0m[0m first_deployed = 1785034637
+              [31m-[0m[0m last_deployed  = 1785034637
+              [31m-[0m[0m name           = "ingress-nginx"
+              [31m-[0m[0m namespace      = "observability"
+              [31m-[0m[0m notes          = <<-EOT
+                    The ingress-nginx controller has been installed.
+                    Get the application URL by running these commands:
+                      export HTTP_NODE_PORT=$(kubectl get service --namespace observability ingress-nginx-controller --output jsonpath="{.spec.ports[0].nodePort}")
+                      export HTTPS_NODE_PORT=$(kubectl get service --namespace observability ingress-nginx-controller --output jsonpath="{.spec.ports[1].nodePort}")
+                      export NODE_IP="$(kubectl get nodes --output jsonpath="{.items[0].status.addresses[1].address}")"
+                    
+                      echo "Visit http://${NODE_IP}:${HTTP_NODE_PORT} to access your application via HTTP."
+                      echo "Visit https://${NODE_IP}:${HTTPS_NODE_PORT} to access your application via HTTPS."
+                    
+                    An example Ingress that makes use of the controller:
+                      apiVersion: networking.k8s.io/v1
+                      kind: Ingress
+                      metadata:
+                        name: example
+                        namespace: foo
+                      spec:
+                        ingressClassName: nginx
+                        rules:
+                          - host: www.example.com
+                            http:
+                              paths:
+                                - pathType: Prefix
+                                  backend:
+                                    service:
+                                      name: exampleService
+                                      port:
+                                        number: 80
+                                  path: /
+                        # This section is only required if TLS is to be enabled for the Ingress
+                        tls:
+                          - hosts:
+                            - www.example.com
+                            secretName: example-tls
+                    
+                    If TLS is enabled for the Ingress, a Secret containing the certificate and key must also be provided:
+                    
+                      apiVersion: v1
+                      kind: Secret
+                      metadata:
+                        name: example-tls
+                        namespace: foo
+                      data:
+                        tls.crt: <base64 encoded cert>
+                        tls.key: <base64 encoded key>
+                      type: kubernetes.io/tls
+                EOT
+              [31m-[0m[0m revision       = 1
+              [31m-[0m[0m values         = jsonencode(
+                    {
+                      [31m-[0m[0m controller = {
+                          [31m-[0m[0m admissionWebhooks = {
+                              [31m-[0m[0m enabled = false
+                            }
+                          [31m-[0m[0m resources         = {
+                              [31m-[0m[0m requests = {
+                                  [31m-[0m[0m cpu    = "50m"
+                                  [31m-[0m[0m memory = "90Mi"
+                                }
+                            }
+                          [31m-[0m[0m service           = {
+                              [31m-[0m[0m type = "NodePort"
+                            }
+                        }
+                    }
+                )
+              [31m-[0m[0m version        = "4.11.3"
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                       = "ingress-nginx" [90m-> null[0m[0m
+      [31m-[0m[0m namespace                  = "observability" [90m-> null[0m[0m
+      [31m-[0m[0m pass_credentials           = false [90m-> null[0m[0m
+      [31m-[0m[0m recreate_pods              = false [90m-> null[0m[0m
+      [31m-[0m[0m render_subchart_notes      = true [90m-> null[0m[0m
+      [31m-[0m[0m replace                    = false [90m-> null[0m[0m
+      [31m-[0m[0m repository                 = "https://kubernetes.github.io/ingress-nginx" [90m-> null[0m[0m
+      [31m-[0m[0m reset_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m reuse_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m skip_crds                  = false [90m-> null[0m[0m
+      [31m-[0m[0m status                     = "deployed" [90m-> null[0m[0m
+      [31m-[0m[0m timeout                    = 600 [90m-> null[0m[0m
+      [31m-[0m[0m values                     = [
+          [31m-[0m[0m <<-EOT
+                "controller":
+                  "admissionWebhooks":
+                    "enabled": false
+                  "resources":
+                    "requests":
+                      "cpu": "50m"
+                      "memory": "90Mi"
+                  "service":
+                    "type": "NodePort"
+            EOT,
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m verify                     = false [90m-> null[0m[0m
+      [31m-[0m[0m version                    = "4.11.3" [90m-> null[0m[0m
+      [31m-[0m[0m wait                       = true [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_jobs              = false [90m-> null[0m[0m
+    }
+
+[1m  # module.bootstrap_observability.helm_release.kube_prometheus_stack[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "helm_release" "kube_prometheus_stack" {
+      [31m-[0m[0m atomic                     = false [90m-> null[0m[0m
+      [31m-[0m[0m chart                      = "kube-prometheus-stack" [90m-> null[0m[0m
+      [31m-[0m[0m cleanup_on_fail            = false [90m-> null[0m[0m
+      [31m-[0m[0m create_namespace           = false [90m-> null[0m[0m
+      [31m-[0m[0m dependency_update          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_crd_hooks          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_openapi_validation = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_webhooks           = false [90m-> null[0m[0m
+      [31m-[0m[0m force_update               = false [90m-> null[0m[0m
+      [31m-[0m[0m id                         = "kube-prometheus-stack" [90m-> null[0m[0m
+      [31m-[0m[0m lint                       = false [90m-> null[0m[0m
+      [31m-[0m[0m max_history                = 0 [90m-> null[0m[0m
+      [31m-[0m[0m metadata                   = [
+          [31m-[0m[0m {
+              [31m-[0m[0m app_version    = "v0.77.2"
+              [31m-[0m[0m chart          = "kube-prometheus-stack"
+              [31m-[0m[0m first_deployed = 1785034638
+              [31m-[0m[0m last_deployed  = 1785034638
+              [31m-[0m[0m name           = "kube-prometheus-stack"
+              [31m-[0m[0m namespace      = "observability"
+              [31m-[0m[0m notes          = <<-EOT
+                    1. Get your 'admin' user password by running:
+                    
+                       kubectl get secret --namespace observability kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+                    
+                    
+                    2. The Grafana server can be accessed via port 80 on the following DNS name from within your cluster:
+                    
+                       kube-prometheus-stack-grafana.observability.svc.cluster.local
+                    
+                       Get the Grafana URL to visit by running these commands in the same shell:
+                         export POD_NAME=$(kubectl get pods --namespace observability -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=kube-prometheus-stack" -o jsonpath="{.items[0].metadata.name}")
+                         kubectl --namespace observability port-forward $POD_NAME 3000
+                    
+                    3. Login with the password from step 1 and the username: admin
+                    #################################################################################
+                    ######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+                    ######            the Grafana pod is terminated.                            #####
+                    #################################################################################
+                    
+                    kube-state-metrics is a simple service that listens to the Kubernetes API server and generates metrics about the state of the objects.
+                    The exposed metrics can be found here:
+                    https://github.com/kubernetes/kube-state-metrics/blob/master/docs/README.md#exposed-metrics
+                    
+                    The metrics are exported on the HTTP endpoint /metrics on the listening port.
+                    In your case, kube-prometheus-stack-kube-state-metrics.observability.svc.cluster.local:8080/metrics
+                    
+                    They are served either as plaintext or protobuf depending on the Accept header.
+                    They are designed to be consumed either by Prometheus itself or by a scraper that is compatible with scraping a Prometheus client endpoint.
+                    
+                    1. Get the application URL by running these commands:
+                      export POD_NAME=$(kubectl get pods --namespace observability -l "app.kubernetes.io/name=prometheus-node-exporter,app.kubernetes.io/instance=kube-prometheus-stack" -o jsonpath="{.items[0].metadata.name}")
+                      echo "Visit http://127.0.0.1:9100 to use your application"
+                      kubectl port-forward --namespace observability $POD_NAME 9100
+                    kube-prometheus-stack has been installed. Check its status by running:
+                      kubectl --namespace observability get pods -l "release=kube-prometheus-stack"
+                    
+                    Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
+                EOT
+              [31m-[0m[0m revision       = 1
+              [31m-[0m[0m values         = jsonencode(
+                    {
+                      [31m-[0m[0m alertmanager          = {
+                          [31m-[0m[0m alertmanagerSpec = {
+                              [31m-[0m[0m resources = {
+                                  [31m-[0m[0m requests = {
+                                      [31m-[0m[0m cpu    = "25m"
+                                      [31m-[0m[0m memory = "64Mi"
+                                    }
+                                }
+                            }
+                        }
+                      [31m-[0m[0m grafana               = {
+                          [31m-[0m[0m persistence = {
+                              [31m-[0m[0m enabled = false
+                            }
+                          [31m-[0m[0m resources   = {
+                              [31m-[0m[0m requests = {
+                                  [31m-[0m[0m cpu    = "50m"
+                                  [31m-[0m[0m memory = "128Mi"
+                                }
+                            }
+                          [31m-[0m[0m sidecar     = {
+                              [31m-[0m[0m dashboards = {
+                                  [31m-[0m[0m enabled         = true
+                                  [31m-[0m[0m label           = "edge_lab_dashboard"
+                                  [31m-[0m[0m searchNamespace = "ALL"
+                                }
+                            }
+                        }
+                      [31m-[0m[0m kubeApiServer         = {
+                          [31m-[0m[0m enabled = false
+                        }
+                      [31m-[0m[0m kubeControllerManager = {
+                          [31m-[0m[0m enabled = false
+                        }
+                      [31m-[0m[0m kubeEtcd              = {
+                          [31m-[0m[0m enabled = false
+                        }
+                      [31m-[0m[0m kubeProxy             = {
+                          [31m-[0m[0m enabled = false
+                        }
+                      [31m-[0m[0m kubeScheduler         = {
+                          [31m-[0m[0m enabled = false
+                        }
+                      [31m-[0m[0m prometheus            = {
+                          [31m-[0m[0m prometheusSpec = {
+                              [31m-[0m[0m resources   = {
+                                  [31m-[0m[0m requests = {
+                                      [31m-[0m[0m cpu    = "100m"
+                                      [31m-[0m[0m memory = "256Mi"
+                                    }
+                                }
+                              [31m-[0m[0m retention   = "6h"
+                              [31m-[0m[0m storageSpec = {}
+                            }
+                        }
+                      [31m-[0m[0m prometheusOperator    = {
+                          [31m-[0m[0m resources = {
+                              [31m-[0m[0m requests = {
+                                  [31m-[0m[0m cpu    = "50m"
+                                  [31m-[0m[0m memory = "128Mi"
+                                }
+                            }
+                        }
+                    }
+                )
+              [31m-[0m[0m version        = "65.5.1"
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                       = "kube-prometheus-stack" [90m-> null[0m[0m
+      [31m-[0m[0m namespace                  = "observability" [90m-> null[0m[0m
+      [31m-[0m[0m pass_credentials           = false [90m-> null[0m[0m
+      [31m-[0m[0m recreate_pods              = false [90m-> null[0m[0m
+      [31m-[0m[0m render_subchart_notes      = true [90m-> null[0m[0m
+      [31m-[0m[0m replace                    = false [90m-> null[0m[0m
+      [31m-[0m[0m repository                 = "https://prometheus-community.github.io/helm-charts" [90m-> null[0m[0m
+      [31m-[0m[0m reset_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m reuse_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m skip_crds                  = false [90m-> null[0m[0m
+      [31m-[0m[0m status                     = "deployed" [90m-> null[0m[0m
+      [31m-[0m[0m timeout                    = 600 [90m-> null[0m[0m
+      [31m-[0m[0m values                     = [
+          [31m-[0m[0m <<-EOT
+                "alertmanager":
+                  "alertmanagerSpec":
+                    "resources":
+                      "requests":
+                        "cpu": "25m"
+                        "memory": "64Mi"
+                "grafana":
+                  "persistence":
+                    "enabled": false
+                  "resources":
+                    "requests":
+                      "cpu": "50m"
+                      "memory": "128Mi"
+                  "sidecar":
+                    "dashboards":
+                      "enabled": true
+                      "label": "edge_lab_dashboard"
+                      "searchNamespace": "ALL"
+                "kubeApiServer":
+                  "enabled": false
+                "kubeControllerManager":
+                  "enabled": false
+                "kubeEtcd":
+                  "enabled": false
+                "kubeProxy":
+                  "enabled": false
+                "kubeScheduler":
+                  "enabled": false
+                "prometheus":
+                  "prometheusSpec":
+                    "resources":
+                      "requests":
+                        "cpu": "100m"
+                        "memory": "256Mi"
+                    "retention": "6h"
+                    "storageSpec": {}
+                "prometheusOperator":
+                  "resources":
+                    "requests":
+                      "cpu": "50m"
+                      "memory": "128Mi"
+            EOT,
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m verify                     = false [90m-> null[0m[0m
+      [31m-[0m[0m version                    = "65.5.1" [90m-> null[0m[0m
+      [31m-[0m[0m wait                       = true [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_jobs              = false [90m-> null[0m[0m
+    }
+
+[1m  # module.bootstrap_observability.helm_release.metrics_server[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "helm_release" "metrics_server" {
+      [31m-[0m[0m atomic                     = false [90m-> null[0m[0m
+      [31m-[0m[0m chart                      = "metrics-server" [90m-> null[0m[0m
+      [31m-[0m[0m cleanup_on_fail            = false [90m-> null[0m[0m
+      [31m-[0m[0m create_namespace           = false [90m-> null[0m[0m
+      [31m-[0m[0m dependency_update          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_crd_hooks          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_openapi_validation = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_webhooks           = false [90m-> null[0m[0m
+      [31m-[0m[0m force_update               = false [90m-> null[0m[0m
+      [31m-[0m[0m id                         = "metrics-server" [90m-> null[0m[0m
+      [31m-[0m[0m lint                       = false [90m-> null[0m[0m
+      [31m-[0m[0m max_history                = 0 [90m-> null[0m[0m
+      [31m-[0m[0m metadata                   = [
+          [31m-[0m[0m {
+              [31m-[0m[0m app_version    = "0.7.2"
+              [31m-[0m[0m chart          = "metrics-server"
+              [31m-[0m[0m first_deployed = 1785034637
+              [31m-[0m[0m last_deployed  = 1785034637
+              [31m-[0m[0m name           = "metrics-server"
+              [31m-[0m[0m namespace      = "observability"
+              [31m-[0m[0m notes          = <<-EOT
+                    ***********************************************************************
+                    * Metrics Server                                                      *
+                    ***********************************************************************
+                      Chart version: 3.12.2
+                      App version:   0.7.2
+                      Image tag:     registry.k8s.io/metrics-server/metrics-server:v0.7.2
+                    ***********************************************************************
+                EOT
+              [31m-[0m[0m revision       = 1
+              [31m-[0m[0m values         = jsonencode(
+                    {
+                      [31m-[0m[0m args      = [
+                          [31m-[0m[0m "--kubelet-insecure-tls",
+                          [31m-[0m[0m "--kubelet-preferred-address-types=InternalIP",
+                        ]
+                      [31m-[0m[0m resources = {
+                          [31m-[0m[0m requests = {
+                              [31m-[0m[0m cpu    = "25m"
+                              [31m-[0m[0m memory = "64Mi"
+                            }
+                        }
+                    }
+                )
+              [31m-[0m[0m version        = "3.12.2"
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                       = "metrics-server" [90m-> null[0m[0m
+      [31m-[0m[0m namespace                  = "observability" [90m-> null[0m[0m
+      [31m-[0m[0m pass_credentials           = false [90m-> null[0m[0m
+      [31m-[0m[0m recreate_pods              = false [90m-> null[0m[0m
+      [31m-[0m[0m render_subchart_notes      = true [90m-> null[0m[0m
+      [31m-[0m[0m replace                    = false [90m-> null[0m[0m
+      [31m-[0m[0m repository                 = "https://kubernetes-sigs.github.io/metrics-server/" [90m-> null[0m[0m
+      [31m-[0m[0m reset_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m reuse_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m skip_crds                  = false [90m-> null[0m[0m
+      [31m-[0m[0m status                     = "deployed" [90m-> null[0m[0m
+      [31m-[0m[0m timeout                    = 600 [90m-> null[0m[0m
+      [31m-[0m[0m values                     = [
+          [31m-[0m[0m <<-EOT
+                "args":
+                - "--kubelet-insecure-tls"
+                - "--kubelet-preferred-address-types=InternalIP"
+                "resources":
+                  "requests":
+                    "cpu": "25m"
+                    "memory": "64Mi"
+            EOT,
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m verify                     = false [90m-> null[0m[0m
+      [31m-[0m[0m version                    = "3.12.2" [90m-> null[0m[0m
+      [31m-[0m[0m wait                       = true [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_jobs              = false [90m-> null[0m[0m
+    }
+
+[1m  # module.bootstrap_observability.kubernetes_namespace.observability[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_namespace" "observability" {
+      [31m-[0m[0m id                               = "observability" [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_default_service_account = false [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {
+              [31m-[0m[0m "app.kubernetes.io/part-of" = "edge-lab-p04"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m name             = "observability" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "1633" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "b1e9f2c4-6d05-4cf6-8dd8-f571450f37f2" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_config_map.dashboard[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_config_map" "dashboard" {
+      [31m-[0m[0m binary_data = {} [90m-> null[0m[0m
+      [31m-[0m[0m data        = {
+          [31m-[0m[0m "edge-lab-p04.json" = jsonencode(
+                {
+                  [31m-[0m[0m panels        = [
+                      [31m-[0m[0m {
+                          [31m-[0m[0m gridPos = {
+                              [31m-[0m[0m h = 8
+                              [31m-[0m[0m w = 12
+                              [31m-[0m[0m x = 0
+                              [31m-[0m[0m y = 0
+                            }
+                          [31m-[0m[0m id      = 1
+                          [31m-[0m[0m targets = [
+                              [31m-[0m[0m {
+                                  [31m-[0m[0m expr         = "sum(rate(origin_requests_total[1m])) by (route)"
+                                  [31m-[0m[0m legendFormat = "{{route}}"
+                                },
+                            ]
+                          [31m-[0m[0m title   = "Requisicoes por segundo (origin)"
+                          [31m-[0m[0m type    = "timeseries"
+                        },
+                      [31m-[0m[0m {
+                          [31m-[0m[0m gridPos = {
+                              [31m-[0m[0m h = 8
+                              [31m-[0m[0m w = 12
+                              [31m-[0m[0m x = 12
+                              [31m-[0m[0m y = 0
+                            }
+                          [31m-[0m[0m id      = 2
+                          [31m-[0m[0m targets = [
+                              [31m-[0m[0m {
+                                  [31m-[0m[0m expr         = "histogram_quantile(0.99, sum(rate(origin_request_duration_seconds_bucket[1m])) by (le, route))"
+                                  [31m-[0m[0m legendFormat = "{{route}}"
+                                },
+                            ]
+                          [31m-[0m[0m title   = "p99 de latencia (origin), por rota"
+                          [31m-[0m[0m type    = "timeseries"
+                        },
+                      [31m-[0m[0m {
+                          [31m-[0m[0m gridPos = {
+                              [31m-[0m[0m h = 8
+                              [31m-[0m[0m w = 12
+                              [31m-[0m[0m x = 0
+                              [31m-[0m[0m y = 8
+                            }
+                          [31m-[0m[0m id      = 3
+                          [31m-[0m[0m targets = [
+                              [31m-[0m[0m {
+                                  [31m-[0m[0m expr         = "kube_horizontalpodautoscaler_status_current_replicas{namespace=\"edge\", horizontalpodautoscaler=\"origin\"}"
+                                  [31m-[0m[0m legendFormat = "atual"
+                                },
+                              [31m-[0m[0m {
+                                  [31m-[0m[0m expr         = "kube_horizontalpodautoscaler_status_desired_replicas{namespace=\"edge\", horizontalpodautoscaler=\"origin\"}"
+                                  [31m-[0m[0m legendFormat = "desejado"
+                                },
+                            ]
+                          [31m-[0m[0m title   = "Replicas do HPA (origin)"
+                          [31m-[0m[0m type    = "timeseries"
+                        },
+                      [31m-[0m[0m {
+                          [31m-[0m[0m gridPos = {
+                              [31m-[0m[0m h = 8
+                              [31m-[0m[0m w = 12
+                              [31m-[0m[0m x = 12
+                              [31m-[0m[0m y = 8
+                            }
+                          [31m-[0m[0m id      = 4
+                          [31m-[0m[0m targets = [
+                              [31m-[0m[0m {
+                                  [31m-[0m[0m expr         = "sum(rate(edge_cache_hits_total[1m])) / (sum(rate(edge_cache_hits_total[1m])) + sum(rate(edge_cache_misses_total[1m])))"
+                                  [31m-[0m[0m legendFormat = "hit ratio"
+                                },
+                            ]
+                          [31m-[0m[0m title   = "Cache hit ratio (edge)"
+                          [31m-[0m[0m type    = "timeseries"
+                        },
+                      [31m-[0m[0m {
+                          [31m-[0m[0m gridPos = {
+                              [31m-[0m[0m h = 8
+                              [31m-[0m[0m w = 12
+                              [31m-[0m[0m x = 0
+                              [31m-[0m[0m y = 16
+                            }
+                          [31m-[0m[0m id      = 5
+                          [31m-[0m[0m targets = [
+                              [31m-[0m[0m {
+                                  [31m-[0m[0m expr         = "kube_deployment_status_replicas_ready{namespace=\"edge\"}"
+                                  [31m-[0m[0m legendFormat = "{{deployment}}"
+                                },
+                            ]
+                          [31m-[0m[0m title   = "Pods prontos por Deployment"
+                          [31m-[0m[0m type    = "timeseries"
+                        },
+                      [31m-[0m[0m {
+                          [31m-[0m[0m gridPos = {
+                              [31m-[0m[0m h = 8
+                              [31m-[0m[0m w = 12
+                              [31m-[0m[0m x = 12
+                              [31m-[0m[0m y = 16
+                            }
+                          [31m-[0m[0m id      = 6
+                          [31m-[0m[0m targets = [
+                              [31m-[0m[0m {
+                                  [31m-[0m[0m expr         = "sum(rate(origin_requests_total{status=~\"5..\"}[1m])) / sum(rate(origin_requests_total[1m]))"
+                                  [31m-[0m[0m legendFormat = "origin"
+                                },
+                              [31m-[0m[0m {
+                                  [31m-[0m[0m expr         = "sum(rate(edge_requests_total{status=~\"5..\"}[1m])) / sum(rate(edge_requests_total[1m]))"
+                                  [31m-[0m[0m legendFormat = "edge"
+                                },
+                            ]
+                          [31m-[0m[0m title   = "Taxa de erro (origin + edge)"
+                          [31m-[0m[0m type    = "timeseries"
+                        },
+                    ]
+                  [31m-[0m[0m refresh       = "10s"
+                  [31m-[0m[0m schemaVersion = 39
+                  [31m-[0m[0m time          = {
+                      [31m-[0m[0m from = "now-30m"
+                      [31m-[0m[0m to   = "now"
+                    }
+                  [31m-[0m[0m timezone      = "utc"
+                  [31m-[0m[0m title         = "edge-lab P04 - plataforma"
+                  [31m-[0m[0m uid           = "edge-lab-p04"
+                }
+            )
+        } [90m-> null[0m[0m
+      [31m-[0m[0m id          = "edge/edge-lab-p04-dashboard" [90m-> null[0m[0m
+      [31m-[0m[0m immutable   = false [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {
+              [31m-[0m[0m "edge_lab_dashboard" = "1"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m name             = "edge-lab-p04-dashboard" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2267" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "2046fa7b-bc32-4fe2-85f8-90a650dd5af1" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_config_map.platform[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_config_map" "platform" {
+      [31m-[0m[0m binary_data = {} [90m-> null[0m[0m
+      [31m-[0m[0m data        = {
+          [31m-[0m[0m "EDGE_ORIGIN_URL" = "http://origin.edge.svc.cluster.local:8080"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m id          = "edge/platform-config" [90m-> null[0m[0m
+      [31m-[0m[0m immutable   = false [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "platform-config" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2278" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "a277ce90-31c1-405d-ad8a-d89e0299aa6e" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_deployment_v1.edge[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_deployment_v1" "edge" {
+      [31m-[0m[0m id               = "edge/edge" [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_rollout = true [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 7 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {
+              [31m-[0m[0m "app" = "edge"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m name             = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "5951" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "22bb8a25-0400-422d-8773-1bd1c54adf0c" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m min_ready_seconds         = 0 [90m-> null[0m[0m
+          [31m-[0m[0m paused                    = false [90m-> null[0m[0m
+          [31m-[0m[0m progress_deadline_seconds = 600 [90m-> null[0m[0m
+          [31m-[0m[0m replicas                  = "2" [90m-> null[0m[0m
+          [31m-[0m[0m revision_history_limit    = 10 [90m-> null[0m[0m
+
+          [31m-[0m[0m selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "app" = "edge"
+                } [90m-> null[0m[0m
+            }
+
+          [31m-[0m[0m strategy {
+              [31m-[0m[0m type = "RollingUpdate" [90m-> null[0m[0m
+
+              [31m-[0m[0m rolling_update {
+                  [31m-[0m[0m max_surge       = "1" [90m-> null[0m[0m
+                  [31m-[0m[0m max_unavailable = "0" [90m-> null[0m[0m
+                }
+            }
+
+          [31m-[0m[0m template {
+              [31m-[0m[0m metadata {
+                  [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+                  [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m labels           = {
+                      [31m-[0m[0m "app" = "edge"
+                    } [90m-> null[0m[0m
+                    name             = [90mnull[0m[0m
+                    [90m# (4 unchanged attributes hidden)[0m[0m
+                }
+              [31m-[0m[0m spec {
+                  [31m-[0m[0m active_deadline_seconds          = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m automount_service_account_token  = false [90m-> null[0m[0m
+                  [31m-[0m[0m dns_policy                       = "ClusterFirst" [90m-> null[0m[0m
+                  [31m-[0m[0m enable_service_links             = true [90m-> null[0m[0m
+                  [31m-[0m[0m host_ipc                         = false [90m-> null[0m[0m
+                  [31m-[0m[0m host_network                     = false [90m-> null[0m[0m
+                  [31m-[0m[0m host_pid                         = false [90m-> null[0m[0m
+                  [31m-[0m[0m node_selector                    = {} [90m-> null[0m[0m
+                  [31m-[0m[0m restart_policy                   = "Always" [90m-> null[0m[0m
+                  [31m-[0m[0m scheduler_name                   = "default-scheduler" [90m-> null[0m[0m
+                  [31m-[0m[0m service_account_name             = "edge" [90m-> null[0m[0m
+                  [31m-[0m[0m share_process_namespace          = false [90m-> null[0m[0m
+                  [31m-[0m[0m termination_grace_period_seconds = 30 [90m-> null[0m[0m
+                    [90m# (5 unchanged attributes hidden)[0m[0m
+
+                  [31m-[0m[0m container {
+                      [31m-[0m[0m args                       = [
+                          [31m-[0m[0m "-addr=:8080",
+                          [31m-[0m[0m "-admin-addr=:8090",
+                          [31m-[0m[0m "-shutdown-timeout=15s",
+                          [31m-[0m[0m "-warmup=3s",
+                          [31m-[0m[0m "-cache-ttl=5s",
+                        ] [90m-> null[0m[0m
+                      [31m-[0m[0m command                    = [
+                          [31m-[0m[0m "/app/edge",
+                        ] [90m-> null[0m[0m
+                      [31m-[0m[0m image                      = "p04-edge-lab:local" [90m-> null[0m[0m
+                      [31m-[0m[0m image_pull_policy          = "Never" [90m-> null[0m[0m
+                      [31m-[0m[0m name                       = "edge" [90m-> null[0m[0m
+                      [31m-[0m[0m stdin                      = false [90m-> null[0m[0m
+                      [31m-[0m[0m stdin_once                 = false [90m-> null[0m[0m
+                      [31m-[0m[0m termination_message_path   = "/dev/termination-log" [90m-> null[0m[0m
+                      [31m-[0m[0m termination_message_policy = "File" [90m-> null[0m[0m
+                      [31m-[0m[0m tty                        = false [90m-> null[0m[0m
+                        [90m# (1 unchanged attribute hidden)[0m[0m
+
+                      [31m-[0m[0m env_from {
+                            [90m# (1 unchanged attribute hidden)[0m[0m
+
+                          [31m-[0m[0m config_map_ref {
+                              [31m-[0m[0m name     = "platform-config" [90m-> null[0m[0m
+                              [31m-[0m[0m optional = false [90m-> null[0m[0m
+                            }
+                        }
+
+                      [31m-[0m[0m liveness_probe {
+                          [31m-[0m[0m failure_threshold     = 3 [90m-> null[0m[0m
+                          [31m-[0m[0m initial_delay_seconds = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m period_seconds        = 10 [90m-> null[0m[0m
+                          [31m-[0m[0m success_threshold     = 1 [90m-> null[0m[0m
+                          [31m-[0m[0m timeout_seconds       = 1 [90m-> null[0m[0m
+
+                          [31m-[0m[0m http_get {
+                              [31m-[0m[0m path   = "/healthz" [90m-> null[0m[0m
+                              [31m-[0m[0m port   = "admin" [90m-> null[0m[0m
+                              [31m-[0m[0m scheme = "HTTP" [90m-> null[0m[0m
+                                [90m# (1 unchanged attribute hidden)[0m[0m
+                            }
+                        }
+
+                      [31m-[0m[0m port {
+                          [31m-[0m[0m container_port = 8080 [90m-> null[0m[0m
+                          [31m-[0m[0m host_port      = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m name           = "public" [90m-> null[0m[0m
+                          [31m-[0m[0m protocol       = "TCP" [90m-> null[0m[0m
+                            [90m# (1 unchanged attribute hidden)[0m[0m
+                        }
+                      [31m-[0m[0m port {
+                          [31m-[0m[0m container_port = 8090 [90m-> null[0m[0m
+                          [31m-[0m[0m host_port      = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m name           = "admin" [90m-> null[0m[0m
+                          [31m-[0m[0m protocol       = "TCP" [90m-> null[0m[0m
+                            [90m# (1 unchanged attribute hidden)[0m[0m
+                        }
+
+                      [31m-[0m[0m readiness_probe {
+                          [31m-[0m[0m failure_threshold     = 3 [90m-> null[0m[0m
+                          [31m-[0m[0m initial_delay_seconds = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m period_seconds        = 5 [90m-> null[0m[0m
+                          [31m-[0m[0m success_threshold     = 1 [90m-> null[0m[0m
+                          [31m-[0m[0m timeout_seconds       = 1 [90m-> null[0m[0m
+
+                          [31m-[0m[0m http_get {
+                              [31m-[0m[0m path   = "/readyz" [90m-> null[0m[0m
+                              [31m-[0m[0m port   = "admin" [90m-> null[0m[0m
+                              [31m-[0m[0m scheme = "HTTP" [90m-> null[0m[0m
+                                [90m# (1 unchanged attribute hidden)[0m[0m
+                            }
+                        }
+
+                      [31m-[0m[0m resources {
+                          [31m-[0m[0m limits   = {
+                              [31m-[0m[0m "cpu"    = "250m"
+                              [31m-[0m[0m "memory" = "64Mi"
+                            } [90m-> null[0m[0m
+                          [31m-[0m[0m requests = {
+                              [31m-[0m[0m "cpu"    = "50m"
+                              [31m-[0m[0m "memory" = "32Mi"
+                            } [90m-> null[0m[0m
+                        }
+
+                      [31m-[0m[0m security_context {
+                          [31m-[0m[0m allow_privilege_escalation = false [90m-> null[0m[0m
+                          [31m-[0m[0m privileged                 = false [90m-> null[0m[0m
+                          [31m-[0m[0m read_only_root_filesystem  = true [90m-> null[0m[0m
+                          [31m-[0m[0m run_as_non_root            = false [90m-> null[0m[0m
+                            [90m# (2 unchanged attributes hidden)[0m[0m
+
+                          [31m-[0m[0m capabilities {
+                              [31m-[0m[0m add  = [] [90m-> null[0m[0m
+                              [31m-[0m[0m drop = [
+                                  [31m-[0m[0m "ALL",
+                                ] [90m-> null[0m[0m
+                            }
+                        }
+
+                      [31m-[0m[0m startup_probe {
+                          [31m-[0m[0m failure_threshold     = 30 [90m-> null[0m[0m
+                          [31m-[0m[0m initial_delay_seconds = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m period_seconds        = 1 [90m-> null[0m[0m
+                          [31m-[0m[0m success_threshold     = 1 [90m-> null[0m[0m
+                          [31m-[0m[0m timeout_seconds       = 1 [90m-> null[0m[0m
+
+                          [31m-[0m[0m http_get {
+                              [31m-[0m[0m path   = "/readyz" [90m-> null[0m[0m
+                              [31m-[0m[0m port   = "admin" [90m-> null[0m[0m
+                              [31m-[0m[0m scheme = "HTTP" [90m-> null[0m[0m
+                                [90m# (1 unchanged attribute hidden)[0m[0m
+                            }
+                        }
+                    }
+
+                  [31m-[0m[0m security_context {
+                      [31m-[0m[0m run_as_non_root        = true [90m-> null[0m[0m
+                      [31m-[0m[0m run_as_user            = "65532" [90m-> null[0m[0m
+                      [31m-[0m[0m supplemental_groups    = [] [90m-> null[0m[0m
+                        [90m# (3 unchanged attributes hidden)[0m[0m
+
+                      [31m-[0m[0m seccomp_profile {
+                          [31m-[0m[0m type              = "RuntimeDefault" [90m-> null[0m[0m
+                            [90m# (1 unchanged attribute hidden)[0m[0m
+                        }
+                    }
+
+                  [31m-[0m[0m topology_spread_constraint {
+                      [31m-[0m[0m match_label_keys     = [] [90m-> null[0m[0m
+                      [31m-[0m[0m max_skew             = 1 [90m-> null[0m[0m
+                      [31m-[0m[0m min_domains          = 0 [90m-> null[0m[0m
+                      [31m-[0m[0m topology_key         = "kubernetes.io/hostname" [90m-> null[0m[0m
+                      [31m-[0m[0m when_unsatisfiable   = "ScheduleAnyway" [90m-> null[0m[0m
+                        [90m# (2 unchanged attributes hidden)[0m[0m
+
+                      [31m-[0m[0m label_selector {
+                          [31m-[0m[0m match_labels = {
+                              [31m-[0m[0m "app" = "edge"
+                            } [90m-> null[0m[0m
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_deployment_v1.origin[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_deployment_v1" "origin" {
+      [31m-[0m[0m id               = "edge/origin" [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_rollout = true [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 33 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {
+              [31m-[0m[0m "app" = "origin"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m name             = "origin" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "8212" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "a900e341-e9b2-4392-a157-bb780666592d" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m min_ready_seconds         = 0 [90m-> null[0m[0m
+          [31m-[0m[0m paused                    = false [90m-> null[0m[0m
+          [31m-[0m[0m progress_deadline_seconds = 600 [90m-> null[0m[0m
+          [31m-[0m[0m replicas                  = "2" [90m-> null[0m[0m
+          [31m-[0m[0m revision_history_limit    = 10 [90m-> null[0m[0m
+
+          [31m-[0m[0m selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "app" = "origin"
+                } [90m-> null[0m[0m
+            }
+
+          [31m-[0m[0m strategy {
+              [31m-[0m[0m type = "RollingUpdate" [90m-> null[0m[0m
+
+              [31m-[0m[0m rolling_update {
+                  [31m-[0m[0m max_surge       = "1" [90m-> null[0m[0m
+                  [31m-[0m[0m max_unavailable = "0" [90m-> null[0m[0m
+                }
+            }
+
+          [31m-[0m[0m template {
+              [31m-[0m[0m metadata {
+                  [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+                  [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m labels           = {
+                      [31m-[0m[0m "app" = "origin"
+                    } [90m-> null[0m[0m
+                    name             = [90mnull[0m[0m
+                    [90m# (4 unchanged attributes hidden)[0m[0m
+                }
+              [31m-[0m[0m spec {
+                  [31m-[0m[0m active_deadline_seconds          = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m automount_service_account_token  = false [90m-> null[0m[0m
+                  [31m-[0m[0m dns_policy                       = "ClusterFirst" [90m-> null[0m[0m
+                  [31m-[0m[0m enable_service_links             = true [90m-> null[0m[0m
+                  [31m-[0m[0m host_ipc                         = false [90m-> null[0m[0m
+                  [31m-[0m[0m host_network                     = false [90m-> null[0m[0m
+                  [31m-[0m[0m host_pid                         = false [90m-> null[0m[0m
+                  [31m-[0m[0m node_selector                    = {} [90m-> null[0m[0m
+                  [31m-[0m[0m restart_policy                   = "Always" [90m-> null[0m[0m
+                  [31m-[0m[0m scheduler_name                   = "default-scheduler" [90m-> null[0m[0m
+                  [31m-[0m[0m service_account_name             = "origin" [90m-> null[0m[0m
+                  [31m-[0m[0m share_process_namespace          = false [90m-> null[0m[0m
+                  [31m-[0m[0m termination_grace_period_seconds = 30 [90m-> null[0m[0m
+                    [90m# (5 unchanged attributes hidden)[0m[0m
+
+                  [31m-[0m[0m container {
+                      [31m-[0m[0m args                       = [
+                          [31m-[0m[0m "-addr=:8080",
+                          [31m-[0m[0m "-admin-addr=:8090",
+                          [31m-[0m[0m "-shutdown-timeout=15s",
+                          [31m-[0m[0m "-warmup=3s",
+                        ] [90m-> null[0m[0m
+                      [31m-[0m[0m command                    = [
+                          [31m-[0m[0m "/app/origin",
+                        ] [90m-> null[0m[0m
+                      [31m-[0m[0m image                      = "p04-edge-lab:local" [90m-> null[0m[0m
+                      [31m-[0m[0m image_pull_policy          = "Never" [90m-> null[0m[0m
+                      [31m-[0m[0m name                       = "origin" [90m-> null[0m[0m
+                      [31m-[0m[0m stdin                      = false [90m-> null[0m[0m
+                      [31m-[0m[0m stdin_once                 = false [90m-> null[0m[0m
+                      [31m-[0m[0m termination_message_path   = "/dev/termination-log" [90m-> null[0m[0m
+                      [31m-[0m[0m termination_message_policy = "File" [90m-> null[0m[0m
+                      [31m-[0m[0m tty                        = false [90m-> null[0m[0m
+                        [90m# (1 unchanged attribute hidden)[0m[0m
+
+                      [31m-[0m[0m liveness_probe {
+                          [31m-[0m[0m failure_threshold     = 3 [90m-> null[0m[0m
+                          [31m-[0m[0m initial_delay_seconds = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m period_seconds        = 10 [90m-> null[0m[0m
+                          [31m-[0m[0m success_threshold     = 1 [90m-> null[0m[0m
+                          [31m-[0m[0m timeout_seconds       = 1 [90m-> null[0m[0m
+
+                          [31m-[0m[0m http_get {
+                              [31m-[0m[0m path   = "/healthz" [90m-> null[0m[0m
+                              [31m-[0m[0m port   = "admin" [90m-> null[0m[0m
+                              [31m-[0m[0m scheme = "HTTP" [90m-> null[0m[0m
+                                [90m# (1 unchanged attribute hidden)[0m[0m
+                            }
+                        }
+
+                      [31m-[0m[0m port {
+                          [31m-[0m[0m container_port = 8080 [90m-> null[0m[0m
+                          [31m-[0m[0m host_port      = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m name           = "public" [90m-> null[0m[0m
+                          [31m-[0m[0m protocol       = "TCP" [90m-> null[0m[0m
+                            [90m# (1 unchanged attribute hidden)[0m[0m
+                        }
+                      [31m-[0m[0m port {
+                          [31m-[0m[0m container_port = 8090 [90m-> null[0m[0m
+                          [31m-[0m[0m host_port      = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m name           = "admin" [90m-> null[0m[0m
+                          [31m-[0m[0m protocol       = "TCP" [90m-> null[0m[0m
+                            [90m# (1 unchanged attribute hidden)[0m[0m
+                        }
+
+                      [31m-[0m[0m readiness_probe {
+                          [31m-[0m[0m failure_threshold     = 3 [90m-> null[0m[0m
+                          [31m-[0m[0m initial_delay_seconds = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m period_seconds        = 5 [90m-> null[0m[0m
+                          [31m-[0m[0m success_threshold     = 1 [90m-> null[0m[0m
+                          [31m-[0m[0m timeout_seconds       = 1 [90m-> null[0m[0m
+
+                          [31m-[0m[0m http_get {
+                              [31m-[0m[0m path   = "/readyz" [90m-> null[0m[0m
+                              [31m-[0m[0m port   = "admin" [90m-> null[0m[0m
+                              [31m-[0m[0m scheme = "HTTP" [90m-> null[0m[0m
+                                [90m# (1 unchanged attribute hidden)[0m[0m
+                            }
+                        }
+
+                      [31m-[0m[0m resources {
+                          [31m-[0m[0m limits   = {
+                              [31m-[0m[0m "cpu"    = "500m"
+                              [31m-[0m[0m "memory" = "128Mi"
+                            } [90m-> null[0m[0m
+                          [31m-[0m[0m requests = {
+                              [31m-[0m[0m "cpu"    = "100m"
+                              [31m-[0m[0m "memory" = "32Mi"
+                            } [90m-> null[0m[0m
+                        }
+
+                      [31m-[0m[0m security_context {
+                          [31m-[0m[0m allow_privilege_escalation = false [90m-> null[0m[0m
+                          [31m-[0m[0m privileged                 = false [90m-> null[0m[0m
+                          [31m-[0m[0m read_only_root_filesystem  = true [90m-> null[0m[0m
+                          [31m-[0m[0m run_as_non_root            = false [90m-> null[0m[0m
+                            [90m# (2 unchanged attributes hidden)[0m[0m
+
+                          [31m-[0m[0m capabilities {
+                              [31m-[0m[0m add  = [] [90m-> null[0m[0m
+                              [31m-[0m[0m drop = [
+                                  [31m-[0m[0m "ALL",
+                                ] [90m-> null[0m[0m
+                            }
+                        }
+
+                      [31m-[0m[0m startup_probe {
+                          [31m-[0m[0m failure_threshold     = 30 [90m-> null[0m[0m
+                          [31m-[0m[0m initial_delay_seconds = 0 [90m-> null[0m[0m
+                          [31m-[0m[0m period_seconds        = 1 [90m-> null[0m[0m
+                          [31m-[0m[0m success_threshold     = 1 [90m-> null[0m[0m
+                          [31m-[0m[0m timeout_seconds       = 1 [90m-> null[0m[0m
+
+                          [31m-[0m[0m http_get {
+                              [31m-[0m[0m path   = "/readyz" [90m-> null[0m[0m
+                              [31m-[0m[0m port   = "admin" [90m-> null[0m[0m
+                              [31m-[0m[0m scheme = "HTTP" [90m-> null[0m[0m
+                                [90m# (1 unchanged attribute hidden)[0m[0m
+                            }
+                        }
+                    }
+
+                  [31m-[0m[0m security_context {
+                      [31m-[0m[0m run_as_non_root        = true [90m-> null[0m[0m
+                      [31m-[0m[0m run_as_user            = "65532" [90m-> null[0m[0m
+                      [31m-[0m[0m supplemental_groups    = [] [90m-> null[0m[0m
+                        [90m# (3 unchanged attributes hidden)[0m[0m
+
+                      [31m-[0m[0m seccomp_profile {
+                          [31m-[0m[0m type              = "RuntimeDefault" [90m-> null[0m[0m
+                            [90m# (1 unchanged attribute hidden)[0m[0m
+                        }
+                    }
+
+                  [31m-[0m[0m topology_spread_constraint {
+                      [31m-[0m[0m match_label_keys     = [] [90m-> null[0m[0m
+                      [31m-[0m[0m max_skew             = 1 [90m-> null[0m[0m
+                      [31m-[0m[0m min_domains          = 0 [90m-> null[0m[0m
+                      [31m-[0m[0m topology_key         = "kubernetes.io/hostname" [90m-> null[0m[0m
+                      [31m-[0m[0m when_unsatisfiable   = "ScheduleAnyway" [90m-> null[0m[0m
+                        [90m# (2 unchanged attributes hidden)[0m[0m
+
+                      [31m-[0m[0m label_selector {
+                          [31m-[0m[0m match_labels = {
+                              [31m-[0m[0m "app" = "origin"
+                            } [90m-> null[0m[0m
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_horizontal_pod_autoscaler_v2.edge[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_horizontal_pod_autoscaler_v2" "edge" {
+      [31m-[0m[0m id = "edge/edge" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "8386" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "863d68bc-3195-4633-b73e-a73062437f86" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m max_replicas                      = 4 [90m-> null[0m[0m
+          [31m-[0m[0m min_replicas                      = 2 [90m-> null[0m[0m
+          [31m-[0m[0m target_cpu_utilization_percentage = 0 [90m-> null[0m[0m
+
+          [31m-[0m[0m behavior {
+              [31m-[0m[0m scale_down {
+                  [31m-[0m[0m select_policy                = "Min" [90m-> null[0m[0m
+                  [31m-[0m[0m stabilization_window_seconds = 120 [90m-> null[0m[0m
+
+                  [31m-[0m[0m policy {
+                      [31m-[0m[0m period_seconds = 60 [90m-> null[0m[0m
+                      [31m-[0m[0m type           = "Pods" [90m-> null[0m[0m
+                      [31m-[0m[0m value          = 1 [90m-> null[0m[0m
+                    }
+                }
+              [31m-[0m[0m scale_up {
+                  [31m-[0m[0m select_policy                = "Max" [90m-> null[0m[0m
+                  [31m-[0m[0m stabilization_window_seconds = 0 [90m-> null[0m[0m
+
+                  [31m-[0m[0m policy {
+                      [31m-[0m[0m period_seconds = 30 [90m-> null[0m[0m
+                      [31m-[0m[0m type           = "Pods" [90m-> null[0m[0m
+                      [31m-[0m[0m value          = 1 [90m-> null[0m[0m
+                    }
+                }
+            }
+
+          [31m-[0m[0m metric {
+              [31m-[0m[0m type = "Resource" [90m-> null[0m[0m
+
+              [31m-[0m[0m resource {
+                  [31m-[0m[0m name = "cpu" [90m-> null[0m[0m
+
+                  [31m-[0m[0m target {
+                      [31m-[0m[0m average_utilization = 50 [90m-> null[0m[0m
+                      [31m-[0m[0m type                = "Utilization" [90m-> null[0m[0m
+                        [90m# (2 unchanged attributes hidden)[0m[0m
+                    }
+                }
+            }
+
+          [31m-[0m[0m scale_target_ref {
+              [31m-[0m[0m api_version = "apps/v1" [90m-> null[0m[0m
+              [31m-[0m[0m kind        = "Deployment" [90m-> null[0m[0m
+              [31m-[0m[0m name        = "edge" [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_horizontal_pod_autoscaler_v2.origin[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_horizontal_pod_autoscaler_v2" "origin" {
+      [31m-[0m[0m id = "edge/origin" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "origin" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "8412" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "99178cd0-7357-4067-bc44-64fb0ae22fb6" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m max_replicas                      = 8 [90m-> null[0m[0m
+          [31m-[0m[0m min_replicas                      = 2 [90m-> null[0m[0m
+          [31m-[0m[0m target_cpu_utilization_percentage = 0 [90m-> null[0m[0m
+
+          [31m-[0m[0m behavior {
+              [31m-[0m[0m scale_down {
+                  [31m-[0m[0m select_policy                = "Min" [90m-> null[0m[0m
+                  [31m-[0m[0m stabilization_window_seconds = 120 [90m-> null[0m[0m
+
+                  [31m-[0m[0m policy {
+                      [31m-[0m[0m period_seconds = 60 [90m-> null[0m[0m
+                      [31m-[0m[0m type           = "Pods" [90m-> null[0m[0m
+                      [31m-[0m[0m value          = 1 [90m-> null[0m[0m
+                    }
+                }
+              [31m-[0m[0m scale_up {
+                  [31m-[0m[0m select_policy                = "Max" [90m-> null[0m[0m
+                  [31m-[0m[0m stabilization_window_seconds = 0 [90m-> null[0m[0m
+
+                  [31m-[0m[0m policy {
+                      [31m-[0m[0m period_seconds = 30 [90m-> null[0m[0m
+                      [31m-[0m[0m type           = "Pods" [90m-> null[0m[0m
+                      [31m-[0m[0m value          = 2 [90m-> null[0m[0m
+                    }
+                  [31m-[0m[0m policy {
+                      [31m-[0m[0m period_seconds = 30 [90m-> null[0m[0m
+                      [31m-[0m[0m type           = "Percent" [90m-> null[0m[0m
+                      [31m-[0m[0m value          = 100 [90m-> null[0m[0m
+                    }
+                }
+            }
+
+          [31m-[0m[0m metric {
+              [31m-[0m[0m type = "Resource" [90m-> null[0m[0m
+
+              [31m-[0m[0m resource {
+                  [31m-[0m[0m name = "cpu" [90m-> null[0m[0m
+
+                  [31m-[0m[0m target {
+                      [31m-[0m[0m average_utilization = 50 [90m-> null[0m[0m
+                      [31m-[0m[0m type                = "Utilization" [90m-> null[0m[0m
+                        [90m# (2 unchanged attributes hidden)[0m[0m
+                    }
+                }
+            }
+
+          [31m-[0m[0m scale_target_ref {
+              [31m-[0m[0m api_version = "apps/v1" [90m-> null[0m[0m
+              [31m-[0m[0m kind        = "Deployment" [90m-> null[0m[0m
+              [31m-[0m[0m name        = "origin" [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_namespace.edge[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_namespace" "edge" {
+      [31m-[0m[0m id                               = "edge" [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_default_service_account = false [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {
+              [31m-[0m[0m "app.kubernetes.io/part-of" = "edge-lab-p04"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m name             = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2262" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "8925f876-f224-4ec3-9961-637aadee0225" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_network_policy_v1.allow_dns_egress[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_network_policy_v1" "allow_dns_egress" {
+      [31m-[0m[0m id = "edge/allow-dns-egress" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "allow-dns-egress" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2270" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "d0d1e070-5c1f-41cd-bbef-b0b4c3d29853" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m policy_types = [
+              [31m-[0m[0m "Egress",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m egress {
+              [31m-[0m[0m ports {
+                  [31m-[0m[0m end_port = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m port     = "53" [90m-> null[0m[0m
+                  [31m-[0m[0m protocol = "UDP" [90m-> null[0m[0m
+                }
+              [31m-[0m[0m ports {
+                  [31m-[0m[0m end_port = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m port     = "53" [90m-> null[0m[0m
+                  [31m-[0m[0m protocol = "TCP" [90m-> null[0m[0m
+                }
+              [31m-[0m[0m to {
+                  [31m-[0m[0m namespace_selector {
+                      [31m-[0m[0m match_labels = {
+                          [31m-[0m[0m "kubernetes.io/metadata.name" = "kube-system"
+                        } [90m-> null[0m[0m
+                    }
+                }
+            }
+
+          [31m-[0m[0m pod_selector {
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_network_policy_v1.allow_edge_egress_to_origin[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_network_policy_v1" "allow_edge_egress_to_origin" {
+      [31m-[0m[0m id = "edge/allow-edge-egress-to-origin" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "allow-edge-egress-to-origin" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2271" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "ee5203d1-29ec-465a-9f31-75a26a055e1f" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m policy_types = [
+              [31m-[0m[0m "Egress",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m egress {
+              [31m-[0m[0m ports {
+                  [31m-[0m[0m end_port = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m port     = "8080" [90m-> null[0m[0m
+                  [31m-[0m[0m protocol = "TCP" [90m-> null[0m[0m
+                }
+              [31m-[0m[0m to {
+                  [31m-[0m[0m pod_selector {
+                      [31m-[0m[0m match_labels = {
+                          [31m-[0m[0m "app" = "origin"
+                        } [90m-> null[0m[0m
+                    }
+                }
+            }
+
+          [31m-[0m[0m pod_selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "app" = "edge"
+                } [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_network_policy_v1.allow_edge_to_origin[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_network_policy_v1" "allow_edge_to_origin" {
+      [31m-[0m[0m id = "edge/allow-edge-to-origin" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "allow-edge-to-origin" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2285" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "399ffd03-a631-49d9-a6ec-64f7e06802b4" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m policy_types = [
+              [31m-[0m[0m "Ingress",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m ingress {
+              [31m-[0m[0m from {
+                  [31m-[0m[0m pod_selector {
+                      [31m-[0m[0m match_labels = {
+                          [31m-[0m[0m "app" = "edge"
+                        } [90m-> null[0m[0m
+                    }
+                }
+              [31m-[0m[0m ports {
+                  [31m-[0m[0m end_port = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m port     = "8080" [90m-> null[0m[0m
+                  [31m-[0m[0m protocol = "TCP" [90m-> null[0m[0m
+                }
+            }
+
+          [31m-[0m[0m pod_selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "app" = "origin"
+                } [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_network_policy_v1.allow_experiments_egress[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_network_policy_v1" "allow_experiments_egress" {
+      [31m-[0m[0m id = "edge/allow-experiments-egress" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "allow-experiments-egress" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2269" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "75463f1b-904e-4cc2-9bdb-bb5fba76c81d" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m policy_types = [
+              [31m-[0m[0m "Egress",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m egress {
+              [31m-[0m[0m ports {
+                  [31m-[0m[0m end_port = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m port     = "8080" [90m-> null[0m[0m
+                  [31m-[0m[0m protocol = "TCP" [90m-> null[0m[0m
+                }
+              [31m-[0m[0m to {
+                  [31m-[0m[0m pod_selector {
+                      [31m-[0m[0m match_labels = {
+                          [31m-[0m[0m "app" = "edge"
+                        } [90m-> null[0m[0m
+                    }
+                }
+            }
+
+          [31m-[0m[0m pod_selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "role" = "experiments"
+                } [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_network_policy_v1.allow_experiments_to_edge[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_network_policy_v1" "allow_experiments_to_edge" {
+      [31m-[0m[0m id = "edge/allow-experiments-to-edge" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "allow-experiments-to-edge" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2272" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "efdb491d-544f-4fc5-bb6d-d44fecc9e183" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m policy_types = [
+              [31m-[0m[0m "Ingress",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m ingress {
+              [31m-[0m[0m from {
+                  [31m-[0m[0m pod_selector {
+                      [31m-[0m[0m match_labels = {
+                          [31m-[0m[0m "role" = "experiments"
+                        } [90m-> null[0m[0m
+                    }
+                }
+              [31m-[0m[0m ports {
+                  [31m-[0m[0m end_port = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m port     = "8080" [90m-> null[0m[0m
+                  [31m-[0m[0m protocol = "TCP" [90m-> null[0m[0m
+                }
+            }
+
+          [31m-[0m[0m pod_selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "app" = "edge"
+                } [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_network_policy_v1.allow_ingress_nginx_to_edge[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_network_policy_v1" "allow_ingress_nginx_to_edge" {
+      [31m-[0m[0m id = "edge/allow-ingress-nginx-to-edge" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "allow-ingress-nginx-to-edge" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2287" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "8c5ecc38-75f4-4a75-a817-4d7eead71ab7" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m policy_types = [
+              [31m-[0m[0m "Ingress",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m ingress {
+              [31m-[0m[0m from {
+                  [31m-[0m[0m namespace_selector {
+                      [31m-[0m[0m match_labels = {
+                          [31m-[0m[0m "kubernetes.io/metadata.name" = "observability"
+                        } [90m-> null[0m[0m
+                    }
+                }
+              [31m-[0m[0m ports {
+                  [31m-[0m[0m end_port = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m port     = "8080" [90m-> null[0m[0m
+                  [31m-[0m[0m protocol = "TCP" [90m-> null[0m[0m
+                }
+            }
+
+          [31m-[0m[0m pod_selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "app" = "edge"
+                } [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_network_policy_v1.allow_prometheus_scrape[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_network_policy_v1" "allow_prometheus_scrape" {
+      [31m-[0m[0m id = "edge/allow-prometheus-scrape" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "allow-prometheus-scrape" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2288" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "76137c7c-73e8-4e93-8c8c-a3d258376f42" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m policy_types = [
+              [31m-[0m[0m "Ingress",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m ingress {
+              [31m-[0m[0m from {
+                  [31m-[0m[0m namespace_selector {
+                      [31m-[0m[0m match_labels = {
+                          [31m-[0m[0m "kubernetes.io/metadata.name" = "observability"
+                        } [90m-> null[0m[0m
+                    }
+                }
+              [31m-[0m[0m ports {
+                  [31m-[0m[0m end_port = 0 [90m-> null[0m[0m
+                  [31m-[0m[0m port     = "8090" [90m-> null[0m[0m
+                  [31m-[0m[0m protocol = "TCP" [90m-> null[0m[0m
+                }
+            }
+
+          [31m-[0m[0m pod_selector {
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_network_policy_v1.default_deny[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_network_policy_v1" "default_deny" {
+      [31m-[0m[0m id = "edge/default-deny-all" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "default-deny-all" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2268" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "229d1058-c1cc-4139-a2fb-b08d17ae7613" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m policy_types = [
+              [31m-[0m[0m "Ingress",
+              [31m-[0m[0m "Egress",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m pod_selector {
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_pod_disruption_budget_v1.edge[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_pod_disruption_budget_v1" "edge" {
+      [31m-[0m[0m id = "edge/edge" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "5972" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "e6b4bc50-7609-4d16-8ca7-a58fa68d96f9" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m min_available   = "1" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+
+          [31m-[0m[0m selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "app" = "edge"
+                } [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_pod_disruption_budget_v1.origin[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_pod_disruption_budget_v1" "origin" {
+      [31m-[0m[0m id = "edge/origin" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 1 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "origin" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "8223" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "67583d68-bcdf-428e-8721-b0a40f80b68a" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m min_available   = "1" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+
+          [31m-[0m[0m selector {
+              [31m-[0m[0m match_labels = {
+                  [31m-[0m[0m "app" = "origin"
+                } [90m-> null[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_role.experiments_read_only[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_role" "experiments_read_only" {
+      [31m-[0m[0m id = "edge/experiments-read-only" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "experiments-read-only" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2293" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "39718eda-cd8f-4e00-9eeb-2d7318323840" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m rule {
+          [31m-[0m[0m api_groups     = [
+              [31m-[0m[0m [90mnull[0m[0m,
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m resource_names = [] [90m-> null[0m[0m
+          [31m-[0m[0m resources      = [
+              [31m-[0m[0m "endpoints",
+              [31m-[0m[0m "pods",
+              [31m-[0m[0m "pods/log",
+              [31m-[0m[0m "services",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m verbs          = [
+              [31m-[0m[0m "get",
+              [31m-[0m[0m "list",
+              [31m-[0m[0m "watch",
+            ] [90m-> null[0m[0m
+        }
+      [31m-[0m[0m rule {
+          [31m-[0m[0m api_groups     = [
+              [31m-[0m[0m "apps",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m resource_names = [] [90m-> null[0m[0m
+          [31m-[0m[0m resources      = [
+              [31m-[0m[0m "deployments",
+              [31m-[0m[0m "replicasets",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m verbs          = [
+              [31m-[0m[0m "get",
+              [31m-[0m[0m "list",
+              [31m-[0m[0m "watch",
+            ] [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_role_binding.experiments_read_only[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_role_binding" "experiments_read_only" {
+      [31m-[0m[0m id = "edge/experiments-read-only" [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "experiments-read-only" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2295" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "788ad767-f00f-43a5-8cac-a7b1d4a0607c" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m role_ref {
+          [31m-[0m[0m api_group = "rbac.authorization.k8s.io" [90m-> null[0m[0m
+          [31m-[0m[0m kind      = "Role" [90m-> null[0m[0m
+          [31m-[0m[0m name      = "experiments-read-only" [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m subject {
+          [31m-[0m[0m kind      = "ServiceAccount" [90m-> null[0m[0m
+          [31m-[0m[0m name      = "experiments" [90m-> null[0m[0m
+          [31m-[0m[0m namespace = "edge" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_service_account.edge[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_service_account" "edge" {
+      [31m-[0m[0m automount_service_account_token = false [90m-> null[0m[0m
+      [31m-[0m[0m id                              = "edge/edge" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2292" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "02f4fded-348b-4036-8942-f11777c55565" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_service_account.experiments[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_service_account" "experiments" {
+      [31m-[0m[0m automount_service_account_token = false [90m-> null[0m[0m
+      [31m-[0m[0m id                              = "edge/experiments" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "experiments" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2266" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "28d9fdae-aa9a-48f5-9bef-938696f636d3" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_service_account.origin[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_service_account" "origin" {
+      [31m-[0m[0m automount_service_account_token = false [90m-> null[0m[0m
+      [31m-[0m[0m id                              = "edge/origin" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "origin" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2265" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "0921e272-2054-4ddf-bdc3-16db8c3a41de" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_service_v1.edge[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_service_v1" "edge" {
+      [31m-[0m[0m id                     = "edge/edge" [90m-> null[0m[0m
+      [31m-[0m[0m status                 = [
+          [31m-[0m[0m {
+              [31m-[0m[0m load_balancer = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m ingress = []
+                    },
+                ]
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_load_balancer = true [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {
+              [31m-[0m[0m "app" = "edge"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m name             = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2274" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "e7e78a31-aabd-4a8a-b937-9759b18817d7" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m allocate_load_balancer_node_ports = true [90m-> null[0m[0m
+          [31m-[0m[0m cluster_ip                        = "10.96.136.237" [90m-> null[0m[0m
+          [31m-[0m[0m cluster_ips                       = [
+              [31m-[0m[0m "10.96.136.237",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m external_ips                      = [] [90m-> null[0m[0m
+          [31m-[0m[0m health_check_node_port            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m internal_traffic_policy           = "Cluster" [90m-> null[0m[0m
+          [31m-[0m[0m ip_families                       = [
+              [31m-[0m[0m "IPv4",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m ip_family_policy                  = "SingleStack" [90m-> null[0m[0m
+          [31m-[0m[0m load_balancer_source_ranges       = [] [90m-> null[0m[0m
+          [31m-[0m[0m publish_not_ready_addresses       = false [90m-> null[0m[0m
+          [31m-[0m[0m selector                          = {
+              [31m-[0m[0m "app" = "edge"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m session_affinity                  = "None" [90m-> null[0m[0m
+          [31m-[0m[0m type                              = "ClusterIP" [90m-> null[0m[0m
+            [90m# (4 unchanged attributes hidden)[0m[0m
+
+          [31m-[0m[0m port {
+              [31m-[0m[0m name         = "public" [90m-> null[0m[0m
+              [31m-[0m[0m node_port    = 0 [90m-> null[0m[0m
+              [31m-[0m[0m port         = 8080 [90m-> null[0m[0m
+              [31m-[0m[0m protocol     = "TCP" [90m-> null[0m[0m
+              [31m-[0m[0m target_port  = "public" [90m-> null[0m[0m
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            }
+          [31m-[0m[0m port {
+              [31m-[0m[0m name         = "admin" [90m-> null[0m[0m
+              [31m-[0m[0m node_port    = 0 [90m-> null[0m[0m
+              [31m-[0m[0m port         = 8090 [90m-> null[0m[0m
+              [31m-[0m[0m protocol     = "TCP" [90m-> null[0m[0m
+              [31m-[0m[0m target_port  = "admin" [90m-> null[0m[0m
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.kubernetes_service_v1.origin[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_service_v1" "origin" {
+      [31m-[0m[0m id                     = "edge/origin" [90m-> null[0m[0m
+      [31m-[0m[0m status                 = [
+          [31m-[0m[0m {
+              [31m-[0m[0m load_balancer = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m ingress = []
+                    },
+                ]
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_load_balancer = true [90m-> null[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {} [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {
+              [31m-[0m[0m "app" = "origin"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m name             = "origin" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "edge" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "2279" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "140e78d2-3727-424b-99e0-1891f8722ddd" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m spec {
+          [31m-[0m[0m allocate_load_balancer_node_ports = true [90m-> null[0m[0m
+          [31m-[0m[0m cluster_ip                        = "10.96.201.130" [90m-> null[0m[0m
+          [31m-[0m[0m cluster_ips                       = [
+              [31m-[0m[0m "10.96.201.130",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m external_ips                      = [] [90m-> null[0m[0m
+          [31m-[0m[0m health_check_node_port            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m internal_traffic_policy           = "Cluster" [90m-> null[0m[0m
+          [31m-[0m[0m ip_families                       = [
+              [31m-[0m[0m "IPv4",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m ip_family_policy                  = "SingleStack" [90m-> null[0m[0m
+          [31m-[0m[0m load_balancer_source_ranges       = [] [90m-> null[0m[0m
+          [31m-[0m[0m publish_not_ready_addresses       = false [90m-> null[0m[0m
+          [31m-[0m[0m selector                          = {
+              [31m-[0m[0m "app" = "origin"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m session_affinity                  = "None" [90m-> null[0m[0m
+          [31m-[0m[0m type                              = "ClusterIP" [90m-> null[0m[0m
+            [90m# (4 unchanged attributes hidden)[0m[0m
+
+          [31m-[0m[0m port {
+              [31m-[0m[0m name         = "public" [90m-> null[0m[0m
+              [31m-[0m[0m node_port    = 0 [90m-> null[0m[0m
+              [31m-[0m[0m port         = 8080 [90m-> null[0m[0m
+              [31m-[0m[0m protocol     = "TCP" [90m-> null[0m[0m
+              [31m-[0m[0m target_port  = "public" [90m-> null[0m[0m
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            }
+          [31m-[0m[0m port {
+              [31m-[0m[0m name         = "admin" [90m-> null[0m[0m
+              [31m-[0m[0m node_port    = 0 [90m-> null[0m[0m
+              [31m-[0m[0m port         = 8090 [90m-> null[0m[0m
+              [31m-[0m[0m protocol     = "TCP" [90m-> null[0m[0m
+              [31m-[0m[0m target_port  = "admin" [90m-> null[0m[0m
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            }
+        }
+    }
+
+[1m  # module.edge_platform.null_resource.prometheus_rules[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "null_resource" "prometheus_rules" {
+      [31m-[0m[0m id       = "7444242519831456148" [90m-> null[0m[0m
+      [31m-[0m[0m triggers = {
+          [31m-[0m[0m "kube_context" = "kind-edge-lab"
+          [31m-[0m[0m "rules_sha256" = "cf9efaa55b17f5ed63f286966d6c3dfa9f60f290c0c5fe9259d6bc19b78ee568"
+        } [90m-> null[0m[0m
+    }
+
+[1mPlan:[0m 0 to add, 0 to change, 30 to destroy.
+[0m
+Changes to Outputs:
+  [31m-[0m[0m edge_namespace          = "edge" [90m-> null[0m[0m
+  [31m-[0m[0m edge_service            = "edge.edge.svc.cluster.local" [90m-> null[0m[0m
+  [31m-[0m[0m observability_namespace = "observability" [90m-> null[0m[0m
+  [31m-[0m[0m origin_service          = "origin.edge.svc.cluster.local" [90m-> null[0m[0m
+[0m[1mmodule.edge_platform.null_resource.prometheus_rules: Destroying... [id=7444242519831456148][0m[0m
+[0m[1mmodule.edge_platform.null_resource.prometheus_rules: Provisioning with 'local-exec'...[0m[0m
+[0m[1mmodule.edge_platform.null_resource.prometheus_rules (local-exec):[0m [0mExecuting: ["/bin/sh" "-c" "kubectl --context=kind-edge-lab delete -f ../../edge-platform/alerts/edge-lab-p04-rules.yaml --ignore-not-found=true"]
+[0m[1mmodule.edge_platform.kubernetes_config_map.dashboard: Destroying... [id=edge/edge-lab-p04-dashboard][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_pod_disruption_budget_v1.edge: Destroying... [id=edge/edge][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.default_deny: Destroying... [id=edge/default-deny-all][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_pod_disruption_budget_v1.origin: Destroying... [id=edge/origin][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_horizontal_pod_autoscaler_v2.edge: Destroying... [id=edge/edge][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_service_v1.edge: Destroying... [id=edge/edge][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_experiments_to_edge: Destroying... [id=edge/allow-experiments-to-edge][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_edge_to_origin: Destroying... [id=edge/allow-edge-to-origin][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_edge_to_origin: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_config_map.dashboard: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_service_v1.edge: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_horizontal_pod_autoscaler_v2.edge: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_pod_disruption_budget_v1.origin: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_pod_disruption_budget_v1.edge: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_experiments_to_edge: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.default_deny: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_horizontal_pod_autoscaler_v2.origin: Destroying... [id=edge/origin][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_edge_egress_to_origin: Destroying... [id=edge/allow-edge-egress-to-origin][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_dns_egress: Destroying... [id=edge/allow-dns-egress][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_service_v1.origin: Destroying... [id=edge/origin][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_experiments_egress: Destroying... [id=edge/allow-experiments-egress][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_ingress_nginx_to_edge: Destroying... [id=edge/allow-ingress-nginx-to-edge][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_prometheus_scrape: Destroying... [id=edge/allow-prometheus-scrape][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_horizontal_pod_autoscaler_v2.origin: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_role_binding.experiments_read_only: Destroying... [id=edge/experiments-read-only][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_ingress_nginx_to_edge: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_experiments_egress: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_dns_egress: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_service_v1.origin: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_prometheus_scrape: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_network_policy_v1.allow_edge_egress_to_origin: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_deployment_v1.edge: Destroying... [id=edge/edge][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_deployment_v1.origin: Destroying... [id=edge/origin][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_role_binding.experiments_read_only: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.experiments: Destroying... [id=edge/experiments][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_role.experiments_read_only: Destroying... [id=edge/experiments-read-only][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_deployment_v1.edge: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_deployment_v1.origin: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_role.experiments_read_only: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.edge: Destroying... [id=edge/edge][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_config_map.platform: Destroying... [id=edge/platform-config][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.experiments: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.origin: Destroying... [id=edge/origin][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.edge: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_config_map.platform: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_service_account.origin: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.null_resource.prometheus_rules (local-exec):[0m [0mprometheusrule.monitoring.coreos.com "edge-lab-p04-rules" deleted
+[0m[1mmodule.edge_platform.null_resource.prometheus_rules: Destruction complete after 0s[0m
+[0m[1mmodule.edge_platform.kubernetes_namespace.edge: Destroying... [id=edge][0m[0m
+[0m[1mmodule.edge_platform.kubernetes_namespace.edge: Destruction complete after 6s[0m
+[0m[1mmodule.bootstrap_observability.helm_release.metrics_server: Destroying... [id=metrics-server][0m[0m
+[0m[1mmodule.bootstrap_observability.helm_release.kube_prometheus_stack: Destroying... [id=kube-prometheus-stack][0m[0m
+[0m[1mmodule.bootstrap_observability.helm_release.ingress_nginx: Destroying... [id=ingress-nginx][0m[0m
+[0m[1mmodule.bootstrap_observability.helm_release.metrics_server: Destruction complete after 0s[0m
+[0m[1mmodule.bootstrap_observability.helm_release.ingress_nginx: Destruction complete after 0s[0m
+[0m[1mmodule.bootstrap_observability.helm_release.kube_prometheus_stack: Destruction complete after 1s[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Destroying... [id=observability][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 10s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 20s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 30s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 40s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 50s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 1m0s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 1m10s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 1m20s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 1m30s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 1m40s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 1m50s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 2m0s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 2m10s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 2m20s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 2m30s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Still destroying... [id=observability, 2m40s elapsed][0m[0m
+[0m[1mmodule.bootstrap_observability.kubernetes_namespace.observability: Destruction complete after 2m42s[0m
+[0m[1mnull_resource.preflight_kind_context: Destroying... [id=1055222728771456561][0m[0m
+[0m[1mnull_resource.preflight_kind_context: Destruction complete after 0s[0m
+[0m[1m[32m
+Destroy complete! Resources: 30 destroyed.
+[0m

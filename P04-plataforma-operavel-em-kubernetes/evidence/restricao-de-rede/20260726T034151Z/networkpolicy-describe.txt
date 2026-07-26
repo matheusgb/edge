@@ -1,0 +1,118 @@
+Name:         allow-dns-egress
+Namespace:    edge
+Created on:   2026-07-25 23:57:57 -0300 -03
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     <none> (Allowing the specific traffic to all pods in this namespace)
+  Not affecting ingress traffic
+  Allowing egress traffic:
+    To Port: 53/UDP
+    To Port: 53/TCP
+    To:
+      NamespaceSelector: kubernetes.io/metadata.name=kube-system
+  Policy Types: Egress
+
+
+Name:         allow-edge-egress-to-origin
+Namespace:    edge
+Created on:   2026-07-25 23:57:57 -0300 -03
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     app=edge
+  Not affecting ingress traffic
+  Allowing egress traffic:
+    To Port: 8080/TCP
+    To:
+      PodSelector: app=origin
+  Policy Types: Egress
+
+
+Name:         allow-edge-to-origin
+Namespace:    edge
+Created on:   2026-07-25 23:57:57 -0300 -03
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     app=origin
+  Allowing ingress traffic:
+    To Port: 8080/TCP
+    From:
+      PodSelector: app=edge
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+
+Name:         allow-experiments-egress
+Namespace:    edge
+Created on:   2026-07-25 23:57:57 -0300 -03
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     role=experiments
+  Not affecting ingress traffic
+  Allowing egress traffic:
+    To Port: 8080/TCP
+    To:
+      PodSelector: app=edge
+  Policy Types: Egress
+
+
+Name:         allow-experiments-to-edge
+Namespace:    edge
+Created on:   2026-07-25 23:57:57 -0300 -03
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     app=edge
+  Allowing ingress traffic:
+    To Port: 8080/TCP
+    From:
+      PodSelector: role=experiments
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+
+Name:         allow-ingress-nginx-to-edge
+Namespace:    edge
+Created on:   2026-07-25 23:57:57 -0300 -03
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     app=edge
+  Allowing ingress traffic:
+    To Port: 8080/TCP
+    From:
+      NamespaceSelector: kubernetes.io/metadata.name=observability
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+
+Name:         allow-prometheus-scrape
+Namespace:    edge
+Created on:   2026-07-25 23:57:57 -0300 -03
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     <none> (Allowing the specific traffic to all pods in this namespace)
+  Allowing ingress traffic:
+    To Port: 8090/TCP
+    From:
+      NamespaceSelector: kubernetes.io/metadata.name=observability
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+
+Name:         default-deny-all
+Namespace:    edge
+Created on:   2026-07-25 23:57:57 -0300 -03
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     <none> (Allowing the specific traffic to all pods in this namespace)
+  Allowing ingress traffic:
+    <none> (Selected pods are isolated for ingress connectivity)
+  Allowing egress traffic:
+    <none> (Selected pods are isolated for egress connectivity)
+  Policy Types: Ingress, Egress

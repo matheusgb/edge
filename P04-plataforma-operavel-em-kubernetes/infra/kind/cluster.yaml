@@ -1,0 +1,30 @@
+## Cluster kind local para o P04. Não representa infraestrutura de
+## cloud: é uma ferramenta de teste, por isso o bootstrap fica em um
+## comando separado do Terraform (bootstrap.sh).
+##
+## disableDefaultCNI desliga o kindnet porque ele não aplica
+## NetworkPolicy. O Calico entra no lugar dele em bootstrap.sh, para que
+## o experimento de restrição de rede bloqueie tráfego de verdade.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: edge-lab
+networking:
+  disableDefaultCNI: true
+  podSubnet: "10.244.0.0/16"
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    extraPortMappings:
+      - containerPort: 30080
+        hostPort: 8080
+        protocol: TCP
+      - containerPort: 30090
+        hostPort: 8090
+        protocol: TCP
+  - role: worker
+  - role: worker

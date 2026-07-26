@@ -1,0 +1,14 @@
+# Terraform
+**/.terraform/
+*.tfplan
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# kind / kubeconfig locais
+infra/kind/kubeconfig*
+*.kubeconfig
+
+# binários locais
+/bin/

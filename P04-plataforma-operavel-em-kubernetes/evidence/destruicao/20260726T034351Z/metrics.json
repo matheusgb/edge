@@ -1,0 +1,8 @@
+{
+  "scenario": "destruicao",
+  "destroy_rc": 0,
+  "edge_namespace_gone": true,
+  "observability_namespace_gone": true,
+  "kind_nodes_still_up": 3,
+  "destruction_confirmed_and_cluster_survives": true
+}

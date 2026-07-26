@@ -1,0 +1,6 @@
+evidence/
+runbooks/
+postmortem/
+infra/
+*.md
+.git/
