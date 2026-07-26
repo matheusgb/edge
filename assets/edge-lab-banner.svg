@@ -1,0 +1,26 @@
+<svg width="2172" height="724" viewBox="0 0 2172 724" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: "Arial Black", "Helvetica Neue", Arial, sans-serif; font-weight: 900; }
+    </style>
+  </defs>
+
+  <rect width="2172" height="724" fill="#14161c"/>
+
+  <!-- routing line crossing the whole word, full width, centered between EDGE and LAB -->
+  <line x1="60" y1="384" x2="2112" y2="384" stroke="#2b5fe8" stroke-width="6"/>
+
+  <!-- nodes riding the line -->
+  <circle cx="230" cy="384" r="12" fill="#2b5fe8"/>
+  <circle cx="740" cy="384" r="12" fill="#2b5fe8"/>
+  <!-- degraded node: hollow, dimmed -->
+  <circle cx="1280" cy="384" r="16" fill="none" stroke="#e2720c" stroke-width="6"/>
+  <circle cx="1780" cy="384" r="12" fill="#2b5fe8"/>
+  <circle cx="2040" cy="384" r="12" fill="#2b5fe8"/>
+
+  <!-- word EDGE, sitting above the line -->
+  <text x="60" y="280" class="title" font-size="240" fill="#f5efe0" letter-spacing="-2">EDGE</text>
+
+  <!-- word LAB, sitting below the line -->
+  <text x="60" y="660" class="title" font-size="240" fill="#f5efe0" letter-spacing="-2">LAB</text>
+</svg>
