@@ -7,17 +7,22 @@
 
   <rect width="2172" height="724" fill="#14161c"/>
 
-  <!-- word EDGE, centered -->
-  <text x="60" y="440" class="title" font-size="340" fill="#f5efe0" letter-spacing="-2">EDGE</text>
+  <!-- word EDGE, upper left -->
+  <text x="60" y="300" class="title" font-size="220" fill="#f5efe0" letter-spacing="-2">EDGE</text>
 
-  <!-- routing line running below the word -->
-  <line x1="60" y1="560" x2="2112" y2="560" stroke="#2b5fe8" stroke-width="6"/>
+  <!-- funnel: origin (tall, far) narrowing down to the edge (short, close), lower right -->
+  <line x1="1150" y1="620" x2="2040" y2="620" stroke="#4a4e5c" stroke-width="3"/>
 
-  <!-- nodes riding the line -->
-  <circle cx="230" cy="560" r="12" fill="#2b5fe8"/>
-  <circle cx="740" cy="560" r="12" fill="#2b5fe8"/>
-  <!-- degraded node: hollow, dimmed -->
-  <circle cx="1280" cy="560" r="16" fill="none" stroke="#e2720c" stroke-width="6"/>
-  <circle cx="1780" cy="560" r="12" fill="#2b5fe8"/>
-  <circle cx="2040" cy="560" r="12" fill="#2b5fe8"/>
+  <!-- origin -->
+  <rect x="1150" y="280" width="160" height="340" fill="#2b5fe8"/>
+  <!-- cache -->
+  <rect x="1350" y="360" width="160" height="260" fill="#3f6ef0"/>
+  <!-- router: degraded, hollow -->
+  <rect x="1550" y="440" width="160" height="180" fill="none" stroke="#e2720c" stroke-width="6"/>
+  <circle cx="1630" cy="470" r="10" fill="#e2720c"/>
+  <!-- platform -->
+  <rect x="1750" y="510" width="160" height="110" fill="#2b5fe8"/>
+
+  <!-- the edge itself: a single point where the line ends -->
+  <circle cx="2040" cy="620" r="14" fill="#f5efe0"/>
 </svg>
