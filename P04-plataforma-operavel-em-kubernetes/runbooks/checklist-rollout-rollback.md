@@ -1,9 +1,10 @@
 # Checklist de rollout e rollback
 
-Baseado no que o experimento `rollout-invalido` (`evidence/rollout-invalido/`)
-mediu de verdade: uma imagem que nunca passa na readiness, aplicada a um
-Deployment com `maxUnavailable=0`, não deveria tirar tráfego dos pods antigos
-em nenhum momento.
+Este checklist é baseado no experimento `rollout-invalido`
+(`evidence/rollout-invalido/`). Ele testou o seguinte cenário: uma imagem que
+nunca passa na [checagem de prontidão](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/)
+(readiness probe), aplicada a um Deployment com `maxUnavailable=0`. Nesse
+caso, os pods antigos não devem perder tráfego em nenhum momento.
 
 ## Antes do rollout
 

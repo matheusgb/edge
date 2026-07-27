@@ -380,7 +380,8 @@ go test ./internal/origin -bench=. -benchmem -run '^$'
 **O que você vai ver:** a suíte passando com o detector de corrida, e a tabela de
 benchmarks com `ns/op`, `B/op` e `allocs/op` para cada modo e tamanho.
 
-**O que roda por baixo:** o `-race` liga o detector de corrida de dados, que avisa
+**O que roda por baixo:** o `-race` liga o detector de [condição de
+corrida](https://pt.wikipedia.org/wiki/Condi%C3%A7%C3%A3o_de_corrida), que avisa
 quando duas goroutines mexem na mesma variável sem coordenação. É um bug que não
 aparece em teste normal: funciona 999 vezes e quebra na milésima, em produção.
 

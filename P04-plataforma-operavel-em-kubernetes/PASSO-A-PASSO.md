@@ -48,10 +48,11 @@ Passo 8.
 infra/kind/bootstrap.sh up
 ```
 
-Isso cria o cluster (`kind-edge`, 1 control-plane + 2 workers), aplica o
-Calico (o CNI padrão do kind não aplica NetworkPolicy), builda a imagem
-`p04-edge:local` e uma segunda imagem `p04-edge:fail-ready` (usada só
-no experimento de rollout inválido), e carrega as duas no cluster.
+Isso cria o cluster (`kind-edge`, 1 control-plane + 2 workers) e aplica o
+Calico. O CNI padrão do kind não aplica NetworkPolicy, por isso a troca.
+O script também builda a imagem `p04-edge:local` e uma segunda imagem
+`p04-edge:fail-ready` (usada só no experimento de rollout inválido), e
+carrega as duas no cluster.
 
 Confirmar:
 
@@ -119,9 +120,9 @@ kubectl -n observability port-forward svc/kube-prometheus-stack-grafana 3000:80
 O dashboard "edge P04 - plataforma" já vem carregado (ConfigMap rotulado
 `edge_dashboard=1`, recolhido pelo sidecar do Grafana). As regras de
 alerta ficam em `infra/terraform/edge-platform/alerts/edge-p04-rules.yaml`
-e são aplicadas via `kubectl apply` dentro do próprio `terraform apply`
-(ver `infra/terraform/edge-platform/alerts.tf` para o motivo de não usar
-`kubernetes_manifest` diretamente).
+e são aplicadas via `kubectl apply` dentro do próprio `terraform apply`.
+O motivo de não usar `kubernetes_manifest` diretamente está explicado em
+`infra/terraform/edge-platform/alerts.tf`.
 
 ## Passo 8: modelo de capacidade
 
@@ -149,9 +150,9 @@ infra/kind/bootstrap.sh down
 ```
 
 O primeiro comando derruba o que o Terraform criou (namespaces `edge` e
-`observability`); o segundo derruba o cluster kind inteiro. São escopos
-diferentes de propósito, ver o experimento de destruição
-(`evidence/destruicao/`) para a confirmação medida disso.
+`observability`). O segundo derruba o cluster kind inteiro. São escopos
+diferentes de propósito. A confirmação medida disso está no experimento
+de destruição (`evidence/destruicao/`).
 
 ## Encerrando
 

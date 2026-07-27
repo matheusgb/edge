@@ -36,7 +36,7 @@ uma toxina esquecida do cenário anterior.
 ### A que mediu o gerador, não o serviço
 
 Em `matriz-de-carga/20260725T232715Z`, quatro cenários aparecem com erro alto e
-latência baixa ao mesmo tempo, o que é uma combinação estranha: um sistema
+latência baixa ao mesmo tempo. É uma combinação estranha: um sistema
 sobrecarregado costuma ficar lento antes de errar. O `metrics.json` explica, na
 lista de mensagens de erro:
 
@@ -44,17 +44,17 @@ lista de mensagens de erro:
 dial tcp 0.0.0.0:0->127.0.0.1:9080: bind: address already in use
 ```
 
-Não era o serviço recusando; era o GERADOR sem portas efêmeras. O pool de
-conexões ociosas do Vegeta estava menor que o teto de conexões, então toda
-conexão acima do pool era fechada em vez de reaproveitada, cada fechamento
-deixava uma porta em `TIME_WAIT` por dezenas de segundos, e alguns milhares de
-requisições por segundo esgotavam o intervalo de portas da máquina.
+Não era o serviço recusando, era o GERADOR sem portas efêmeras. O pool de
+conexões ociosas do Vegeta estava menor que o teto de conexões. Toda conexão
+acima do pool era fechada em vez de reaproveitada, cada fechamento deixava uma
+porta em `TIME_WAIT` por dezenas de segundos, e alguns milhares de requisições
+por segundo esgotavam o intervalo de portas da máquina.
 
 A correção está em `internal/loadtest/loadtest.go`, com o comentário explicando o
-porquê. A execução fica guardada porque ela é o exemplo mais claro de uma
-armadilha central deste projeto: **um experimento de carga mede o gerador com a
-mesma facilidade com que mede o serviço**, e a única defesa é olhar as mensagens
-de erro em vez de aceitar o resumo.
+porquê. A execução fica guardada porque é o exemplo mais claro de uma armadilha
+central deste projeto: um experimento de carga mede o gerador com a mesma
+facilidade com que mede o serviço. A única defesa é olhar as mensagens de erro
+em vez de aceitar o resumo.
 
 ### A que mostrou o exílio permanente
 
@@ -72,11 +72,11 @@ O edge-a segue com zero. Ele foi exilado e não voltou mais.
 
 A causa é um ponto fixo na própria fórmula de custo: um destino caro para de
 receber tráfego, sem tráfego a média móvel dele nunca é atualizada, e sem
-atualização ele continua caro para sempre. A correção, descrita no README, foi
-envelhecer a informação e tratar medição velha como velha.
+atualização ele continua caro para sempre. A correção, descrita no README do
+projeto, foi envelhecer a informação e tratar medição velha como velha.
 
 Guardar esta execução é mais honesto do que guardar só a versão corrigida. O
-código passava em todos os testes que existiam na época; quem apontou o defeito
+código passava em todos os testes que existiam na época. Quem apontou o defeito
 foi a fase do experimento que ninguém esperava que falhasse.
 
 ## O que não entra aqui

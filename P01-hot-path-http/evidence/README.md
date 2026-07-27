@@ -13,9 +13,9 @@ Cada execução da matriz grava uma pasta aqui, no formato
 ## Por que guardar isso
 
 Um número de desempenho sem o ambiente em volta não significa nada. "4500 MB/s"
-é uma afirmação vazia se ninguém sabe em que máquina, com qual objeto, com quanta
-concorrência e com qual versão do código. A pasta de evidência existe para que a
-conclusão continue verificável depois que a sessão terminar.
+não diz em que máquina, com qual objeto, com quanta concorrência nem com qual
+versão do código. A pasta de evidência guarda esse contexto para que a conclusão
+continue verificável depois que a sessão terminar.
 
 Os perfis do `pprof` de um cenário entram na mesma pasta daquele cenário, não
 soltos na raiz. Assim o perfil fica ao lado do número que ele explica.
@@ -23,9 +23,10 @@ soltos na raiz. Assim o perfil fica ao lado do número que ele explica.
 ## Por que o resumo tem duas tabelas
 
 Quem mede não deveria ser quem é medido. O cliente sabe quantas requisições
-terminaram e quanto tempo cada uma levou; ele não tem como saber quanta memória o
-servidor alocou nem quantas coletas de lixo aconteceram. Essas grandezas vêm do
-`/metrics` do próprio servidor, lido antes e depois de cada janela.
+terminaram e quanto tempo cada uma levou, mas não tem como saber quanta memória o
+servidor alocou nem quantas coletas de lixo ([garbage collection](https://pt.wikipedia.org/wiki/Coletor_de_lixo))
+aconteceram. Essas grandezas vêm do `/metrics` do próprio servidor, lido antes e
+depois de cada janela.
 
 Na tabela do servidor, só o **total alocado** é diferença de contador. "Heap no
 fim" e "goroutines no fim" são fotos de um processo que atende todos os cenários

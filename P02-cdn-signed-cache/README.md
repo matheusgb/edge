@@ -4,11 +4,12 @@
 > entregá-la a milhares de pessoas, sem entregá-la para quem não tem direito a
 > ela, e sem derrubar a origem no pior momento possível?
 
-Uma CDN (Content Delivery Network, ou rede de entrega de conteúdo) é o conjunto
-de servidores que fica entre o usuário e o sistema que produz o conteúdo. Ela
-guarda cópias do que já foi pedido e responde de novo sem incomodar quem
-produziu. É assim que um vídeo assistido por um milhão de pessoas não vira um
-milhão de leituras no servidor original.
+Uma [CDN](https://pt.wikipedia.org/wiki/Rede_de_distribui%C3%A7%C3%A3o_de_conte%C3%BAdo)
+(rede de entrega de conteúdo) é o conjunto de servidores que fica entre o
+usuário e o sistema que produz o conteúdo. Ela guarda cópias do que já foi
+pedido e responde de novo sem incomodar quem produziu. É assim que um vídeo
+assistido por um milhão de pessoas não vira um milhão de leituras no servidor
+original.
 
 Este projeto constrói uma dessas, numa região só, para estudar as duas decisões
 que a fazem funcionar.
@@ -89,9 +90,10 @@ desempenho.
 
 ### A chave de cache
 
-Um cache é um dicionário: uma chave aponta para uma resposta guardada. **Quem
-escolhe a chave decide o que é "o mesmo conteúdo".** É a decisão mais importante
-de uma CDN, e a mais fácil de errar.
+Um [cache](https://pt.wikipedia.org/wiki/Cache) funciona como um dicionário:
+uma chave aponta para uma resposta guardada. **Quem escolhe a chave decide o
+que é "o mesmo conteúdo".** É a decisão mais importante de uma CDN, e a mais
+fácil de errar.
 
 A chave deste projeto está em
 [deploy/nginx/templates/cdn.conf.template](deploy/nginx/templates/cdn.conf.template):
@@ -111,9 +113,9 @@ Repare no que está lá e, principalmente, no que não está:
 
 Aqui mora um perigo real. Deixar o `$host` na chave só é seguro porque existe um
 servidor padrão que fecha a conexão para qualquer Host desconhecido. Sem ele, o
-cliente escolheria parte da chave, e escolher a chave de um cache compartilhado é
-o começo de um **cache poisoning**: envenenar uma entrada que outra pessoa vai
-consumir.
+cliente escolheria parte da chave, e quem escolhe a chave de um cache
+compartilhado pode envenenar uma entrada que outra pessoa vai consumir
+(cache poisoning).
 
 ### URL assinada: um crachá com prazo
 
@@ -127,10 +129,13 @@ A autorização viaja na própria URL, em três parâmetros:
                   qual chave assinou
 ```
 
-A assinatura cobre `versão + método + caminho + expiração + identificador da
-chave`, e o código está em [internal/signer/signer.go](internal/signer/signer.go).
-Cada campo está lá por um motivo, e dá para entender cada um pela pergunta "o que
-aconteceria sem ele?":
+A assinatura usa [HMAC](https://pt.wikipedia.org/wiki/HMAC): um código de
+autenticação calculado com uma chave secreta, que prova que a URL não foi
+alterada e foi emitida por quem tem o segredo. Ela cobre `versão + método +
+caminho + expiração + identificador da chave`, e o código está em
+[internal/signer/signer.go](internal/signer/signer.go). Cada campo está lá por
+um motivo, e dá para entender cada um pela pergunta "o que aconteceria sem
+ele?":
 
 | Campo sem o qual... | ...o que quebra                                            |
 | ------------------- | ---------------------------------------------------------- |
@@ -246,7 +251,7 @@ em [evidence/](evidence/), com ambiente, comandos e JSON de cada execução.
 ### A máquina onde isto rodou
 
 | Item                                       | Valor                               |
-| ------------------------------------------ | ----------------------------------- |
+| ------------------------------------------ | ------------------------------------ |
 | CPU                                        | Intel Core i9-13980HX (13ª geração) |
 | Processadores lógicos visíveis ao processo | 32                                  |
 | Memória disponível ao Linux                | 15 GiB                              |
@@ -327,7 +332,7 @@ Objeto guardado com TTL de 3 s, origem passada a responder 503, dez requisiçõe
 depois do vencimento.
 
 | Medida                                  | Valor    |
-| --------------------------------------- | -------: |
+| ---------------------------------------- | -------: |
 | Respostas servidas do cache vencido     | **10/10** |
 | Erros propagados ao cliente             |    **0** |
 | Chamadas que chegaram à origem          |       10 |
@@ -364,7 +369,7 @@ espera antes de rodar, e a bateria inteira falha se um só passar quando deveria
 ser recusado.
 
 | Vetor                        | O que tenta                                       | Resultado |
-| ---------------------------- | ------------------------------------------------- | --------- |
+| ----------------------------- | -------------------------------------------------- | --------- |
 | `sem-token`                  | pedir objeto protegido sem token                  | 403       |
 | `assinatura-alterada`        | trocar um caractere do HMAC                       | 403       |
 | `chave-desconhecida`         | apontar para um `kid` que não existe              | 403       |
@@ -450,7 +455,7 @@ curl -s localhost:8080/healthz
 Quatro containers sobem:
 
 | Serviço       | Papel                                                   | Publicado em          |
-| ------------- | ------------------------------------------------------- | --------------------- |
+| ------------- | -------------------------------------------------------- | ---------------------- |
 | `cdn`         | Nginx: proxy, cache e controles                         | `127.0.0.1:8080`      |
 | `tokend`      | Go: emite e valida URLs assinadas                       | `127.0.0.1:8082`      |
 | `origin`      | Go: serve os objetos                                    | **não publicado**     |
@@ -609,7 +614,7 @@ comportamento dele for a pergunta do projeto. A pergunta aqui é cache e
 autorização da CDN, então:
 
 | Ferramenta                       | Por que ela e não código próprio                          |
-| -------------------------------- | ---------------------------------------------------------- |
+| --------------------------------- | ------------------------------------------------------------ |
 | `tsenart/vegeta`                 | gera carga a taxa constante, tratando coordinated omission |
 | `nxadm/tail`                     | seguir arquivo com rotação e truncamento é problema resolvido |
 | `prometheus/common/expfmt`       | ler o formato de exposição tem detalhes que já estão testados |
@@ -624,7 +629,7 @@ Sobre o Vegeta, vale uma palavra a mais, porque a escolha é conceitual. Ele
 dispara na hora marcada mesmo que a requisição anterior não tenha respondido. Um
 gerador ingênuo, com N clientes em laço, faz o oposto: se o servidor fica lento,
 ele naturalmente pede menos, e a lentidão some da medição. Esse viés tem nome,
-**coordinated omission**, e é o erro mais comum em medição caseira de latência.
+coordinated omission, e é o erro mais comum em medição caseira de latência.
 
 ---
 

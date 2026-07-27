@@ -27,8 +27,7 @@ latência (origin)" subindo de forma sustentada.
    ```bash
    kubectl -n edge top pods -l app=origin
    ```
-4. Checar se existe um rollout em andamento que possa estar sem capacidade
-   suficiente ainda de pé:
+4. Checar se há um rollout em andamento sem capacidade suficiente ainda de pé:
    ```bash
    kubectl -n edge rollout status deployment/origin
    ```
@@ -36,20 +35,21 @@ latência (origin)" subindo de forma sustentada.
 ## Ação humana
 
 1. **HPA ainda tem margem** (`REPLICAS` < `origin_replicas_max`): aguardar a
-   janela de reação do HPA. O experimento de escala
-   (`evidence/escala/`) mediu, neste laboratório, réplicas subindo de 2 para
-   8 em cerca de 2 minutos sob carga crescente; esse é o retardo de referência,
-   não uma garantia de produção.
+   janela de reação do HPA. No experimento de escala (`evidence/escala/`),
+   as réplicas subiram de 2 para 8 em cerca de 2 minutos sob carga crescente.
+   Esse número é o retardo de referência deste laboratório, não uma garantia
+   de produção.
 2. **HPA no teto** (`REPLICAS` == `origin_replicas_max`): a origem está
    subdimensionada para a carga atual. Rodar o modelo de capacidade
    (`go run ./cmd/capacity -capacity-per-replica-rps=<medido> ...`, ver
-   `evidence/modelo-de-capacidade.md`) com a capacidade por réplica atualizada
-   e, se justificado, aumentar `origin_replicas_max` em
+   `evidence/modelo-de-capacidade.md`) com a capacidade por réplica atualizada.
+   Se justificado, aumentar `origin_replicas_max` em
    `infra/terraform/edge-platform/variables.tf` e reaplicar.
-3. **CPU não está saturada mas a latência subiu mesmo assim**: suspeitar da
-   origem real dos milissegundos (rede entre nós, GC, contenção no host) e
-   coletar um perfil (`pprof` na porta administrativa `:8090`, nunca exposta
-   fora do cluster) antes de mudar limites às cegas.
+3. **CPU não está saturada mas a latência subiu mesmo assim**: suspeitar de
+   outra causa para os milissegundos, como rede entre nós, coleta de lixo
+   ([garbage collection](https://pt.wikipedia.org/wiki/Coletor_de_lixo))
+   ou contenção no host. Coletar um perfil (`pprof` na porta administrativa
+   `:8090`, nunca exposta fora do cluster) antes de mudar limites às cegas.
 
 ## Confirmação da recuperação
 

@@ -6,11 +6,13 @@ Um serviço rápido não é a mesma coisa que um serviço operável. P01, P02 e 
 já mostraram como fazer uma origem e uma CDN em Go que respondem rápido. Este
 projeto pega uma versão mínima dessas duas peças e responde a uma pergunta
 diferente: outra pessoa, sem ter escrito uma linha desse código, consegue
-implantar, observar, escalar e recuperar esse serviço com segurança? Isso
-significa ter probes que fazem sentido, um HPA que reage de verdade, uma
-NetworkPolicy que bloqueia tráfego de verdade (não só declara a intenção), um
-rollout que não manda tráfego para uma versão quebrada, e um jeito
-reproduzível de destruir tudo de novo.
+implantar, observar, escalar e recuperar esse serviço com segurança?
+
+Isso significa ter probes que fazem sentido, um HPA ([Horizontal Pod
+Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/))
+que reage de verdade, uma NetworkPolicy que bloqueia tráfego de verdade (não só
+declara a intenção), um rollout que não manda tráfego para uma versão
+quebrada, e um jeito reproduzível de destruir tudo de novo.
 
 ## Funcionamento macro
 
@@ -26,10 +28,10 @@ loadgen (dentro do cluster, rotulado role=experiments)
                     (namespace observability, via Helm)
 ```
 
-Um cluster `kind` local fornece os nós Kubernetes. O CNI padrão do kind
-(kindnet) **não aplica NetworkPolicy**, então o bootstrap troca por Calico
-antes de qualquer coisa (`infra/kind/bootstrap.sh`). O Terraform entra depois,
-organizado por responsabilidade:
+Um cluster [kind](https://kind.sigs.k8s.io/) local fornece os nós Kubernetes.
+O CNI padrão do kind (kindnet) **não aplica NetworkPolicy**, então o bootstrap
+troca por Calico antes de qualquer coisa (`infra/kind/bootstrap.sh`). O
+Terraform entra depois, organizado por responsabilidade:
 
 ```text
 infra/terraform/
@@ -48,23 +50,26 @@ Uma plataforma operável não é a soma de ferramentas (Kubernetes + Terraform +
 Prometheus). É a garantia de que cada mecanismo de segurança e recuperação
 realmente funciona quando testado, não apenas quando declarado. Por isso este
 projeto não aceita "a NetworkPolicy existe" como resultado: ele testa se ela
-bloqueia (`evidence/restricao-de-rede/`), não aceita "o HPA está configurado"
-como resultado, testa se ele reage e mede o atraso (`evidence/escala/`), e não
-aceita "o rollout tem readiness probe" como resultado, testa se uma versão
+bloqueia (`evidence/restricao-de-rede/`). Não aceita "o HPA está configurado"
+como resultado: testa se ele reage e mede o atraso (`evidence/escala/`). E não
+aceita "o rollout tem readiness probe" como resultado: testa se uma versão
 quebrada de verdade fica sem tráfego (`evidence/rollout-invalido/`).
 
 ## A utilidade em produção
 
-Cada peça daqui tem um paralelo direto em produção: probes distintas para
-início, prontidão e vida do processo evitam que um pod lento no boot seja
-matado antes da hora ou que um pod travado continue recebendo tráfego; HPA com
-comportamento de subida e descida explícito evita tanto subdimensionamento sob
-pico quanto oscilação (flapping) na volta à calma; PodDisruptionBudget e
-espalhamento entre nós reduzem o impacto de manutenção e falha de um nó;
-NetworkPolicy com negação padrão limita o raio de um comprometimento a exatamente
-o tráfego que foi liberado; RBAC restrito e contas de serviço sem token
-automontado reduzem o que um pod comprometido consegue fazer contra a API do
-cluster.
+Cada peça daqui tem um paralelo direto em produção:
+
+- probes distintas para início, prontidão e vida do processo evitam que um pod
+  lento no boot seja matado antes da hora, ou que um pod travado continue
+  recebendo tráfego;
+- HPA com comportamento de subida e descida explícito evita tanto
+  subdimensionamento sob pico quanto oscilação (flapping) na volta à calma;
+- PodDisruptionBudget e espalhamento entre nós reduzem o impacto de
+  manutenção e falha de um nó;
+- NetworkPolicy com negação padrão limita o raio de um comprometimento a
+  exatamente o tráfego que foi liberado;
+- RBAC restrito e contas de serviço sem token automontado reduzem o que um pod
+  comprometido consegue fazer contra a API do cluster.
 
 ## A preparação e os comandos originais
 
@@ -108,13 +113,15 @@ infra/kind/bootstrap.sh down
 Com o cluster de pé e o Terraform aplicado, uma requisição a
 `http://edge.edge.svc.cluster.local:8080/object/<nome>` retorna um objeto
 sintético determinístico (o mesmo nome sempre produz o mesmo conteúdo e o
-mesmo ETag), servido do cache em memória da borda quando o TTL de 5s ainda é
-válido, ou buscado na origem e cacheado quando não. `http://.../work?n=<N>`
-sempre passa direto pela borda até a origem (nunca é cacheado, de propósito:
-existe para gerar CPU medível a cada chamada) e devolve um checksum depois de
-N iterações de hash. Os testes de integração
-(`test/plataforma_integration_test.go`) exercitam exatamente esse caminho
-contra processos HTTP reais, não contra mocks.
+mesmo ETag). É servida do cache em memória da borda quando o TTL de 5s ainda é
+válido, ou buscada na origem e cacheada quando não.
+
+`http://.../work?n=<N>` sempre passa direto pela borda até a origem (nunca é
+cacheado, de propósito: existe para gerar CPU medível a cada chamada) e
+devolve um checksum depois de N iterações de hash.
+
+Os testes de integração (`test/plataforma_integration_test.go`) exercitam
+exatamente esse caminho contra processos HTTP reais, não contra mocks.
 
 ## A falha controlada
 
@@ -164,14 +171,14 @@ Números com evidência correspondente em `evidence/`:
 ## O limite do que foi comprovado
 
 - O cluster tem 32 CPUs lógicas disponíveis no host; nenhuma rodada chegou
-  perto de saturar uma réplica individual, então o "atraso do HPA" medido
+  perto de saturar uma réplica individual. Então o "atraso do HPA" medido
   aqui é sobre reação a um degrau de carga, não sobre comportamento sob
   saturação real.
 - "3 zonas" no modelo de capacidade (`evidence/modelo-de-capacidade.md`) é uma
   analogia com os 3 nós do kind, não zonas de disponibilidade de um provedor
   real: o cluster inteiro roda no mesmo host físico.
 - O modelo de capacidade projeta 1.422 réplicas para sustentar a premissa de
-  50 mil rps; isso não foi criado nem testado, é uma extrapolação linear a
+  50 mil rps. Isso não foi criado nem testado: é uma extrapolação linear a
   partir de uma capacidade por réplica derivada de benchmark de CPU, não de
   uma saturação end-to-end medida.
 - O experimento de pod encerrado rodou com mais de duas réplicas ativas (o
@@ -209,8 +216,9 @@ P04 pega o que P01 a P03 já mediram sobre HTTP, cache e rede e transforma numa
 pergunta de operação: alguém de fora consegue confiar nesta plataforma? A
 resposta, com evidência medida em três repetições por cenário, é que o HPA
 reage, o rollback funciona, a NetworkPolicy bloqueia de verdade (só depois de
-trocar o CNI padrão do kind), e a destruição é limpa e reversível. O que não
-está aqui é qualquer alegação de que isso prova capacidade de produção: o
-modelo de capacidade projeta milhares de réplicas a partir de uma extrapolação
-linear, não de uma medição em escala, e um laptop com um cluster kind
-continua sendo, antes de tudo, um ambiente de laboratório.
+trocar o CNI padrão do kind), e a destruição é limpa e reversível.
+
+O que não está aqui é qualquer alegação de que isso prova capacidade de
+produção: o modelo de capacidade projeta milhares de réplicas a partir de uma
+extrapolação linear, não de uma medição em escala, e um laptop com um cluster
+kind continua sendo, antes de tudo, um ambiente de laboratório.

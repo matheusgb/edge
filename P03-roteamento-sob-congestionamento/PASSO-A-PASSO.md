@@ -123,8 +123,9 @@ Repare em três campos de cada destino:
 - `latency_ewma_ms`: a latência média que o roteador aprendeu observando as
   respostas reais;
 - `cost`: o custo estimado da próxima requisição, que é o que decide;
-- `circuit_open`: se o disjuntor está aberto (aqui não está, porque o edge-a não
-  está falhando, só demorando).
+- `circuit_open`: se o disjuntor está aberto. Um disjuntor de software para de
+  mandar tráfego para um destino que está falhando, para dar tempo dele se
+  recuperar. Aqui ele não abre, porque o edge-a não está falhando, só demorando.
 
 O `cost` do edge-a estará ordens de grandeza acima dos outros dois.
 
@@ -234,8 +235,10 @@ vem provisionado, sem senha.
 
 A leitura recomendada, de cima para baixo:
 
-1. **o que o cliente sente**: requisições por segundo por código e a latência
-   p50, p95 e p99;
+1. **o que o cliente sente**: requisições por segundo por código e a
+   [latência](https://pt.wikipedia.org/wiki/Lat%C3%AAncia) nos
+   [percentis](https://pt.wikipedia.org/wiki/Percentil) p50, p95 e p99, ou seja,
+   o valor abaixo do qual ficam 50%, 95% e 99% das requisições;
 2. **a decisão do roteador**: para onde o tráfego foi, ao lado do custo estimado
    de cada destino. Este par é o coração do painel, porque mostra a decisão e o
    motivo dela juntos;
