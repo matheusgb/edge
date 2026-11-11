@@ -1,6 +1,7 @@
 ![Banner do Edge](assets/edge-banner.svg)
 
 <p align="center">
+  <a href="https://github.com/matheusgb/edge/actions/workflows/ci.yaml"><img src="https://github.com/matheusgb/edge/actions/workflows/ci.yaml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Go-1.26-00ADD8?logo=go&logoColor=white" alt="Go 1.26">
   <img src="https://img.shields.io/badge/projetos-4-6f42c1" alt="4 projetos">
   <img src="https://img.shields.io/badge/status-conclu%C3%ADdo-2ea44f" alt="Status concluído">
