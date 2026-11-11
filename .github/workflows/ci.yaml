@@ -1,0 +1,52 @@
+name: ci
+
+# gofmt, vet e testes de unidade dos quatro módulos Go (P01 a P04), cada um com
+# seu go.mod. Os testes com a tag `integration` (P01, P02, P03) não rodam aqui:
+# dependem de docker/compose e rodam só localmente, conforme o PASSO-A-PASSO de
+# cada projeto.
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  go:
+    name: ${{ matrix.module }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+          - P01-hot-path-http
+          - P02-cdn-signed-cache
+          - P03-roteamento-sob-congestionamento
+          - P04-plataforma-operavel-em-kubernetes
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.module }}/go.mod
+          cache-dependency-path: ${{ matrix.module }}/go.sum
+
+      - name: gofmt
+        run: |
+          out="$(gofmt -l .)"
+          if [ -n "$out" ]; then
+            echo "arquivos fora do padrão gofmt:"
+            echo "$out"
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: go test
+        run: go test -count=1 ./...
